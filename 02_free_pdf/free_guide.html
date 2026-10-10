@@ -4,83 +4,118 @@
 <meta charset="utf-8">
 <title>5分で心をゆるめるリセット習慣7選</title>
 <style>
-  @page { size: A4; margin: 18mm 16mm; }
-  :root { --ink:#3d3a36; --sub:#7a7268; --accent:#7f9c8b; --soft:#eef3ef; --warm:#f7f1ea; }
+  @page { size: A4; margin: 0; }
+  :root { --ink:#3d3a36; --sub:#7a7268; --accent:#7f9c8b; --soft:#eef3ef; --warm:#f7f1ea; --line:#d9d2c8; }
   * { box-sizing: border-box; }
-  body { font-family: "WenQuanYi Zen Hei", "Noto Sans CJK JP", "Hiragino Sans", sans-serif; color: var(--ink); background:#fff; line-height: 1.9; font-size: 11.5pt; margin:0; }
-  .page { page-break-after: always; }
+  html, body { margin:0; padding:0; }
+  body { font-family: "WenQuanYi Zen Hei", "Noto Sans CJK JP", "Hiragino Sans", sans-serif; color: var(--ink); background:#fff; line-height: 1.85; font-size: 11pt; }
+  .page { width: 210mm; height: 297mm; padding: 20mm 18mm 16mm; position: relative; overflow: hidden; page-break-after: always; }
   .page:last-child { page-break-after: auto; }
-  .cover { height: 255mm; display:flex; flex-direction:column; justify-content:center; text-align:center; background: linear-gradient(180deg, var(--soft), var(--warm)); border-radius: 14px; padding: 20mm; }
-  .cover .lead { color: var(--accent); letter-spacing: .2em; font-size: 11pt; }
-  .cover h1 { font-size: 26pt; line-height: 1.5; margin: 10mm 0 6mm; }
-  .cover .sub { color: var(--sub); font-size: 12pt; }
-  .cover .note { margin-top: 18mm; font-size: 10pt; color: var(--sub); }
-  h2 { font-size: 16pt; border-left: 6px solid var(--accent); padding-left: 10px; margin: 0 0 6mm; }
-  h3 { font-size: 13pt; margin: 6mm 0 2mm; color: var(--accent); }
-  .box { background: var(--soft); border-radius: 10px; padding: 5mm 6mm; margin: 4mm 0; }
+  .folio { position:absolute; bottom: 9mm; left:0; right:0; text-align:center; font-size: 8.5pt; color: var(--sub); letter-spacing:.1em; }
+  .cover { display:flex; flex-direction:column; justify-content:center; text-align:center; background: linear-gradient(180deg, var(--soft), var(--warm)); }
+  .cover .lead { color: var(--accent); letter-spacing: .25em; font-size: 11pt; }
+  .cover h1 { font-size: 30pt; line-height: 1.5; margin: 12mm 0 8mm; font-weight: normal; }
+  .cover .sub { color: var(--sub); font-size: 12.5pt; }
+  .cover .leaf { font-size: 26pt; color: var(--accent); margin-top: 16mm; }
+  .cover .note { margin-top: 6mm; font-size: 10.5pt; color: var(--sub); }
+  .eyebrow { color: var(--accent); font-size: 9.5pt; letter-spacing: .2em; margin-bottom: 2mm; }
+  h2 { font-size: 17pt; font-weight: normal; border-left: 5px solid var(--accent); padding-left: 10px; margin: 0 0 7mm; }
+  h3 { font-size: 13pt; margin: 0 0 2mm; color: var(--accent); font-weight: normal; }
+  p { margin: 0 0 4mm; }
+  .box { background: var(--soft); border-radius: 10px; padding: 5mm 6mm; margin: 5mm 0; }
   .warm { background: var(--warm); }
-  .evidence { font-size: 9.5pt; color: var(--sub); border-top: 1px dashed #c9c2b8; margin-top: 3mm; padding-top: 2mm; }
+  .evidence { font-size: 9pt; color: var(--sub); border-top: 1px dashed var(--line); margin-top: 3mm; padding-top: 2mm; line-height: 1.7; }
   ol, ul { padding-left: 1.4em; margin: 2mm 0; }
-  .check li { list-style: none; margin-left: -1.2em; }
-  .check li::before { content: "□ "; color: var(--accent); }
-  .habit { margin-bottom: 7mm; page-break-inside: avoid; }
-  .num { display:inline-block; background: var(--accent); color:#fff; border-radius: 50%; width: 9mm; height: 9mm; text-align:center; line-height: 9mm; font-size: 11pt; margin-right: 2mm; }
-  .small { font-size: 9pt; color: var(--sub); }
+  .check { padding-left: 0; }
+  .check li { list-style: none; padding: 1.5mm 0; border-bottom: 1px dotted var(--line); }
+  .check li::before { content: "□　"; color: var(--accent); }
+  .habit { margin-bottom: 11mm; }
+  .habit .when { background: var(--warm); border-radius: 6px; padding: 1.5mm 4mm; display:inline-block; font-size: 10pt; margin-bottom: 2mm; }
+  .num { display:inline-block; background: var(--accent); color:#fff; border-radius: 50%; width: 9mm; height: 9mm; text-align:center; line-height: 9mm; font-size: 11pt; margin-right: 3mm; }
+  .small { font-size: 9pt; color: var(--sub); line-height: 1.7; }
+  .quote { font-size: 13pt; text-align:center; color: var(--accent); margin: 10mm 0; line-height: 2; }
+  table.log { width: 100%; border-collapse: collapse; font-size: 10pt; margin-top: 4mm; }
+  table.log th, table.log td { border: 1px solid var(--line); padding: 3mm 2mm; text-align: center; vertical-align: middle; }
+  table.log th { background: var(--soft); font-weight: normal; }
+  table.log td.blank { height: 16mm; }
+  .scale { letter-spacing: .4em; color: var(--sub); }
 </style>
 </head>
 <body>
 
+<!-- 1 表紙 -->
 <section class="page cover">
   <div class="lead">HSP・繊細さんのための無料ガイド</div>
   <h1>5分で心をゆるめる<br>リセット習慣7選</h1>
   <div class="sub">論文をもとにした、今日からできる小さなケア</div>
+  <div class="leaf">🌿</div>
   <div class="note">繊細なまま、心地よく生きる。</div>
 </section>
 
+<!-- 2 はじめに -->
 <section class="page">
+  <div class="eyebrow">INTRODUCTION</div>
   <h2>はじめに</h2>
   <p>このPDFを手に取ってくれて、ありがとうございます。</p>
   <p>人混みのあと、ぐったりする。<br>
   誰かの不機嫌に、一日中引っ張られる。<br>
-  寝る前に、今日の会話を何度も思い返してしまう。</p>
-  <p>もしひとつでも当てはまるなら、それはあなたが弱いからではありません。</p>
+  寝る前に、今日の会話を何度も思い返してしまう。<br>
+  休日を寝て過ごして、そんな自分にまた落ち込む。</p>
+  <p>もしひとつでも当てはまるなら、伝えたいことがあります。</p>
 
-  <h3>HSPとは</h3>
-  <p>HSP（Highly Sensitive Person）は病名ではなく、心理学で感覚処理感受性と呼ばれる気質のことです。心理学者エレイン・アーロン博士が1990年代に研究を始めました。2018年の研究では、人口のおよそ3割が感受性の高いグループに入ると推定されています。</p>
+  <div class="quote">疲れやすいのは、<br>弱いからじゃない。<br>たくさん感じているから。</div>
+
+  <h3>わたしについて</h3>
+  <p>わたしもHSPの当事者です。音や光、人の表情に疲れやすく、そんな自分を長いあいだ責めてきました。</p>
+  <p>変わるきっかけになったのは、HSPや心のケアについての研究を知ったことでした。わたしが弱いのではなく、刺激を深く受け取る気質を持っているだけ。そう知って、はじめて自分を少し許せました。</p>
+  <p>このPDFでは、研究で確かめられていることの中から、道具なしで5分以内にできるものだけを選びました。</p>
+
+  <div class="box warm">
+    <strong>このPDFの使い方</strong><br>
+    7つ全部やらなくて大丈夫です。今日の気分で、1つだけ選んでください。最後のページに、7日間の記録表もつけています。
+  </div>
+  <div class="folio">2</div>
+</section>
+
+<!-- 3 HSPとは -->
+<section class="page">
+  <div class="eyebrow">ABOUT HSP</div>
+  <h2>HSPとは</h2>
+  <p>HSP（Highly Sensitive Person）は病名ではなく、心理学で感覚処理感受性と呼ばれる気質のことです。心理学者エレイン・アーロン博士が1990年代に研究を始めました。</p>
+  <p>2018年の研究では、人口のおよそ3割が感受性の高いグループに入ると推定されています。少数派ではあるけれど、決してひとりではありません。</p>
 
   <div class="box">
     <strong>HSPの4つの特徴（DOES）</strong>
     <ul>
-      <li>D：物事を深く処理する</li>
-      <li>O：刺激を受けすぎやすい</li>
-      <li>E：感情の反応と共感が強い</li>
-      <li>S：ささいな変化に気づく</li>
+      <li>D：物事を深く処理する　→　本質に気づける</li>
+      <li>O：刺激を受けすぎやすい　→　変化に早く気づける</li>
+      <li>E：感情の反応と共感が強い　→　人を安心させられる</li>
+      <li>S：ささいなことに気づく　→　細部の質を上げられる</li>
     </ul>
+    <span class="small">矢印の先は、同じ特徴を裏返した強みです。</span>
   </div>
 
-  <h3>まずは気づきチェック</h3>
+  <h3>気づきチェック</h3>
   <p class="small">診断ではなく、自分の傾向に気づくためのものです。</p>
   <ul class="check">
     <li>大きな音、強い光、においで疲れやすい</li>
     <li>人の表情や声色の変化にすぐ気づく</li>
     <li>予定が詰まると、楽しい予定でもしんどくなる</li>
     <li>ひとりの時間がないと回復できない</li>
-    <li>決める前にたくさん考えてしまう</li>
+    <li>決める前に、たくさん考えてしまう</li>
   </ul>
-  <p>当てはまる数が多いほど、このPDFの習慣があなたの助けになるはずです。</p>
-
-  <div class="box warm">
-    <strong>このPDFの使い方</strong><br>
-    7つ全部やらなくて大丈夫。今日の気分で1つだけ選んでください。どれも5分以内、道具はほぼ不要です。
-  </div>
+  <p style="margin-top:4mm">当てはまる数が多いほど、次のページからの習慣があなたの助けになるはずです。</p>
+  <div class="folio">3</div>
 </section>
 
+<!-- 4 習慣1-2 -->
 <section class="page">
+  <div class="eyebrow">7 RESET HABITS</div>
   <h2>7つのリセット習慣</h2>
 
   <div class="habit">
     <h3><span class="num">1</span>吐く息を長くする呼吸</h3>
-    <p><strong>こんな時に</strong>：人混みや会議のあと、心臓がざわざわする時</p>
+    <div class="when">こんな時に：人混みや会議のあと、心臓がざわざわする時</div>
     <ol>
       <li>鼻から吸う</li>
       <li>もう一度、鼻から少しだけ吸い足す</li>
@@ -92,85 +127,131 @@
 
   <div class="habit">
     <h3><span class="num">2</span>感情に名前をつける</h3>
-    <p><strong>こんな時に</strong>：モヤモヤの正体がわからない時</p>
+    <div class="when">こんな時に：モヤモヤの正体がわからない時</div>
     <ol>
       <li>メモ帳を開く</li>
       <li>「今わたしは〇〇を感じている」と書く</li>
       <li>不安、悲しい、悔しい、さみしい、焦り。一番近い言葉を探す</li>
+      <li>解決しようとしなくていい。名前をつけたら終わり</li>
     </ol>
-    <div class="evidence">根拠：UCLAの研究（Lieberman et al., 2007）で、感情を言葉にすると扁桃体の反応が弱まったと報告されています。</div>
+    <div class="evidence">根拠：UCLAの研究（Lieberman et al., 2007）で、感情を言葉にすると、不安や恐れに関わる扁桃体の反応が弱まったと報告されています。</div>
   </div>
+  <div class="folio">4</div>
+</section>
 
+<!-- 5 習慣3-4 -->
+<section class="page">
   <div class="habit">
     <h3><span class="num">3</span>自分を名前で呼ぶ</h3>
-    <p><strong>こんな時に</strong>：自分を責める声が止まらない時</p>
+    <div class="when">こんな時に：自分を責める声が止まらない時</div>
     <ol>
       <li>「わたしは」を自分の名前に置き換える</li>
-      <li>「〇〇は今、疲れているんだね」と友達に話すように語りかける</li>
+      <li>「〇〇は今、疲れているんだね」と、友達に話すように語りかける</li>
+      <li>最後に、大切な人にかけるような一言を足す</li>
     </ol>
     <div class="evidence">根拠：Kross et al.（2014）で、自分を名前や三人称で呼ぶと、ストレス場面での不安が和らぎやすいと報告されています。</div>
   </div>
 
   <div class="habit">
     <h3><span class="num">4</span>聞こえる音を3つ数える</h3>
-    <p><strong>こんな時に</strong>：考えごとで頭がいっぱいの時</p>
+    <div class="when">こんな時に：考えごとで頭がいっぱいの時</div>
     <ol>
       <li>目を閉じるか、視線を落とす</li>
       <li>遠くの音、近くの音、自分の呼吸の音。3つ見つける</li>
       <li>良い悪いを判断せず、ただ聞く</li>
+      <li>考えごとに流れたら、また音に戻る</li>
     </ol>
-    <div class="evidence">根拠：Killingsworth &amp; Gilbert（2010）で、人は起きている時間の約47％を今ここ以外のことを考えて過ごし、その時ほど幸福感が低い傾向が報告されています。瞑想プログラムが不安や抑うつの軽減に役立つことはJAMA Internal Medicineのメタ分析（Goyal et al., 2014）でも示されています。</div>
+    <div class="evidence">根拠：Killingsworth &amp; Gilbert（2010）で、人は起きている時間の約47％を今ここ以外のことを考えて過ごし、その時ほど幸福感が低い傾向が報告されています。瞑想プログラムが不安や抑うつの軽減に役立つことは、メタ分析（Goyal et al., 2014）でも示されています。</div>
   </div>
+  <div class="folio">5</div>
 </section>
 
+<!-- 6 習慣5-6 -->
 <section class="page">
   <div class="habit">
     <h3><span class="num">5</span>心配ごとを予約する</h3>
-    <p><strong>こんな時に</strong>：寝る前に不安がぐるぐるする時</p>
+    <div class="when">こんな時に：寝る前に不安がぐるぐるする時</div>
     <ol>
-      <li>毎日決まった15分を「心配タイム」にする（例：19時から）</li>
+      <li>毎日決まった15分を「心配タイム」にする（例：19時から。寝る直前は避ける）</li>
       <li>それ以外の時間に心配が浮かんだら、メモして「あとで考える」と保留する</li>
-      <li>心配タイムにメモを見て、考えたいものだけ考える</li>
+      <li>心配タイムにメモを見て、今も気になるものだけ考える</li>
     </ol>
-    <div class="evidence">根拠：心配を特定の時間に先送りする方法（McGowan &amp; Behar, 2013）で、心配や不安の軽減が報告されています。</div>
+    <div class="evidence">根拠：心配を決まった時間に先送りする方法（McGowan &amp; Behar, 2013）で、心配や不安の軽減が報告されています。</div>
   </div>
 
   <div class="habit">
     <h3><span class="num">6</span>緑の中に身を置く</h3>
-    <p><strong>こんな時に</strong>：同じ悩みを何度も考えてしまう時</p>
+    <div class="when">こんな時に：同じ悩みを何度も考えてしまう時</div>
     <ol>
       <li>帰り道を、木の多いルートに変える</li>
       <li>公園のベンチで5分、葉の揺れを眺める</li>
       <li>難しい日は、ベランダの植物や空を眺めるだけでOK</li>
     </ol>
-    <div class="evidence">根拠：Bratman et al.（2015）で、自然の中を90分歩いた人は都市部を歩いた人に比べ、反すう（ぐるぐる思考）が減ったと報告されています。</div>
+    <div class="evidence">根拠：Bratman et al.（2015）で、自然の中を90分歩いた人は都市部を歩いた人に比べ、反すう（ぐるぐる思考）が減ったと報告されています。まずはできる範囲で、小さく取り入れてみてください。</div>
   </div>
+  <div class="folio">6</div>
+</section>
 
+<!-- 7 習慣7 + 今日の1つ -->
+<section class="page">
   <div class="habit">
     <h3><span class="num">7</span>好きな音に触れる</h3>
-    <p><strong>こんな時に</strong>：心がざらざらして落ち着かない時</p>
+    <div class="when">こんな時に：心がざらざらして落ち着かない時</div>
     <ol>
-      <li>雨音、波の音、ピアノなど「心地いい」と感じる音を1つ選ぶ</li>
+      <li>雨音、波の音、ピアノなど、心地いいと感じる音を1つ選ぶ</li>
       <li>小さめの音量で5分流す</li>
-      <li>その間は、音だけに耳を澄ませる</li>
+      <li>その間は、音の高さやリズムだけに耳を澄ませる</li>
     </ol>
-    <div class="evidence">根拠：de Witte et al.（2020）のメタ分析で、音楽を取り入れることが心拍や血圧などの体の反応とストレス感の両方を下げると報告されています。</div>
+    <div class="evidence">根拠：de Witte et al.（2020）のメタ分析で、音楽を取り入れることが心拍や血圧などの体の反応とストレス感の両方を下げると報告されています。大切なのは正解の曲ではなく、あなたが心地いいと感じる音です。</div>
+  </div>
+
+  <div class="box">
+    <strong>わたしの好きな音メモ</strong>
+    <p class="small" style="margin:1mm 0 3mm">思いつくだけ書いてみてください。</p>
+    <ul class="check">
+      <li>　</li>
+      <li>　</li>
+      <li>　</li>
+    </ul>
   </div>
 
   <div class="box warm">
     <strong>今日の1つを決めよう</strong><br>
-    いちばんやってみたい番号に丸をつけてください。<br>
-    1　2　3　4　5　6　7<br>
-    やってみた感想を、LINEで送ってもらえたらうれしいです。
+    いちばんやってみたい番号に丸をつけてください。
+    <p class="scale" style="text-align:center; font-size:15pt; margin:4mm 0 0">1 2 3 4 5 6 7</p>
   </div>
+  <div class="folio">7</div>
 </section>
 
+<!-- 8 7日間記録表 -->
 <section class="page">
+  <div class="eyebrow">7 DAYS LOG</div>
+  <h2>7日間の記録表</h2>
+  <p>やった習慣の番号と、やる前とやった後の心のざわざわを0〜10で書いてください。できなかった日は、空欄のままで大丈夫です。</p>
+  <table class="log">
+    <tr><th style="width:12%">日</th><th style="width:18%">やった習慣</th><th style="width:15%">前</th><th style="width:15%">後</th><th>ひとことメモ</th></tr>
+    <tr><td>1日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
+    <tr><td>2日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
+    <tr><td>3日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
+    <tr><td>4日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
+    <tr><td>5日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
+    <tr><td>6日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
+    <tr><td>7日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
+  </table>
+  <div class="box warm" style="margin-top:7mm">
+    7日間で、いちばん自分に合っていた習慣はどれでしたか？<br>
+    番号とひとことを、LINEで送ってもらえたらうれしいです。
+  </div>
+  <div class="folio">8</div>
+</section>
+
+<!-- 9 おわりに -->
+<section class="page">
+  <div class="eyebrow">CLOSING</div>
   <h2>おわりに</h2>
   <p>繊細さは、なくすものではありません。<br>
   感じたものとの距離の取り方は、練習で身につけられます。</p>
-  <p>2010年の研究では、感受性の高い人が8週間のマインドフルネス・プログラムに参加したところ、ストレスや社会的不安が減り、自己受容が高まったと報告されています。</p>
-  <p>この7つは、その入り口です。</p>
+  <p>2010年の研究では、感受性の高い人が8週間のマインドフルネス・プログラムに参加したところ、ストレスや社会的不安が減り、自己受容が高まったと報告されています。この7つは、その入り口です。</p>
 
   <div class="box">
     <strong>LINEで7日間のミニ講座をお届けします</strong>
@@ -187,12 +268,13 @@
   </div>
 
   <h3>大切なお願い</h3>
-  <p class="small">このガイドは医療行為や診断に代わるものではありません。眠れない、食べられない、気分の落ち込みが2週間以上続くなど、日常生活に支障がある時は、心療内科や精神科、公的な相談窓口に相談してください。</p>
+  <p class="small">このガイドは医療行為や診断に代わるものではありません。眠れない、食べられない、気分の落ち込みが2週間以上続くなど、日常生活に支障がある時は、心療内科や精神科、公的な相談窓口に相談してください。通院中の方は、主治医に相談のうえで取り入れてください。</p>
 
   <h3>参考文献</h3>
   <p class="small">
   Aron &amp; Aron (1997) J Pers Soc Psychol 73(2) / Lionetti et al. (2018) Transl Psychiatry 8:24 / Balban et al. (2023) Cell Rep Med 4(1) / Lieberman et al. (2007) Psychol Sci 18(5) / Kross et al. (2014) J Pers Soc Psychol 106(2) / Killingsworth &amp; Gilbert (2010) Science 330 / Goyal et al. (2014) JAMA Intern Med 174(3) / McGowan &amp; Behar (2013) Behav Modif 37(1) / Bratman et al. (2015) PNAS 112(28) / de Witte et al. (2020) Health Psychol Rev 14(2) / Soons et al. (2010) Eur J Psychol 6(4)
   </p>
+  <div class="folio">9</div>
 </section>
 
 </body>
