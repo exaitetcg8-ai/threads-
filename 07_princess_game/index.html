@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!--ARTIFACT-HEAD-START-->
+<title>光の姫の旅路</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Shippori+Mincho:wght@400;600&family=Zen+Antique+Soft&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<!--ARTIFACT-HEAD-END-->
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<!--ARTIFACT-BODY-START-->
+<header class="top">
+  <div class="top-row">
+    <h1 class="brand">光の姫の旅路<small id="regionName">陽だまりの城 ソレイユ</small></h1>
+    <div class="chips" id="chips"></div>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="画面切り替え">
+    <button class="tab" role="tab" data-tab="adventure" aria-selected="true">冒険</button>
+    <button class="tab" role="tab" data-tab="tasks" aria-selected="false">タスク</button>
+    <button class="tab" role="tab" data-tab="schedule" aria-selected="false">日程</button>
+    <button class="tab" role="tab" data-tab="records" aria-selected="false">記録と実績</button>
+    <button class="tab" role="tab" data-tab="story" aria-selected="false">物語</button>
+    <button class="tab" role="tab" data-tab="wardrobe" aria-selected="false">衣装室</button>
+    <button class="tab" role="tab" data-tab="talk" aria-selected="false">会話帳</button>
+    <button class="tab" role="tab" data-tab="settings" aria-selected="false">設定</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- 冒険 -->
+  <section class="panel" id="tab-adventure" role="tabpanel">
+    <div class="adv">
+      <div style="min-width:0">
+        <div class="stage" id="stage">
+          <canvas id="world" width="960" height="540"></canvas>
+          <div class="actor" id="npc" hidden></div>
+          <div class="actor" id="foe" hidden></div>
+          <div class="actor" id="hero"></div>
+          <div class="bubble" id="bubble" hidden></div>
+          <div class="flash" id="flash"></div>
+          <div class="hud" id="hudL"></div>
+          <div class="hud hud-r" id="hudR"></div>
+        </div>
+        <div class="foebar" id="foebar"><span class="muted small" id="advState">タイマーを始めると、姫の旅が進みます。</span></div>
+        <ol class="log" id="log" aria-live="polite"></ol>
+      </div>
+
+      <aside class="side">
+        <div class="card timer">
+          <div class="modes" id="modes">
+            <button data-mode="work" aria-pressed="true">作業</button>
+            <button data-mode="short" aria-pressed="false">小休憩</button>
+            <button data-mode="long" aria-pressed="false">長休憩</button>
+          </div>
+          <div class="dial" id="dial">
+            <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="track" cx="60" cy="60" r="52"/><circle class="prog" id="ring" cx="60" cy="60" r="52"/></svg>
+            <div class="dial-read"><div class="digits" id="digits">25:00</div><small id="dialLabel">作業</small></div>
+          </div>
+          <div class="controls">
+            <button class="btn primary" id="btnStart">はじめる</button>
+            <button class="btn" id="btnReset" title="今の回をやめる">やめる</button>
+            <button class="btn ghost" id="btnSkip" title="次へ進む">次へ</button>
+          </div>
+          <label class="field">取り組むタスク
+            <select id="curTask"></select>
+          </label>
+          <div class="today"><span>今日 <b id="todayMin">0</b> 分</span><span>今日の作業 <b id="todaySess">0</b> 回</span><span>今回 <b id="curSess">0</b> 分</span></div>
+        </div>
+
+        <div class="card">
+          <h3 class="sub">リュシア姫</h3>
+          <div class="stat-row"><span>攻撃力</span><b id="atkLv">Lv1</b><span class="meter xp"><i id="atkXp"></i></span><span class="val" id="atkVal">0</span></div>
+          <div class="stat-row" style="margin-top:6px"><span>応援力</span><b id="supLv">Lv1</b><span class="meter sup"><i id="supXp"></i></span><span class="val" id="supVal">0</span></div>
+          <div class="talk-row" style="margin-top:14px">
+            <button class="btn" id="btnTalk">話しかける</button>
+            <span class="small muted" id="talkOdds"></span>
+          </div>
+          <button class="btn abyss-toggle" id="btnAbyss" style="margin-top:12px;width:100%" hidden>常闇の底へ降りる</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- タスク -->
+  <section class="panel" id="tab-tasks" role="tabpanel" hidden>
+    <h2 class="sec">タスク</h2>
+    <form class="card form-row" id="taskForm" autocomplete="off">
+      <label class="field grow">やること<input type="text" id="taskTitle" required maxlength="80" placeholder="例：企画書の第2章を書く"></label>
+      <label class="field">期限<input type="date" id="taskDue"></label>
+      <label class="field">見積もり（回）<input type="number" id="taskEst" min="1" max="20" value="2"></label>
+      <button class="btn primary" type="submit">追加</button>
+    </form>
+    <div class="filter" id="taskFilter">
+      <button class="btn" data-f="open" aria-pressed="true">未完了</button>
+      <button class="btn" data-f="done" aria-pressed="false">完了</button>
+      <button class="btn" data-f="all" aria-pressed="false">すべて</button>
+    </div>
+    <ul class="tasklist" id="taskList"></ul>
+  </section>
+
+  <!-- 日程 -->
+  <section class="panel" id="tab-schedule" role="tabpanel" hidden>
+    <h2 class="sec">日程管理表</h2>
+    <form class="card form-row" id="schedForm" autocomplete="off">
+      <label class="field">日付<input type="date" id="schedDate" required></label>
+      <label class="field">時刻<input type="time" id="schedTime"></label>
+      <label class="field grow">予定<input type="text" id="schedTitle" required maxlength="80" placeholder="例：打ち合わせ"></label>
+      <button class="btn primary" type="submit">追加</button>
+    </form>
+    <div class="week-nav" style="margin-top:16px">
+      <button class="btn" id="wkPrev">前の週</button>
+      <strong id="wkLabel"></strong>
+      <button class="btn" id="wkNext">次の週</button>
+      <button class="btn ghost" id="wkToday">今週</button>
+      <span class="small muted">金枠＝タスクの期限、緑＝その日の作業時間</span>
+    </div>
+    <div class="week" id="week"></div>
+  </section>
+
+  <!-- 記録 -->
+  <section class="panel" id="tab-records" role="tabpanel" hidden>
+    <h2 class="sec">記録と実績</h2>
+    <div class="tiles" id="tiles"></div>
+    <div class="rec-grid">
+      <div class="card chart"><h3 class="sub">直近14日の作業時間（分）</h3><div id="chart"></div></div>
+      <div class="card"><h3 class="sub">作業の記録（1回ごと）</h3><div class="tbl-wrap"><table><thead><tr><th>日付</th><th>開始</th><th>時間</th><th>タスク</th></tr></thead><tbody id="sessRows"></tbody></table></div></div>
+    </div>
+    <h3 class="sub" style="margin-top:22px" id="achHead">実績</h3>
+    <div class="ach-grid" id="achGrid"></div>
+  </section>
+
+  <!-- 物語 -->
+  <section class="panel" id="tab-story" role="tabpanel" hidden>
+    <div class="story-head">
+      <div>
+        <h2 class="sec" style="margin-bottom:4px">姫の物語</h2>
+        <p class="small muted" style="margin:0" id="storyHint"></p>
+        <div class="meter xp big-meter" style="margin-top:8px"><i id="storyMeter"></i></div>
+      </div>
+      <div class="small muted" id="storyPts" style="text-align:right"></div>
+    </div>
+    <div id="storyList"></div>
+  </section>
+
+  <!-- 衣装室 -->
+  <section class="panel" id="tab-wardrobe" role="tabpanel" hidden>
+    <h2 class="sec">衣装室</h2>
+    <div class="wardrobe">
+      <div class="card mirror">
+        <div class="stand" id="mirror"></div>
+        <dl id="mirrorStats"></dl>
+      </div>
+      <div style="min-width:0">
+        <div class="seg" id="wardSeg">
+          <button class="btn" data-w="outfit" aria-pressed="true">服装</button>
+          <button class="btn" data-w="equip" aria-pressed="false">装備</button>
+          <button class="btn" data-w="hair" aria-pressed="false">髪型</button>
+          <button class="btn" data-w="color" aria-pressed="false">髪色</button>
+        </div>
+        <p class="small muted" id="wardNote" style="margin:0 0 10px"></p>
+        <div id="wardBody"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 会話帳 -->
+  <section class="panel" id="tab-talk" role="tabpanel" hidden>
+    <h2 class="sec">会話帳</h2>
+    <p class="small muted" style="margin:0">作業時間が長いほど、そして今の作業が長く続くほど、めずらしい言葉を聞ける確率が上がります。</p>
+    <div class="odds" id="odds"></div>
+    <div id="lineBook"></div>
+  </section>
+
+  <!-- 設定 -->
+  <section class="panel" id="tab-settings" role="tabpanel" hidden>
+    <h2 class="sec">設定</h2>
+    <div class="settings">
+      <div class="card">
+        <h3 class="sub">タイマー</h3>
+        <label class="row">作業（分）<input type="number" id="setWork" min="1" max="180"></label>
+        <label class="row">小休憩（分）<input type="number" id="setShort" min="1" max="60"></label>
+        <label class="row">長休憩（分）<input type="number" id="setLong" min="1" max="90"></label>
+        <label class="row">長休憩までの作業回数<input type="number" id="setEvery" min="2" max="10"></label>
+        <label class="row">休憩を自動で始める<input type="checkbox" id="setAuto"></label>
+        <label class="row">終了の合図音<input type="checkbox" id="setSound"></label>
+      </div>
+      <div class="card">
+        <h3 class="sub">セーブデータ</h3>
+        <p class="small muted" style="margin-top:0">データはこのブラウザに保存されます。別の端末へ移すときは、書き出した文字列を貼り付けて読み込んでください。</p>
+        <div class="form-row"><button class="btn" id="btnExport">書き出す</button><button class="btn" id="btnCopy">コピー</button><button class="btn" id="btnImport">読み込む</button></div>
+        <textarea id="saveText" rows="5" style="margin-top:10px" aria-label="セーブデータ"></textarea>
+        <p class="small" id="saveMsg" style="min-height:1.4em"></p>
+        <button class="btn danger" id="btnWipe">最初からやり直す</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" hidden><div class="sheet" id="sheet" role="dialog" aria-modal="true"></div></div>
+<div class="toasts" id="toasts"></div>
+<!--ARTIFACT-BODY-END-->
+<script src="data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
