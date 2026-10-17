@@ -202,7 +202,7 @@ ol.steps li.done { color: var(--ink-sub); }
 footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-align: center; line-height: 1.8; }
 
 /* ---------- アバターのうごき ---------- */
-.blink { animation: blink 5.2s infinite; transform-origin: center 176px; transform-box: view-box; }
+.blink { animation: blink 5.2s infinite; transform-origin: center 182px; transform-box: view-box; }
 @keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
 .breathe { animation: breathe 5s ease-in-out infinite; transform-origin: 160px 380px; transform-box: view-box; }
 @keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
@@ -214,7 +214,7 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
 .note-float.n3 { animation-delay: 4.6s; }
 @keyframes rise { 0% { opacity: 0; transform: translateY(14px); } 20% { opacity: .85; } 80% { opacity: .5; } 100% { opacity: 0; transform: translateY(-46px); } }
 #mouthOpen { display: none; }
-.talking #mouthOpen { display: inline; animation: talk .24s ease-in-out infinite alternate; transform-origin: 160px 216px; transform-box: view-box; }
+.talking #mouthOpen { display: inline; animation: talk .24s ease-in-out infinite alternate; transform-origin: 160px 229px; transform-box: view-box; }
 .talking #mouthClosed { display: none; }
 @keyframes talk { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
 #browL, #browR { transition: transform .5s ease; transform-box: fill-box; transform-origin: center; }
@@ -240,91 +240,150 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
       <span class="motto">心地よく、自分らしく、自由に</span>
     </div>
     <div class="avatar-wrap">
-      <svg id="avatar" viewBox="0 0 320 380" role="img" aria-label="水色の髪で眼鏡をかけた、中性的なキャラクター。髪に音符の髪留め、うしろを水の流れが通っている">
+      <svg id="avatar" viewBox="0 0 320 380" role="img" aria-label="2000年代の美少女アニメ風のキャラクター。水色のロングヘア、大きな瞳に眼鏡、頭にヘッドホン、セーラー服。髪に音符の髪留め、うしろを水の流れが通っている">
         <defs>
           <linearGradient id="hairG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#a9e2f2"/><stop offset="1" stop-color="#5fb7d6"/>
+            <stop offset="0" stop-color="#b6ecfa"/><stop offset=".45" stop-color="#86d2ea"/><stop offset="1" stop-color="#4fa9cf"/>
+          </linearGradient>
+          <linearGradient id="hairShadeG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#4a9fc6"/><stop offset="1" stop-color="#3b84b0"/>
           </linearGradient>
           <linearGradient id="irisG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#1f6f8f"/><stop offset="1" stop-color="#6fd0e8"/>
+            <stop offset="0" stop-color="#123a5a"/><stop offset=".45" stop-color="#2479a8"/><stop offset=".85" stop-color="#5fd0ee"/><stop offset="1" stop-color="#b8f2ff"/>
           </linearGradient>
           <linearGradient id="waterG" x1="0" y1="0" x2="1" y2="0">
             <stop offset="0" stop-color="#7fd0e6" stop-opacity="0"/><stop offset=".5" stop-color="#7fd0e6" stop-opacity=".9"/><stop offset="1" stop-color="#7fd0e6" stop-opacity="0"/>
           </linearGradient>
+          <clipPath id="scleraClip" clipPathUnits="userSpaceOnUse">
+            <path d="M113 172 Q118 160 133 159 Q149 159 153 170 L152 194 Q146 205 133 205 Q118 204 114 193 Z"/>
+          </clipPath>
+          <!-- 片目ぶん（左目）。右目は左右反転して使う -->
+          <g id="eyeBase">
+            <path d="M113 172 Q118 160 133 159 Q149 159 153 170 L152 194 Q146 205 133 205 Q118 204 114 193 Z" fill="#ffffff"/>
+            <g clip-path="url(#scleraClip)">
+              <ellipse cx="134" cy="184" rx="14.5" ry="19.5" fill="url(#irisG)"/>
+              <ellipse cx="134" cy="184" rx="14.5" ry="19.5" fill="none" stroke="#0f2c44" stroke-width="1.6"/>
+              <ellipse cx="134" cy="182" rx="6.5" ry="9" fill="#0d2438"/>
+              <path d="M113 160 L156 160 L156 172 Q134 164 113 174 Z" fill="#0f2c44" opacity=".28"/>
+            </g>
+            <!-- 上まつげ（太め＋目尻のはね） -->
+            <path d="M109 175 Q113 160 132 157 Q150 156 156 168" fill="none" stroke="#1b2f3d" stroke-width="4.6" stroke-linecap="round"/>
+            <path d="M111 171 L102 165 M112 175 L104 174" stroke="#1b2f3d" stroke-width="2.4" stroke-linecap="round"/>
+            <!-- 下まつげ -->
+            <path d="M122 205 Q133 208 146 203" fill="none" stroke="#3b5566" stroke-width="1.4" stroke-linecap="round"/>
+            <!-- 二重線 -->
+            <path d="M116 156 Q132 150 150 155" fill="none" stroke="#7a5f5a" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
+          </g>
         </defs>
+
         <!-- 水の流れ（背景） -->
         <g fill="none" stroke-linecap="round">
           <path class="flow slow" d="M-20 120 C 60 90, 110 150, 180 120 S 300 90, 340 120" stroke="url(#waterG)" stroke-width="3"/>
           <path class="flow" d="M-20 300 C 50 270, 120 330, 190 300 S 290 270, 340 300" stroke="url(#waterG)" stroke-width="5"/>
-          <path class="flow slow" d="M-20 340 C 70 320, 130 360, 200 335 S 300 320, 340 340" stroke="url(#waterG)" stroke-width="3"/>
+          <path class="flow slow" d="M-20 350 C 70 330, 130 370, 200 345 S 300 330, 340 350" stroke="url(#waterG)" stroke-width="3"/>
         </g>
         <!-- 浮かぶ音符 -->
         <g fill="#4fb0d0">
-          <text class="note-float" x="48" y="120" font-size="26">♪</text>
-          <text class="note-float n2" x="256" y="104" font-size="22">♫</text>
-          <text class="note-float n3" x="270" y="200" font-size="18">♪</text>
+          <text class="note-float" x="34" y="130" font-size="26">♪</text>
+          <text class="note-float n2" x="266" y="110" font-size="22">♫</text>
+          <text class="note-float n3" x="276" y="214" font-size="18">♪</text>
         </g>
+
         <g class="breathe">
-          <!-- 後ろ髪 -->
-          <path d="M90 168 Q82 76 160 70 Q238 76 230 168 L234 252 Q216 266 200 246 L204 176 L116 176 L120 246 Q104 266 86 252 Z" fill="url(#hairG)"/>
-          <!-- からだ -->
-          <path d="M70 380 Q76 292 128 270 L160 284 L192 270 Q244 292 250 380 Z" fill="#f7fbfd" stroke="#bcdde8" stroke-width="2"/>
-          <path d="M128 270 L160 300 L192 270 L180 264 L160 282 L140 264 Z" fill="#8fd0e6"/>
-          <!-- 首にかけたヘッドホン -->
-          <path d="M118 276 Q160 312 202 276" fill="none" stroke="#3d6c80" stroke-width="6" stroke-linecap="round"/>
-          <rect x="104" y="264" width="20" height="26" rx="8" fill="#3d6c80"/>
-          <rect x="196" y="264" width="20" height="26" rx="8" fill="#3d6c80"/>
-          <circle cx="114" cy="277" r="5" fill="#8fd0e6"/><circle cx="206" cy="277" r="5" fill="#8fd0e6"/>
-          <!-- 水の流れのストール -->
-          <path class="flow slow" d="M86 330 C 120 310, 150 350, 190 326 S 236 318, 250 340" fill="none" stroke="#9fdcee" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+          <!-- 後ろ髪（ロング） -->
+          <path d="M160 58 Q82 60 78 150 Q74 250 54 384 L266 384 Q246 250 242 150 Q238 60 160 58 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.6"/>
+          <path d="M104 220 Q160 262 216 220 L230 384 L90 384 Z" fill="url(#hairShadeG)"/>
           <!-- 首 -->
-          <path d="M146 236 L146 266 Q160 274 174 266 L174 236 Z" fill="#f6dccd"/>
-          <!-- 顔 -->
-          <path d="M106 152 Q106 230 160 248 Q214 230 214 152 Q214 100 160 100 Q106 100 106 152 Z" fill="#fde9de"/>
-          <!-- ほほ -->
-          <ellipse cx="128" cy="204" rx="11" ry="5" fill="#f7b9b0" opacity=".45"/>
-          <ellipse cx="192" cy="204" rx="11" ry="5" fill="#f7b9b0" opacity=".45"/>
+          <path d="M149 236 L149 266 Q160 272 171 266 L171 236 Z" fill="#f7dccf"/>
+          <path d="M149 244 Q160 256 171 244 L171 252 Q160 262 149 252 Z" fill="#e9c2b3"/>
+          <!-- セーラー服 -->
+          <path d="M84 384 Q88 298 136 274 L160 288 L184 274 Q232 298 236 384 Z" fill="#fbfdff" stroke="#b8d6e2" stroke-width="1.6"/>
+          <path d="M136 274 L160 318 L184 274 L216 292 Q206 314 186 320 L160 334 L134 320 Q114 314 104 292 Z" fill="#4fa9cf" stroke="#3a86ac" stroke-width="1.4"/>
+          <path d="M112 296 Q122 310 136 314 L160 326 L184 314 Q198 310 208 296" fill="none" stroke="#ffffff" stroke-width="2"/>
+          <!-- リボン -->
+          <path d="M160 324 L136 314 Q130 326 138 336 Z" fill="#2f7f9c"/>
+          <path d="M160 324 L184 314 Q190 326 182 336 Z" fill="#2f7f9c"/>
+          <path d="M156 328 L148 360 L156 356 L160 364 L164 356 L172 360 L164 328 Z" fill="#2f7f9c"/>
+          <circle cx="160" cy="325" r="5" fill="#3d97b8"/>
+          <!-- 水の流れのストール -->
+          <path class="flow slow" d="M80 346 C 120 326, 150 366, 190 342 S 236 334, 250 356" fill="none" stroke="#bfeaf6" stroke-width="7" stroke-linecap="round" opacity=".75"/>
+
+          <!-- 顔（とがったあご） -->
+          <path d="M98 136 Q96 196 124 226 Q146 248 160 254 Q174 248 196 226 Q224 196 222 136 Q222 86 160 84 Q98 86 98 136 Z" fill="#fdeae0"/>
+          <path d="M98 136 Q98 118 106 106 L214 106 Q222 118 222 136 Q190 150 160 150 Q130 150 98 136 Z" fill="#f4d3c6" opacity=".7"/>
+          <!-- ほほ（斜線） -->
+          <ellipse cx="122" cy="214" rx="13" ry="6" fill="#f6a8a4" opacity=".45"/>
+          <ellipse cx="198" cy="214" rx="13" ry="6" fill="#f6a8a4" opacity=".45"/>
+          <g stroke="#e57f86" stroke-width="1.3" stroke-linecap="round" opacity=".75">
+            <path d="M115 217 L119 211 M121 217 L125 211 M127 217 L131 211"/>
+            <path d="M191 217 L195 211 M197 217 L201 211 M203 217 L207 211"/>
+          </g>
+
           <!-- 目 -->
           <g id="eyesOpen" class="blink">
-            <ellipse cx="138" cy="178" rx="10" ry="12" fill="#ffffff"/>
-            <ellipse cx="138" cy="179" rx="8" ry="10.5" fill="url(#irisG)"/>
-            <circle cx="138" cy="181" r="3.6" fill="#163f52"/>
-            <circle cx="134.5" cy="174" r="2.8" fill="#ffffff"/>
-            <ellipse cx="182" cy="178" rx="10" ry="12" fill="#ffffff"/>
-            <ellipse cx="182" cy="179" rx="8" ry="10.5" fill="url(#irisG)"/>
-            <circle cx="182" cy="181" r="3.6" fill="#163f52"/>
-            <circle cx="178.5" cy="174" r="2.8" fill="#ffffff"/>
-            <path d="M126 168 Q138 162 150 168" fill="none" stroke="#2c5566" stroke-width="2.4" stroke-linecap="round"/>
-            <path d="M170 168 Q182 162 194 168" fill="none" stroke="#2c5566" stroke-width="2.4" stroke-linecap="round"/>
+            <use href="#eyeBase"/>
+            <use href="#eyeBase" transform="translate(320 0) scale(-1 1)"/>
+            <!-- ハイライト（左右とも左上） -->
+            <g fill="#ffffff">
+              <ellipse cx="127" cy="173" rx="5.5" ry="7" transform="rotate(-20 127 173)"/>
+              <circle cx="140" cy="194" r="2.6"/>
+              <circle cx="131" cy="196" r="1.4" opacity=".8"/>
+              <ellipse cx="183" cy="173" rx="5.5" ry="7" transform="rotate(-20 183 173)"/>
+              <circle cx="196" cy="194" r="2.6"/>
+              <circle cx="187" cy="196" r="1.4" opacity=".8"/>
+            </g>
           </g>
-          <g id="eyeSmile" fill="none" stroke="#2c5566" stroke-width="2.6" stroke-linecap="round">
-            <path d="M128 181 Q138 172 148 181"/><path d="M172 181 Q182 172 192 181"/>
+          <g id="eyeSmile" fill="none" stroke="#1b2f3d" stroke-width="4" stroke-linecap="round">
+            <path d="M114 186 Q133 168 152 184"/><path d="M168 184 Q187 168 206 186"/>
+            <path d="M113 184 L104 180 M207 184 L216 180" stroke-width="2.2"/>
           </g>
-          <!-- 眉 -->
-          <path id="browL" d="M126 152 Q138 147 150 151" fill="none" stroke="#4b93ad" stroke-width="2.4" stroke-linecap="round"/>
-          <path id="browR" d="M170 151 Q182 147 194 152" fill="none" stroke="#4b93ad" stroke-width="2.4" stroke-linecap="round"/>
-          <!-- 眼鏡 -->
-          <g fill="none" stroke="#3d6c80" stroke-width="2.2">
-            <rect x="116" y="160" width="44" height="36" rx="13" fill="#ffffff" fill-opacity=".12"/>
-            <rect x="162" y="160" width="44" height="36" rx="13" fill="#ffffff" fill-opacity=".12"/>
-            <path d="M157 172 Q161 168 165 172"/>
-            <path d="M116 170 L108 166"/><path d="M206 170 L214 166"/>
+
+          <!-- 鼻・口 -->
+          <path d="M161 212 L159 216" stroke="#d9a493" stroke-width="1.6" stroke-linecap="round"/>
+          <path id="mouthClosed" d="M154 228 Q160 232 166 228" fill="none" stroke="#b9615e" stroke-width="2" stroke-linecap="round"/>
+          <path id="mouthOpen" d="M154 226 Q160 224 166 226 Q164 234 160 234 Q156 234 154 226 Z" fill="#d46d6f"/>
+
+          <!-- 眼鏡（細いアンダーリム寄りの楕円フレーム） -->
+          <g fill="none" stroke="#2f5e78" stroke-width="2">
+            <rect x="107" y="158" width="51" height="52" rx="18" fill="#ffffff" fill-opacity=".1"/>
+            <rect x="162" y="158" width="51" height="52" rx="18" fill="#ffffff" fill-opacity=".1"/>
+            <path d="M158 178 Q160 174 162 178"/>
+            <path d="M107 172 L99 168"/><path d="M213 172 L221 168"/>
           </g>
-          <path d="M122 166 L130 162" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
-          <path d="M168 166 L176 162" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
-          <!-- 口 -->
-          <path id="mouthClosed" d="M152 216 Q160 221 168 216" fill="none" stroke="#c0756c" stroke-width="2.2" stroke-linecap="round"/>
-          <ellipse id="mouthOpen" cx="160" cy="217" rx="5.5" ry="4.5" fill="#d98a80"/>
-          <!-- 前髪 -->
-          <path d="M100 156 Q102 86 160 84 Q220 86 222 156 Q208 132 198 108 Q190 134 170 142 Q174 120 164 104 Q150 134 124 142 Q130 122 134 108 Q118 132 100 156 Z" fill="url(#hairG)"/>
-          <path d="M104 150 Q102 196 112 236 Q100 214 96 176 Z" fill="#6cc0dc"/>
-          <path d="M216 150 Q218 196 208 236 Q220 214 224 176 Z" fill="#6cc0dc"/>
-          <path d="M140 96 Q160 90 186 98" fill="none" stroke="#e3f7fd" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <path d="M114 200 L124 190 M120 204 L128 196" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          <path d="M170 200 L180 190 M176 204 L184 196" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+
+          <!-- 前に流れる長いサイドの髪 -->
+          <path d="M100 110 Q84 180 88 240 Q92 290 78 332 Q104 296 106 236 Q107 176 106 126 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.4"/>
+          <path d="M220 110 Q236 180 232 240 Q228 290 242 332 Q216 296 214 236 Q213 176 214 126 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.4"/>
+          <path d="M100 150 Q94 200 96 250" fill="none" stroke="#3a86ac" stroke-width="1" opacity=".6"/>
+          <path d="M220 150 Q226 200 224 250" fill="none" stroke="#3a86ac" stroke-width="1" opacity=".6"/>
+
+          <!-- 前髪（とがった束） -->
+          <path d="M94 148 Q90 82 160 74 Q230 82 226 148 L216 122 L208 150 L196 110 L186 146 L172 106 L160 142 L148 106 L134 146 L124 110 L112 150 L104 124 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M134 146 L140 118 M186 146 L180 116 M160 142 L160 112" stroke="#3a86ac" stroke-width="1" opacity=".55"/>
+          <!-- 天使の輪 -->
+          <path d="M106 108 Q160 82 214 108" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-dasharray="14 7" opacity=".65"/>
+          <!-- アホ毛 -->
+          <path d="M160 58 Q148 30 176 24 Q160 38 166 58 Z" fill="#9adcef" stroke="#3a86ac" stroke-width="1.4" stroke-linejoin="round"/>
+
+          <!-- 眉（髪の上に描く） -->
+          <path id="browL" d="M118 152 Q130 147 146 150" fill="none" stroke="#3a86ac" stroke-width="2" stroke-linecap="round"/>
+          <path id="browR" d="M174 150 Q190 147 202 152" fill="none" stroke="#3a86ac" stroke-width="2" stroke-linecap="round"/>
+
+          <!-- ヘッドホン -->
+          <path d="M90 148 Q86 62 160 56 Q234 62 230 148" fill="none" stroke="#2f5e78" stroke-width="7" stroke-linecap="round"/>
+          <rect x="80" y="130" width="20" height="38" rx="9" fill="#2f5e78"/>
+          <rect x="220" y="130" width="20" height="38" rx="9" fill="#2f5e78"/>
+          <rect x="84" y="138" width="6" height="22" rx="3" fill="#8fd0e6"/>
+          <rect x="230" y="138" width="6" height="22" rx="3" fill="#8fd0e6"/>
+
           <!-- 音符の髪留め -->
-          <g transform="translate(196 104) rotate(14)">
+          <g transform="translate(206 92) rotate(14)">
             <ellipse cx="0" cy="14" rx="7" ry="5.4" fill="#2f7f9c" transform="rotate(-18 0 14)"/>
             <rect x="5" y="-12" width="3" height="26" rx="1.5" fill="#2f7f9c"/>
             <path d="M8 -12 Q20 -6 16 6 Q14 -2 8 -2 Z" fill="#2f7f9c"/>
+            <circle cx="-2.5" cy="12" r="1.6" fill="#ffffff" opacity=".8"/>
           </g>
         </g>
       </svg>
@@ -459,7 +518,7 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
       </div>
       <div class="prose">
         <h3>水音 みお（みなと みお）</h3>
-        <p>水辺の音を聴くのが好きな、性別を決めていないキャラクターです。眼鏡の奥の目は少しねむたげで、話すのはゆっくり。音符の髪留めと、首にかけたヘッドホンがお気に入り。</p>
+        <p>水辺の音を聴くのが好きな、一人称「ぼく」のキャラクターです。見た目は2000年代の美少女アニメ風。眼鏡の奥の大きな瞳で、ゆっくり話します。音符の髪留めとヘッドホン、セーラー服がお気に入り。</p>
         <p>会話モードは、気分12 × 元気の量5 × 話題12 × 時間帯4 × ほしいこと4 × 話す長さ3 × 距離感3 の組み合わせで、<b id="aboutTotal"></b>通りあります。同じモードでも言い回しが少しずつ変わります。</p>
         <h3>大切なおしらせ</h3>
         <ul>
