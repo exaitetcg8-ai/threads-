@@ -1,0 +1,985 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>水音みおのへや</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="繊細さんのための、心地よく、自分らしく、自由にいられるAIコンパニオン。会話モード103,680通り、5〜10分のワーク、ポモドーロタイマー。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@400;500;700&display=swap">
+<style>
+/* Layout: 左に「水辺のステージ」（キャラクター＋吹き出し）、右にタブ式の操作パネル。スマホでは縦に積む。 */
+:root {
+  --bg: #f3f8fa;          /* 朝の水面 */
+  --surface: #ffffff;
+  --surface-2: #e6f2f6;
+  --ink: #23404d;         /* 深い水の色 */
+  --ink-sub: #5d7883;
+  --line: #cfe3ea;
+  --accent: #2f93b5;      /* 水色 */
+  --accent-ink: #ffffff;
+  --accent-soft: #d5edf5;
+  --stage-top: #dff1f7;
+  --stage-bottom: #bfe2ee;
+  --bubble: #ffffff;
+  --ok: #3f8f6e;
+  --care: #b5655a;
+  --care-soft: #f8e9e6;
+  --font-display: "Klee One", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --font-body: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  --radius: 14px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1d24; --surface: #162a33; --surface-2: #1c3540; --ink: #dcedf3; --ink-sub: #98b6c1;
+    --line: #2a4652; --accent: #6cc4e0; --accent-ink: #0b1a20; --accent-soft: #1f4250;
+    --stage-top: #183441; --stage-bottom: #10252e; --bubble: #1d3742;
+    --ok: #79c9a5; --care: #e3a097; --care-soft: #3a2623; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1d24; --surface: #162a33; --surface-2: #1c3540; --ink: #dcedf3; --ink-sub: #98b6c1;
+  --line: #2a4652; --accent: #6cc4e0; --accent-ink: #0b1a20; --accent-soft: #1f4250;
+  --stage-top: #183441; --stage-bottom: #10252e; --bubble: #1d3742;
+  --ok: #79c9a5; --care: #e3a097; --care-soft: #3a2623; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--font-body); font-size: 15.5px; line-height: 1.85;
+  -webkit-text-size-adjust: 100%;
+}
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+.app {
+  max-width: 1120px; margin: 0 auto;
+  padding-block: 20px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 24px; align-items: start;
+}
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+
+/* ---------- ステージ ---------- */
+.stage {
+  position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px);
+  background: linear-gradient(180deg, var(--stage-top), var(--stage-bottom));
+  border-radius: 22px; overflow: hidden; border: 1px solid var(--line);
+  display: grid; gap: 0;
+}
+@media (max-width: 860px) { .stage { position: static; } }
+.stage-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 12px; padding: 14px 18px 0; }
+.name { font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: .04em; margin: 0; }
+.name small { white-space: nowrap; font-size: 12px; color: var(--ink-sub); font-family: var(--font-body); margin-left: 6px; letter-spacing: .1em; }
+.motto { font-size: 12px; color: var(--ink-sub); letter-spacing: .08em; }
+.avatar-wrap { position: relative; height: 330px; }
+@media (max-width: 860px) { .avatar-wrap { height: 250px; } }
+#avatar { width: 100%; height: 100%; display: block; }
+.bubble {
+  margin: -8px 14px 14px; background: var(--bubble); border-radius: 18px; border: 1px solid var(--line);
+  padding: 14px 16px; min-height: 92px; position: relative; font-size: 15px; line-height: 1.9;
+}
+.bubble::before {
+  content: ""; position: absolute; top: -9px; left: 50%; width: 16px; height: 16px; transform: translateX(-50%) rotate(45deg);
+  background: var(--bubble); border-left: 1px solid var(--line); border-top: 1px solid var(--line);
+}
+#say { white-space: pre-wrap; margin: 0; position: relative; max-height: 232px; overflow-y: auto; }
+.stage-tools { display: flex; gap: 8px; padding: 0 14px 14px; flex-wrap: wrap; }
+
+/* ---------- 共通部品 ---------- */
+.btn {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 7px 16px;
+  cursor: pointer; font-size: 14px; line-height: 1.5;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
+.btn.small { font-size: 12.5px; padding: 4px 12px; }
+.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; min-width: 0; }
+.tabs { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--line); overflow-x: auto; }
+.tab {
+  border: 0; background: transparent; padding: 8px 14px; border-radius: 12px; cursor: pointer;
+  font-size: 14.5px; white-space: nowrap; color: var(--ink-sub);
+}
+.tab[aria-selected="true"] { background: var(--accent-soft); color: var(--ink); font-weight: 700; }
+.view { padding: 20px 22px 26px; display: grid; gap: 20px; }
+@media (max-width: 480px) { .view { padding: 16px 14px 22px; } }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0; text-wrap: balance; line-height: 1.5; }
+h3 { font-size: 15px; margin: 0; font-weight: 700; }
+.sub { color: var(--ink-sub); font-size: 13.5px; margin: 0; }
+.label { font-size: 12px; letter-spacing: .12em; color: var(--ink-sub); }
+
+/* ---------- 会話モード ---------- */
+.axes { display: grid; gap: 14px; }
+.axis { display: grid; gap: 6px; min-width: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 12px;
+  font-size: 13.5px; cursor: pointer; line-height: 1.7;
+}
+.chip[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+details.more { border-top: 1px dashed var(--line); padding-top: 10px; }
+details.more > summary { cursor: pointer; font-size: 13.5px; color: var(--ink-sub); }
+details.more[open] > summary { margin-bottom: 12px; }
+.mode-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+  background: var(--surface-2); border-radius: var(--radius); padding: 10px 14px;
+}
+.mode-no { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--ink-sub); }
+.mode-no b { color: var(--ink); font-size: 15px; letter-spacing: .04em; }
+.free { display: grid; gap: 8px; }
+.free textarea {
+  width: 100%; min-height: 76px; resize: vertical; border: 1px solid var(--line); border-radius: var(--radius);
+  background: var(--bg); padding: 10px 12px; line-height: 1.7;
+}
+.free-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.log { display: grid; gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
+.msg { max-width: 92%; padding: 10px 14px; border-radius: 16px; font-size: 14.5px; white-space: pre-wrap; line-height: 1.85; }
+.msg.me { justify-self: end; background: var(--accent-soft); border-bottom-right-radius: 4px; }
+.msg.mio { justify-self: start; background: var(--surface-2); border-bottom-left-radius: 4px; }
+.msg .meta { display: block; font-size: 11px; color: var(--ink-sub); margin-bottom: 2px; letter-spacing: .06em; }
+.empty { color: var(--ink-sub); font-size: 13.5px; text-align: center; padding: 10px; border: 1px dashed var(--line); border-radius: var(--radius); }
+
+.care-box { background: var(--care-soft); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; }
+.care-box h3 { color: var(--care); }
+.care-box ul { margin: 0; padding-left: 1.1em; font-size: 14px; }
+.tel { font-variant-numeric: tabular-nums; font-weight: 700; user-select: all; }
+
+/* ---------- ワーク ---------- */
+.work-card { border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 12px; background: var(--bg); }
+.work-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+.work-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; margin: 0; line-height: 1.45; }
+.pill { display: inline-block; font-size: 12px; padding: 1px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); white-space: nowrap; }
+.why { font-size: 13.5px; color: var(--ink-sub); margin: 0; }
+ol.steps { margin: 0; padding-left: 1.4em; display: grid; gap: 4px; }
+ol.steps li.now { font-weight: 700; color: var(--accent); }
+ol.steps li.done { color: var(--ink-sub); }
+.work-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.guide-bar { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
+.guide-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .9s linear; }
+.days { display: flex; gap: 6px; flex-wrap: wrap; }
+.day { width: 26px; text-align: center; font-size: 10.5px; color: var(--ink-sub); font-variant-numeric: tabular-nums; }
+.day i { display: block; width: 18px; height: 18px; margin: 0 auto 2px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 1px solid var(--line); background: var(--surface); }
+.day.on i { background: var(--accent); border-color: var(--accent); }
+.work-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 8px; }
+.work-item { text-align: left; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 8px 12px; cursor: pointer; font-size: 13.5px; line-height: 1.6; }
+.work-item:hover { border-color: var(--accent); }
+.work-item small { display: block; color: var(--ink-sub); font-size: 11.5px; }
+
+/* ---------- ポモドーロ ---------- */
+.pomo { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 22px; align-items: center; }
+@media (max-width: 600px) { .pomo { grid-template-columns: minmax(0, 1fr); justify-items: center; } }
+.ring { position: relative; width: 220px; max-width: 100%; aspect-ratio: 1; }
+.ring svg { width: 100%; height: 100%; display: block; }
+.ring-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+.clock { font-size: 44px; font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1.1; font-weight: 500; }
+.phase { font-size: 13px; color: var(--ink-sub); letter-spacing: .1em; }
+.pomo-side { display: grid; gap: 14px; min-width: 0; width: 100%; }
+.field { display: grid; gap: 4px; }
+.field input[type="text"] { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; background: var(--bg); width: 100%; }
+.drops { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; min-height: 24px; }
+.drop { width: 14px; height: 14px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--accent); }
+.todo { display: grid; gap: 6px; }
+.todo-row { display: flex; gap: 8px; align-items: center; }
+.todo-row input[type="text"] { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; background: var(--bg); }
+.todo-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+.break-tip { background: var(--surface-2); border-radius: var(--radius); padding: 12px 14px; font-size: 14px; }
+
+/* ---------- このへやについて ---------- */
+.prose { display: grid; gap: 12px; max-width: 62ch; }
+.prose p { margin: 0; }
+.prose ul { margin: 0; padding-left: 1.2em; }
+.promise { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; }
+.promise div { background: var(--surface-2); border-radius: var(--radius); padding: 12px 14px; }
+.promise b { font-family: var(--font-display); font-size: 17px; display: block; }
+.promise span { font-size: 13px; color: var(--ink-sub); }
+footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-align: center; line-height: 1.8; }
+
+/* ---------- アバターのうごき ---------- */
+.blink { animation: blink 5.2s infinite; transform-origin: center 176px; transform-box: view-box; }
+@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
+.breathe { animation: breathe 5s ease-in-out infinite; transform-origin: 160px 380px; transform-box: view-box; }
+@keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
+.flow { stroke-dasharray: 26 18; animation: flow 6s linear infinite; }
+.flow.slow { animation-duration: 10s; }
+@keyframes flow { to { stroke-dashoffset: -440; } }
+.note-float { animation: rise 7s ease-in-out infinite; opacity: 0; }
+.note-float.n2 { animation-delay: 2.3s; }
+.note-float.n3 { animation-delay: 4.6s; }
+@keyframes rise { 0% { opacity: 0; transform: translateY(14px); } 20% { opacity: .85; } 80% { opacity: .5; } 100% { opacity: 0; transform: translateY(-46px); } }
+#mouthOpen { display: none; }
+.talking #mouthOpen { display: inline; animation: talk .24s ease-in-out infinite alternate; transform-origin: 160px 216px; transform-box: view-box; }
+.talking #mouthClosed { display: none; }
+@keyframes talk { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
+#browL, #browR { transition: transform .5s ease; transform-box: fill-box; transform-origin: center; }
+.face-care #browL { transform: rotate(-9deg) translateY(1px); }
+.face-care #browR { transform: rotate(9deg) translateY(1px); }
+.face-smile #eyeSmile { display: inline; }
+.face-smile #eyesOpen { display: none; }
+#eyeSmile { display: none; }
+@media (prefers-reduced-motion: reduce) {
+  .blink, .breathe, .flow, .note-float, .talking #mouthOpen { animation: none !important; }
+  .note-float { opacity: .6; }
+  .guide-bar span { transition: none; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ===== ステージ ===== -->
+  <section class="stage" aria-label="水音みお">
+    <div class="stage-head">
+      <p class="name">水音 みお<small>みなと みお</small></p>
+      <span class="motto">心地よく、自分らしく、自由に</span>
+    </div>
+    <div class="avatar-wrap">
+      <svg id="avatar" viewBox="0 0 320 380" role="img" aria-label="水色の髪で眼鏡をかけた、中性的なキャラクター。髪に音符の髪留め、うしろを水の流れが通っている">
+        <defs>
+          <linearGradient id="hairG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#a9e2f2"/><stop offset="1" stop-color="#5fb7d6"/>
+          </linearGradient>
+          <linearGradient id="irisG" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1f6f8f"/><stop offset="1" stop-color="#6fd0e8"/>
+          </linearGradient>
+          <linearGradient id="waterG" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="#7fd0e6" stop-opacity="0"/><stop offset=".5" stop-color="#7fd0e6" stop-opacity=".9"/><stop offset="1" stop-color="#7fd0e6" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- 水の流れ（背景） -->
+        <g fill="none" stroke-linecap="round">
+          <path class="flow slow" d="M-20 120 C 60 90, 110 150, 180 120 S 300 90, 340 120" stroke="url(#waterG)" stroke-width="3"/>
+          <path class="flow" d="M-20 300 C 50 270, 120 330, 190 300 S 290 270, 340 300" stroke="url(#waterG)" stroke-width="5"/>
+          <path class="flow slow" d="M-20 340 C 70 320, 130 360, 200 335 S 300 320, 340 340" stroke="url(#waterG)" stroke-width="3"/>
+        </g>
+        <!-- 浮かぶ音符 -->
+        <g fill="#4fb0d0">
+          <text class="note-float" x="48" y="120" font-size="26">♪</text>
+          <text class="note-float n2" x="256" y="104" font-size="22">♫</text>
+          <text class="note-float n3" x="270" y="200" font-size="18">♪</text>
+        </g>
+        <g class="breathe">
+          <!-- 後ろ髪 -->
+          <path d="M90 168 Q82 76 160 70 Q238 76 230 168 L234 252 Q216 266 200 246 L204 176 L116 176 L120 246 Q104 266 86 252 Z" fill="url(#hairG)"/>
+          <!-- からだ -->
+          <path d="M70 380 Q76 292 128 270 L160 284 L192 270 Q244 292 250 380 Z" fill="#f7fbfd" stroke="#bcdde8" stroke-width="2"/>
+          <path d="M128 270 L160 300 L192 270 L180 264 L160 282 L140 264 Z" fill="#8fd0e6"/>
+          <!-- 首にかけたヘッドホン -->
+          <path d="M118 276 Q160 312 202 276" fill="none" stroke="#3d6c80" stroke-width="6" stroke-linecap="round"/>
+          <rect x="104" y="264" width="20" height="26" rx="8" fill="#3d6c80"/>
+          <rect x="196" y="264" width="20" height="26" rx="8" fill="#3d6c80"/>
+          <circle cx="114" cy="277" r="5" fill="#8fd0e6"/><circle cx="206" cy="277" r="5" fill="#8fd0e6"/>
+          <!-- 水の流れのストール -->
+          <path class="flow slow" d="M86 330 C 120 310, 150 350, 190 326 S 236 318, 250 340" fill="none" stroke="#9fdcee" stroke-width="7" stroke-linecap="round" opacity=".8"/>
+          <!-- 首 -->
+          <path d="M146 236 L146 266 Q160 274 174 266 L174 236 Z" fill="#f6dccd"/>
+          <!-- 顔 -->
+          <path d="M106 152 Q106 230 160 248 Q214 230 214 152 Q214 100 160 100 Q106 100 106 152 Z" fill="#fde9de"/>
+          <!-- ほほ -->
+          <ellipse cx="128" cy="204" rx="11" ry="5" fill="#f7b9b0" opacity=".45"/>
+          <ellipse cx="192" cy="204" rx="11" ry="5" fill="#f7b9b0" opacity=".45"/>
+          <!-- 目 -->
+          <g id="eyesOpen" class="blink">
+            <ellipse cx="138" cy="178" rx="10" ry="12" fill="#ffffff"/>
+            <ellipse cx="138" cy="179" rx="8" ry="10.5" fill="url(#irisG)"/>
+            <circle cx="138" cy="181" r="3.6" fill="#163f52"/>
+            <circle cx="134.5" cy="174" r="2.8" fill="#ffffff"/>
+            <ellipse cx="182" cy="178" rx="10" ry="12" fill="#ffffff"/>
+            <ellipse cx="182" cy="179" rx="8" ry="10.5" fill="url(#irisG)"/>
+            <circle cx="182" cy="181" r="3.6" fill="#163f52"/>
+            <circle cx="178.5" cy="174" r="2.8" fill="#ffffff"/>
+            <path d="M126 168 Q138 162 150 168" fill="none" stroke="#2c5566" stroke-width="2.4" stroke-linecap="round"/>
+            <path d="M170 168 Q182 162 194 168" fill="none" stroke="#2c5566" stroke-width="2.4" stroke-linecap="round"/>
+          </g>
+          <g id="eyeSmile" fill="none" stroke="#2c5566" stroke-width="2.6" stroke-linecap="round">
+            <path d="M128 181 Q138 172 148 181"/><path d="M172 181 Q182 172 192 181"/>
+          </g>
+          <!-- 眉 -->
+          <path id="browL" d="M126 152 Q138 147 150 151" fill="none" stroke="#4b93ad" stroke-width="2.4" stroke-linecap="round"/>
+          <path id="browR" d="M170 151 Q182 147 194 152" fill="none" stroke="#4b93ad" stroke-width="2.4" stroke-linecap="round"/>
+          <!-- 眼鏡 -->
+          <g fill="none" stroke="#3d6c80" stroke-width="2.2">
+            <rect x="116" y="160" width="44" height="36" rx="13" fill="#ffffff" fill-opacity=".12"/>
+            <rect x="162" y="160" width="44" height="36" rx="13" fill="#ffffff" fill-opacity=".12"/>
+            <path d="M157 172 Q161 168 165 172"/>
+            <path d="M116 170 L108 166"/><path d="M206 170 L214 166"/>
+          </g>
+          <path d="M122 166 L130 162" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+          <path d="M168 166 L176 162" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+          <!-- 口 -->
+          <path id="mouthClosed" d="M152 216 Q160 221 168 216" fill="none" stroke="#c0756c" stroke-width="2.2" stroke-linecap="round"/>
+          <ellipse id="mouthOpen" cx="160" cy="217" rx="5.5" ry="4.5" fill="#d98a80"/>
+          <!-- 前髪 -->
+          <path d="M100 156 Q102 86 160 84 Q220 86 222 156 Q208 132 198 108 Q190 134 170 142 Q174 120 164 104 Q150 134 124 142 Q130 122 134 108 Q118 132 100 156 Z" fill="url(#hairG)"/>
+          <path d="M104 150 Q102 196 112 236 Q100 214 96 176 Z" fill="#6cc0dc"/>
+          <path d="M216 150 Q218 196 208 236 Q220 214 224 176 Z" fill="#6cc0dc"/>
+          <path d="M140 96 Q160 90 186 98" fill="none" stroke="#e3f7fd" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+          <!-- 音符の髪留め -->
+          <g transform="translate(196 104) rotate(14)">
+            <ellipse cx="0" cy="14" rx="7" ry="5.4" fill="#2f7f9c" transform="rotate(-18 0 14)"/>
+            <rect x="5" y="-12" width="3" height="26" rx="1.5" fill="#2f7f9c"/>
+            <path d="M8 -12 Q20 -6 16 6 Q14 -2 8 -2 Z" fill="#2f7f9c"/>
+          </g>
+        </g>
+      </svg>
+    </div>
+    <div class="bubble" aria-live="polite"><p id="say"></p></div>
+    <div class="stage-tools">
+      <button class="btn small" id="waterBtn" aria-pressed="false" type="button">水の音を流す</button>
+      <button class="btn small" id="themeBtn" type="button">表示の明るさ</button>
+    </div>
+  </section>
+
+  <!-- ===== パネル ===== -->
+  <section class="panel">
+    <div class="tabs" role="tablist" aria-label="モード">
+      <button class="tab" role="tab" id="tab-talk" aria-controls="v-talk" aria-selected="true" type="button">おはなし</button>
+      <button class="tab" role="tab" id="tab-work" aria-controls="v-work" aria-selected="false" type="button">今日のワーク</button>
+      <button class="tab" role="tab" id="tab-focus" aria-controls="v-focus" aria-selected="false" type="button">作業モード</button>
+      <button class="tab" role="tab" id="tab-about" aria-controls="v-about" aria-selected="false" type="button">このへやのこと</button>
+    </div>
+
+    <!-- おはなし -->
+    <div class="view" id="v-talk" role="tabpanel" aria-labelledby="tab-talk">
+      <div>
+        <h2>いまのきもちに合わせて、話し方を変えます</h2>
+        <p class="sub">ぴったりでなくて大丈夫。近いものを選ぶだけで、みおの話し方が変わります。</p>
+      </div>
+      <div class="axes" id="axes"></div>
+      <div class="mode-bar">
+        <span class="mode-no">会話モード <b id="modeNo">No.000000</b> / <span id="modeTotal"></span>通り</span>
+        <button class="btn primary" id="talkBtn" type="button">みおに話しかける</button>
+      </div>
+      <div class="free">
+        <label class="label" for="freeText">ことばにしてみる（書かなくても大丈夫です）</label>
+        <textarea id="freeText" placeholder="例）職場の音がずっと気になって、帰ってきたらぐったりしてる"></textarea>
+        <div class="free-row">
+          <span class="sub">書いた内容はこの端末の中だけで読みとります。どこにも送りません。</span>
+          <button class="btn" id="sendBtn" type="button">送る</button>
+        </div>
+      </div>
+      <div class="care-box" id="careBox" hidden>
+        <h3>ひとりで抱えないでください</h3>
+        <p class="sub" style="color:inherit">いまのつらさを、専門の人と分け合うこともできます。電話がむずかしいときは、チャットやSNSの窓口もあります。</p>
+        <ul>
+          <li>いのちの電話（ナビダイヤル）<span class="tel">0570-783-556</span></li>
+          <li>よりそいホットライン（24時間・無料）<span class="tel">0120-279-338</span></li>
+          <li>こころの健康相談統一ダイヤル <span class="tel">0570-064-556</span></li>
+          <li>今すぐ危険があるときは <span class="tel">119</span>（救急）へ</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">きょうのおはなし</p>
+        <div class="log" id="log"><p class="empty" id="logEmpty">まだ何も話していません。上のボタンを押すと、ここにやりとりが残ります（このページを閉じると消えます）。</p></div>
+      </div>
+    </div>
+
+    <!-- 今日のワーク -->
+    <div class="view" id="v-work" role="tabpanel" aria-labelledby="tab-work" hidden>
+      <div>
+        <h2>今日の5〜10分</h2>
+        <p class="sub">日付と、いまの会話モードから選んでいます。気が進まなければ、ほかのワークにしても、やらなくても大丈夫です。</p>
+      </div>
+      <article class="work-card" id="workCard"></article>
+      <div>
+        <p class="label">この2週間でやってみた日</p>
+        <div class="days" id="days"></div>
+        <p class="sub">続いた日数は数えません。やった日も、やらなかった日も、同じように大事な1日です。</p>
+      </div>
+      <details class="more">
+        <summary>ワークをぜんぶ見る（<span id="workCount"></span>種類）</summary>
+        <div class="work-list" id="workList"></div>
+      </details>
+    </div>
+
+    <!-- 作業モード -->
+    <div class="view" id="v-focus" role="tabpanel" aria-labelledby="tab-focus" hidden>
+      <div>
+        <h2>となりで、静かに見守ります</h2>
+        <p class="sub">集中の時間と休む時間を、水のように交互に。途中で止めても、短くしても大丈夫です。</p>
+      </div>
+      <div class="pomo">
+        <div class="ring">
+          <svg viewBox="0 0 220 220" aria-hidden="true">
+            <circle cx="110" cy="110" r="96" fill="none" stroke="var(--surface-2)" stroke-width="12"/>
+            <circle id="ringArc" cx="110" cy="110" r="96" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" transform="rotate(-90 110 110)" stroke-dasharray="603.19" stroke-dashoffset="0"/>
+          </svg>
+          <div class="ring-center">
+            <div class="phase" id="phaseLabel">集中</div>
+            <div class="clock" id="clock">25:00</div>
+            <div class="phase" id="roundLabel">1回目</div>
+          </div>
+        </div>
+        <div class="pomo-side">
+          <div class="field">
+            <label class="label" for="taskName">いまやること（ひとつだけ）</label>
+            <input type="text" id="taskName" placeholder="例）メールを1通返す">
+          </div>
+          <div class="field">
+            <span class="label">ペース</span>
+            <div class="chips" id="presets" role="radiogroup" aria-label="ペース"></div>
+          </div>
+          <div class="work-actions">
+            <button class="btn primary" id="pStart" type="button">はじめる</button>
+            <button class="btn" id="pSkip" type="button">次へすすむ</button>
+            <button class="btn" id="pReset" type="button">はじめにもどす</button>
+            <button class="btn" id="pDone" type="button">今日はここまで</button>
+          </div>
+          <div>
+            <span class="label">今日の集中</span>
+            <div class="drops" id="drops"></div>
+          </div>
+          <div class="break-tip" id="breakTip" hidden></div>
+        </div>
+      </div>
+      <div>
+        <p class="label">今日やりたいこと（3つまで）</p>
+        <div class="todo" id="todo"></div>
+        <p class="sub">3つ以上は書けないようにしています。終わらなかったら、明日のあなたにそっと渡しましょう。</p>
+      </div>
+    </div>
+
+    <!-- このへやのこと -->
+    <div class="view" id="v-about" role="tabpanel" aria-labelledby="tab-about" hidden>
+      <div>
+        <h2>このへやの約束</h2>
+        <p class="sub">繊細さんが、心地よく、自分らしく、自由にいられるように。</p>
+      </div>
+      <div class="promise">
+        <div><b>あおらない</b><span>「今すぐ」「絶対」「がんばれ」は言いません。</span></div>
+        <div><b>くらべない</b><span>連続記録やランキングはありません。</span></div>
+        <div><b>せかさない</b><span>どのボタンも、押さなくて大丈夫です。</span></div>
+        <div><b>のぞかない</b><span>書いたことは外に送らず、閉じれば消えます。</span></div>
+      </div>
+      <div class="prose">
+        <h3>水音 みお（みなと みお）</h3>
+        <p>水辺の音を聴くのが好きな、性別を決めていないキャラクターです。眼鏡の奥の目は少しねむたげで、話すのはゆっくり。音符の髪留めと、首にかけたヘッドホンがお気に入り。</p>
+        <p>会話モードは、気分12 × 元気の量5 × 話題12 × 時間帯4 × ほしいこと4 × 話す長さ3 × 距離感3 の組み合わせで、<b id="aboutTotal"></b>通りあります。同じモードでも言い回しが少しずつ変わります。</p>
+        <h3>大切なおしらせ</h3>
+        <ul>
+          <li>みおは医療や心理療法の代わりではありません。</li>
+          <li>ワークの途中でしんどくなったら、そこでやめて休んでください。</li>
+          <li>通院中の方は、主治医と相談しながら使ってください。</li>
+          <li>気分の落ち込みが2週間以上続く、眠れない、食べられないときは、医療機関や相談窓口を頼ってください。</li>
+        </ul>
+        <p class="sub">相談窓口：いのちの電話 <span class="tel">0570-783-556</span> ／ よりそいホットライン <span class="tel">0120-279-338</span> ／ こころの健康相談統一ダイヤル <span class="tel">0570-064-556</span></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="fine">水音みおはオリジナルキャラクターです。ワークは研究をもとにしたセルフケアで、効果には個人差があります。</footer>
+</div>
+
+<script>
+(() => {
+'use strict';
+
+/* ================= 保存（この端末だけ） ================= */
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('mio:' + k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem('mio:' + k, JSON.stringify(v)); } catch (e) {} }
+};
+const $ = (s) => document.querySelector(s);
+const pick = (arr, seed) => arr[((seed % arr.length) + arr.length) % arr.length];
+const todayKey = (d = new Date()) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const daySeed = () => { const d = new Date(); return d.getFullYear() * 372 + d.getMonth() * 31 + d.getDate(); };
+
+/* ================= 会話モードの軸 ================= */
+const MOODS = [
+  { id: 'moya', label: 'もやもや', face: 'care', ack: ['なんだかもやもやしているんですね。はっきりしない気持ちって、それだけで疲れますよね。', 'もやもや、ありますよね。名前がつかないままの気持ちも、ちゃんとここにいていいですよ。', '言葉にしにくいもやもやを、ここまで持ってきてくれたんですね。'] },
+  { id: 'fuan', label: '不安', face: 'care', ack: ['不安な気持ちがあるんですね。先のことを考えてしまうのは、それだけ丁寧に生きている証拠でもあります。', '不安があると、体も少しこわばりますよね。まずは、いまここにいることだけ確かめましょう。', '不安なとき、心はいくつも先の未来へ行ってしまいがち。いまは、みおと同じ時間にいてください。'] },
+  { id: 'tsukare', label: '疲れた', face: 'care', ack: ['疲れているんですね。今日もたくさん感じて、たくさん受けとってきたんだと思います。', 'おつかれさまです。疲れを感じられるのは、体がちゃんと教えてくれているからです。', '疲れた、と言えたこと。それだけで、少し荷物をおろせた気がします。'] },
+  { id: 'kanashii', label: '悲しい', face: 'care', ack: ['悲しい気持ちがあるんですね。無理に元気にならなくて大丈夫です。', '悲しさは、大切にしていたものがあるから生まれる気持ちです。そのままでいいですよ。', 'いまは悲しいんですね。となりで、静かにしていますね。'] },
+  { id: 'iraira', label: 'イライラ', face: 'care', ack: ['イライラしているんですね。それだけ何かを大事にしていたのかもしれません。', 'イライラも、ちゃんと意味のある気持ちです。責めなくて大丈夫ですよ。', '刺激が多い日は、イライラしやすくなりますよね。あなたのせいではないです。'] },
+  { id: 'samishii', label: 'さみしい', face: 'care', ack: ['さみしい気持ちがあるんですね。ここに来てくれて、うれしいです。', 'さみしさは、人とのつながりを大切に思う気持ちの裏返しです。', 'さみしいとき、声をかけてくれてありがとうございます。少しのあいだ、いっしょにいますね。'] },
+  { id: 'aseri', label: '焦り', face: 'care', ack: ['焦っているんですね。焦るのは、ちゃんとやりたい気持ちがあるからだと思います。', '焦りがあると、息が浅くなりがちです。ここでは、急がなくていいですよ。', '焦る気持ち、ありますよね。いまこの数分だけは、時計から少し離れてみませんか。'] },
+  { id: 'ochikomi', label: '落ちこみ', face: 'care', ack: ['落ちこんでいるんですね。そんな日も、あっていいんです。', '気持ちが沈んでいるときは、何もしない時間も大切です。', '落ちこんだ自分を、追いつめなくて大丈夫。いまは、休むことを優先しましょう。'] },
+  { id: 'kincho', label: '緊張', face: 'care', ack: ['緊張しているんですね。体が一生けんめい、あなたを守ろうとしているのかもしれません。', '緊張するのは、それだけ大事な場面だからですよね。', '緊張していても大丈夫。少しだけ、息を長く吐くところから始めましょう。'] },
+  { id: 'nemure', label: '眠れない', face: 'care', ack: ['眠れないんですね。眠ろうとがんばるほど、目がさえることもあります。', '夜に頭が動いてしまうこと、ありますよね。眠れなくても、横になっているだけで体は休めています。', '眠れない夜は長く感じますよね。いまは、眠ることより、ゆるむことを目指しましょう。'] },
+  { id: 'bonyari', label: 'ぼんやり', face: '', ack: ['ぼんやりしているんですね。心が少し休みたがっているのかもしれません。', 'ぼんやりする時間も、ちゃんと必要な時間です。', 'ぼんやり、いいですね。水面みたいに、ただ揺れているだけの時間です。'] },
+  { id: 'ii', label: 'ちょっといい感じ', face: 'smile', ack: ['ちょっといい感じなんですね。その感覚、少しだけ覚えておきましょう。', 'いい感じの日、うれしいですね。何がよかったのか、あとでそっと思い出せるといいですね。', 'いい感じ、聞けてうれしいです。その心地よさを、急いで使い切らなくて大丈夫ですよ。'] }
+];
+const ENERGY = [
+  { label: 'ほぼゼロ', line: '元気がほとんど残っていない日は、何もしないことがいちばんのケアです。' },
+  { label: '少なめ', line: '元気が少なめの日は、できることを小さく小さくしていきましょう。' },
+  { label: 'ふつう', line: 'ふつうの元気がある日は、自分のためにほんの少しだけ時間を使ってみませんか。' },
+  { label: 'まあまあ', line: 'まあまあ元気がある日は、その元気を自分にも少し分けてあげてください。' },
+  { label: 'たっぷり', line: '元気がたっぷりの日こそ、あとで疲れすぎないように、休む予定も先に決めておけると安心です。' }
+];
+const THEMES = [
+  { label: '仕事', reflect: ['仕事のことが気になっているんですね。人の気持ちや場の空気まで受けとって、ふだんの何倍も働いているのかもしれません。', 'お仕事のこと、よく考えているんですね。終わったあとに疲れが出るのは、それだけ丁寧に向き合っている証拠です。'] },
+  { label: '人間関係', reflect: ['人との関わりのことなんですね。相手の小さな表情まで気づけるのは、あなたのやさしさです。', '人間関係のことは、考えはじめると止まらなくなりますよね。相手の気持ちと同じくらい、自分の気持ちも大切です。'] },
+  { label: '家族', reflect: ['家族のことなんですね。近い人ほど、気持ちが複雑になることもあります。', '家族のことは、簡単には距離をとれないぶん、心に残りやすいですよね。'] },
+  { label: '恋愛・パートナー', reflect: ['大切な人とのことなんですね。相手を思う気持ちが強いほど、揺れることもあります。', 'パートナーとのことは、ひとりで答えを出さなくても大丈夫です。'] },
+  { label: '体調', reflect: ['体のことが気になっているんですね。体の声に気づけるのは、大事な力です。', '体調がすぐれないと、気持ちも引っぱられますよね。今日は体を優先しましょう。'] },
+  { label: '自分のこと', reflect: ['自分自身のことを考えているんですね。それは、自分を大切にしようとしている時間です。', '自分のことって、いちばん近いのに、いちばん見えにくいですよね。'] },
+  { label: '将来', reflect: ['これからのことを考えているんですね。先の見えなさは、誰にとっても落ちつかないものです。', '将来のこと、気になりますよね。いま全部を決めなくても大丈夫です。'] },
+  { label: 'お金', reflect: ['お金のことは、暮らしに直結するぶん、心配になりやすいですよね。', 'お金の心配は、ひとりで抱えると大きく見えがちです。紙に書くと、少し形が見えてきます。'] },
+  { label: '音・光・におい', reflect: ['音や光やにおいがつらいんですね。感覚が細やかだと、まわりの刺激が人より大きく届きます。', '刺激が多い場所にいたんですね。それは、気のせいでもわがままでもありません。'] },
+  { label: 'SNS・ニュース', reflect: ['SNSやニュースで、気持ちが揺れたんですね。たくさんの声を一度に受けとると、心が満員になります。', '画面の向こうの出来事まで感じとってしまうこと、ありますよね。少し離れても大丈夫です。'] },
+  { label: '天気・季節', reflect: ['天気や季節の変わり目は、体も気持ちも揺れやすいですよね。', '気圧や気温の変化を感じとっているのかもしれません。今日は、体にあわせてゆっくりいきましょう。'] },
+  { label: 'とくになし', reflect: ['とくに理由がなくても、来てくれてうれしいです。', '理由はなくても大丈夫。ふらっと立ち寄れる場所でありたいです。'] }
+];
+const TIMES = [
+  { label: '朝', greet: ['おはようございます。', 'おはようございます、今日もここに来てくれましたね。', 'おはようございます。朝の空気、少しだけ吸ってみましょうか。'] },
+  { label: '昼', greet: ['こんにちは。', 'こんにちは。お昼の時間、ひと息つけていますか。', 'こんにちは。一日の真ん中ですね。'] },
+  { label: '夕方', greet: ['こんばんは、の少し手前ですね。', '夕方になりましたね。今日もおつかれさまです。', '空の色が変わる時間ですね。'] },
+  { label: '夜', greet: ['こんばんは。', 'こんばんは。今日もここまで、ほんとうにおつかれさまでした。', 'こんばんは。夜は、自分のためだけの時間にしていいんですよ。'] }
+];
+const NEEDS = [
+  { label: 'ただ聞いてほしい', lines: [
+    ['いまは何もしなくて大丈夫です。話したいことがあれば、ひとことだけでも置いていってください。', 'アドバイスはしませんね。ここに書いて、置いていくだけでいいですよ。'],
+    ['言葉にできるぶんだけ、ゆっくり話してください。まとまっていなくて大丈夫です。', 'うまく話せなくても、ちゃんと聞いています。'],
+    ['よかったら、いちばん心に残っている場面をひとつだけ教えてください。', '話したいところから話してください。順番はどうでもいいんです。']
+  ] },
+  { label: '気持ちを整理したい', lines: [
+    ['整理は、今日じゃなくても大丈夫です。いまは「もやっとしている」とだけ、心の中で言ってみましょう。', '今日は整理しようとしなくて大丈夫。気持ちにひとつ名前をつけるだけで、十分です。'],
+    ['いま感じている気持ちに、ひとつだけ名前をつけてみませんか。「不安」「さみしい」「疲れた」くらいの、短い言葉で。', '「何があったか」と「どう感じたか」を、分けて書いてみると少し見えやすくなります。'],
+    ['紙に、起きたこと・浮かんだ考え・そのときの気持ちを3行で書いてみましょう。考えは、事実ではなく「ひとつの見方」として眺めてみてください。', 'もしも大切な友だちが同じことで悩んでいたら、なんて声をかけるか。それを、自分にも向けてみませんか。']
+  ] },
+  { label: '体をゆるめたい', lines: [
+    ['横になったまま、吐く息だけ少し長くしてみましょう。それだけで十分です。', '肩の力が、ほんの少しだけ抜けたらいいですね。目を閉じるだけでも大丈夫です。'],
+    ['4つ数えて吸って、6つ数えて吐く。これを5回だけ、いっしょにやってみませんか。', '肩をぎゅっと上げて、ストンと落とす。これを3回だけ。'],
+    ['体のすみずみに、順番に注意を向けていくボディスキャンをしてみましょう。足の先から、頭のてっぺんまで。', 'こぶしと肩に力をこめて5秒、ふっとゆるめて10秒。体のいろいろな場所で試してみましょう。']
+  ] },
+  { label: '前に進むヒントがほしい', lines: [
+    ['今日は進まなくても大丈夫です。休むことも、ちゃんと前に進んでいる時間です。', 'ヒントは、ひとつだけ。「今日は休む」と決めることも、立派な選択です。'],
+    ['いちばん小さな一歩は何でしょう。5分でできるくらいの大きさにしてみましょう。', 'やることをひとつだけ選んで、あとは明日の自分に任せてみませんか。'],
+    ['大切にしたいことをひとつ思い浮かべて、それに沿った小さな行動を今日ひとつだけ選んでみましょう。', 'やりたいことを紙に書き出して、いちばん心が軽くなるものから手をつけてみませんか。']
+  ] }
+];
+const PACES = ['短め', 'ふつう', 'じっくり'];
+const DISTANCES = [
+  { label: 'そっと', close: ['ここにいますね。', 'そっと見守っています。', '必要なときに、また来てください。'] },
+  { label: 'となりで', close: ['となりにいますね。', 'いっしょに、ゆっくりいきましょう。', 'いつでも、ここで待っています。'] },
+  { label: 'あたたかく', close: ['あなたが、あなたのままでいてくれてうれしいです。', '今日ここに来てくれて、ありがとうございます。', 'あなたのペースが、いちばんいいペースです。'] }
+];
+const AXES = [
+  { key: 'mood', title: 'いまの気分', items: MOODS.map(m => m.label) },
+  { key: 'energy', title: '元気の量', items: ENERGY.map(e => e.label) },
+  { key: 'theme', title: '気になっていること', items: THEMES.map(t => t.label) },
+  { key: 'need', title: 'みおにしてほしいこと', items: NEEDS.map(n => n.label) },
+  { key: 'time', title: '時間帯（自動で選んでいます）', items: TIMES.map(t => t.label), more: true },
+  { key: 'pace', title: '話す長さ', items: PACES, more: true },
+  { key: 'dist', title: '距離感', items: DISTANCES.map(d => d.label), more: true }
+];
+const ORDER = ['mood', 'energy', 'theme', 'time', 'need', 'pace', 'dist'];
+const SIZE = { mood: MOODS.length, energy: ENERGY.length, theme: THEMES.length, time: TIMES.length, need: NEEDS.length, pace: PACES.length, dist: DISTANCES.length };
+const TOTAL = ORDER.reduce((a, k) => a * SIZE[k], 1);
+
+const hourToTime = (h) => (h >= 5 && h < 11) ? 0 : (h >= 11 && h < 16) ? 1 : (h >= 16 && h < 19) ? 2 : 3;
+const saved = store.get('mode', {});
+const mode = Object.assign({ mood: 0, energy: 2, theme: 11, need: 0, pace: 1, dist: 1 }, saved, { time: hourToTime(new Date().getHours()) });
+
+function modeIndex(m) { return ORDER.reduce((a, k) => a * SIZE[k] + m[k], 0); }
+const fmtNo = (n) => 'No.' + String(n + 1).padStart(6, '0');
+
+/* ================= 会話の組み立て ================= */
+let turn = 0;
+function compose(m, opts = {}) {
+  const idx = modeIndex(m);
+  const s = idx + turn * 7 + daySeed();
+  const mood = MOODS[m.mood], theme = THEMES[m.theme], need = NEEDS[m.need];
+  const band = m.energy <= 1 ? 0 : m.energy === 2 ? 1 : 2;
+  const parts = [];
+  parts.push(pick(TIMES[m.time].greet, s));
+  if (opts.echo) parts.push(opts.echo);
+  parts.push(pick(mood.ack, s + m.theme));
+  if (m.pace >= 1 && m.theme !== 11) parts.push(pick(theme.reflect, s + m.need));
+  if (m.pace === 2) parts.push(ENERGY[m.energy].line);
+  parts.push(pick(need.lines[band], s + m.mood));
+  if (m.pace >= 1) {
+    const w = suggestWork(m);
+    parts.push(m.energy === 0
+      ? `もし少し元気が戻ったら、「${w.title}」（${w.min}分）というワークもあります。今日はやらなくても大丈夫です。`
+      : `よかったら「${w.title}」（${w.min}分）を、今日のワークに置いておきますね。`);
+  }
+  parts.push(pick(DISTANCES[m.dist].close, s + m.energy));
+  return { text: parts.join(m.pace === 0 ? '\n' : '\n\n'), face: mood.face };
+}
+
+/* 自由入力の読みとり（端末内だけ） */
+const CRISIS = ['死にたい', 'しにたい', '消えたい', 'きえたい', '自殺', '死のう', 'いなくなりたい', '生きていたくない', '生きたくない', '終わりにしたい', 'リスカ', '自傷', '首をつ', '飛び降り'];
+const MOOD_WORDS = [
+  ['moya', ['もやもや', 'モヤモヤ', 'もやっと', 'すっきりしない']], ['fuan', ['不安', 'こわい', '怖い', '心配', 'ドキドキ']],
+  ['tsukare', ['疲れ', 'つかれ', 'ぐったり', 'しんどい', 'へとへと', 'だるい']], ['kanashii', ['悲し', 'かなし', '泣', 'つらい', '辛い']],
+  ['iraira', ['イライラ', 'いらいら', 'ムカ', '腹が立', '怒']], ['samishii', ['さみし', '寂し', 'ひとり', '孤独']],
+  ['aseri', ['焦', 'あせ', '間に合わ', '締め切り', '締切']], ['ochikomi', ['落ち込', '落ちこ', 'だめだ', 'ダメだ', '自己嫌悪', '情けな']],
+  ['kincho', ['緊張', 'きんちょう', '本番', '面接', 'プレゼン']], ['nemure', ['眠れ', 'ねむれ', '寝れ', '不眠']],
+  ['bonyari', ['ぼんやり', 'ぼーっと', 'ボーッと', '何も考え']], ['ii', ['よかった', '嬉し', 'うれし', '楽し', 'たのし', 'いい感じ', 'ほっと']]
+];
+const THEME_WORDS = [
+  [0, ['仕事', '職場', '会社', '上司', '同僚', 'バイト', '会議', 'メール']], [1, ['友だち', '友達', '人間関係', 'あの人', '気をつか', '気を使']],
+  [2, ['家族', '親', '母', '父', '子ども', '子供', '兄', '姉', '弟', '妹']], [3, ['恋人', '彼氏', '彼女', 'パートナー', '夫', '妻', '恋愛']],
+  [4, ['体調', '頭痛', 'お腹', '胃', '肩こり', '病院', '熱']], [5, ['自分が', '自分の', '性格', '向いてない']],
+  [6, ['将来', 'これから', '進路', '転職', '老後']], [7, ['お金', '給料', '支払い', '貯金', '節約']],
+  [8, ['音', 'うるさ', 'まぶし', '眩し', 'におい', '匂い', '人混み', '騒が']], [9, ['SNS', 'ニュース', 'スマホ', 'X', 'インスタ', 'Threads', '通知']],
+  [10, ['天気', '雨', '気圧', '寒', '暑', '季節']]
+];
+function readFree(text) {
+  const crisis = CRISIS.some(w => text.includes(w));
+  let mood = null, theme = null;
+  for (const [id, ws] of MOOD_WORDS) if (ws.some(w => text.includes(w))) { mood = MOODS.findIndex(m => m.id === id); break; }
+  for (const [i, ws] of THEME_WORDS) if (ws.some(w => text.includes(w))) { theme = i; break; }
+  return { crisis, mood, theme };
+}
+const ECHO = ['書いてくれて、ありがとうございます。', 'ことばにしてくれて、ありがとうございます。ちゃんと受けとりました。', '教えてくれてありがとうございます。そう感じていたんですね。'];
+
+/* ================= 吹き出しと表情 ================= */
+const avatar = $('#avatar'), say = $('#say');
+const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+let typing = null;
+function speak(text, face = '') {
+  avatar.classList.remove('face-care', 'face-smile');
+  if (face) avatar.classList.add('face-' + face);
+  clearInterval(typing);
+  if (reduce) { say.textContent = text; return; }
+  let i = 0; say.textContent = '';
+  avatar.classList.add('talking');
+  typing = setInterval(() => {
+    i += 2; say.textContent = text.slice(0, i);
+    if (i >= text.length) { clearInterval(typing); avatar.classList.remove('talking'); }
+  }, 45);
+}
+function logMsg(who, text, meta) {
+  const empty = $('#logEmpty'); if (empty) empty.remove();
+  const el = document.createElement('div');
+  el.className = 'msg ' + who;
+  const m = document.createElement('span'); m.className = 'meta'; m.textContent = meta;
+  el.append(m, document.createTextNode(text));
+  $('#log').append(el); el.scrollIntoView({ block: 'nearest' });
+}
+
+/* ================= 会話モードUI ================= */
+function renderAxes() {
+  const host = $('#axes'); host.textContent = '';
+  const more = document.createElement('details'); more.className = 'more';
+  const sum = document.createElement('summary'); sum.textContent = '話し方の好み（時間帯・長さ・距離感）'; more.append(sum);
+  const moreBox = document.createElement('div'); moreBox.className = 'axes'; more.append(moreBox);
+  for (const ax of AXES) {
+    const wrap = document.createElement('div'); wrap.className = 'axis';
+    const t = document.createElement('span'); t.className = 'label'; t.id = 'ax-' + ax.key; t.textContent = ax.title;
+    const chips = document.createElement('div'); chips.className = 'chips'; chips.setAttribute('role', 'radiogroup'); chips.setAttribute('aria-labelledby', t.id);
+    ax.items.forEach((label, i) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('role', 'radio');
+      b.textContent = label; b.setAttribute('aria-checked', String(mode[ax.key] === i));
+      b.addEventListener('click', () => { mode[ax.key] = i; saveMode(); renderAxes(); });
+      chips.append(b);
+    });
+    wrap.append(t, chips);
+    (ax.more ? moreBox : host).append(wrap);
+  }
+  host.append(more);
+  if (store.get('moreOpen', false)) more.open = true;
+  more.addEventListener('toggle', () => store.set('moreOpen', more.open));
+  $('#modeNo').textContent = fmtNo(modeIndex(mode));
+}
+function saveMode() { const { time, ...rest } = mode; store.set('mode', rest); renderWork(); }
+
+$('#talkBtn').addEventListener('click', () => {
+  turn++;
+  const r = compose(mode);
+  logMsg('me', `${MOODS[mode.mood].label}／${ENERGY[mode.energy].label}／${THEMES[mode.theme].label}／${NEEDS[mode.need].label}`, 'あなた');
+  logMsg('mio', r.text, `みお・${fmtNo(modeIndex(mode))}`);
+  speak(r.text, r.face);
+});
+$('#sendBtn').addEventListener('click', () => {
+  const ta = $('#freeText'); const text = ta.value.trim();
+  if (!text) { speak('書かなくても大丈夫ですよ。上の「みおに話しかける」からでも、お話しできます。'); return; }
+  turn++;
+  logMsg('me', text, 'あなた');
+  ta.value = '';
+  const r = readFree(text);
+  if (r.crisis) {
+    $('#careBox').hidden = false;
+    const msg = 'とてもつらい気持ちを、ことばにしてくれてありがとうございます。\n\nいまのあなたの気持ちは、ひとりで抱えるには重すぎるものだと思います。みおは、ここでお話を聞くことはできますが、あなたを守るためには、人の手が必要です。\n\n下にある相談窓口に、電話やチャットでつながってみてください。話すのがむずかしければ、「つらい」とだけ伝えても大丈夫です。今すぐ危ないときは、119に電話してください。\n\nあなたがここにいてくれることを、大切に思っています。';
+    logMsg('mio', msg, 'みお');
+    speak(msg, 'care');
+    $('#careBox').scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  if (r.mood != null) mode.mood = r.mood;
+  if (r.theme != null) mode.theme = r.theme;
+  saveMode(); renderAxes();
+  const out = compose(mode, { echo: pick(ECHO, turn) });
+  logMsg('mio', out.text, `みお・${fmtNo(modeIndex(mode))}`);
+  speak(out.text, out.face);
+});
+
+/* ================= ワーク（5〜10分） ================= */
+/* e: 向いている元気の量（最小〜最大） n: 合うニーズ night: 夜向き */
+const WORKS = [
+  { id: 'breath46', title: '4-6呼吸', min: 5, e: [0, 4], n: [2, 0], night: true, tag: 'からだ', why: 'ゆっくり長く吐く呼吸は、リラックスの神経を働かせやすいと報告されています（Zaccaro et al., 2018）。', steps: ['楽な姿勢で座るか、横になります', '鼻から4つ数えて吸います', '口から6つ数えて、細く長く吐きます', 'これを好きなだけくり返します。数がずれても大丈夫', '最後に、いつもの呼吸にもどります'] },
+  { id: 'ground54321', title: '5-4-3-2-1でいまに戻る', min: 5, e: [1, 4], n: [1, 2], tag: 'こころ', why: '五感に順番に注意を向けると、考えのぐるぐるから「いま」へ戻りやすくなります。', steps: ['見えるものを5つ、心の中で言います', '聞こえる音を4つ探します', '体にふれている感覚を3つ感じます', 'においを2つ探します（なければ想像で）', '味をひとつ感じます。水をひと口でも'] },
+  { id: 'bodyscan', title: 'みじかいボディスキャン', min: 8, e: [0, 3], n: [2, 0], night: true, tag: 'からだ', why: 'マインドフルネスのプログラムで、不安やストレスが和らいだと報告されています（Khoury et al., 2015）。', steps: ['横になるか、背もたれに体をあずけます', '足の先の感覚に注意を向けます', 'ふくらはぎ、ひざ、太ももへ、ゆっくり移します', 'おなか、胸、肩、腕へと移していきます', '首、顔、頭のてっぺんまで。気づいたことをそのまま眺めます'] },
+  { id: 'pmr', title: '力をこめて、ふっとゆるめる', min: 7, e: [1, 4], n: [2], night: true, tag: 'からだ', why: '漸進的筋弛緩法は、不安や睡眠の質の改善に使われてきた方法です。', steps: ['両手をぎゅっと握って5秒、ふっとゆるめて10秒', '肩を耳に近づけて5秒、ストンと落として10秒', '顔の真ん中に力を集めて5秒、ゆるめて10秒', 'おなかに力を入れて5秒、ゆるめて10秒', 'ゆるんだあとの感覚を、しばらく味わいます'] },
+  { id: 'listen3', title: '音を3つ聴きわける', min: 5, e: [0, 4], n: [2, 0], tag: '音', why: '聞こえる音にただ注意を向けるのは、マインドフルネス瞑想の基本の練習です。', steps: ['目を閉じるか、視線を落とします', 'いちばん遠くの音を探します', 'いちばん近くの音を探します', '自分の体から出ている音を探します（呼吸、心臓）', '3つの音を、いい・悪いをつけずに聴きます'] },
+  { id: 'onesong', title: '好きな1曲を、目を閉じて聴く', min: 5, e: [0, 4], n: [0, 2], tag: '音', why: '好きな音楽を聴くと、ストレスの反応が和らぎやすいと報告されています（de Witte et al., 2020）。', steps: ['いま聴きたい曲を1曲だけ選びます', '音量はいつもより少し小さめに', '目を閉じて、最初の音から最後の音まで聴きます', '途中で考えごとが浮かんだら、また音に戻ります', '聴き終わったら、体のどこがゆるんだか感じてみます'] },
+  { id: 'label', title: '気持ちに名前をつける', min: 5, e: [1, 4], n: [1], tag: 'こころ', why: '感情に名前をつけると、扁桃体の反応が弱まったと報告されています（Lieberman et al., 2007）。', steps: ['いまの気持ちを、ひとことで書きます', 'もうひとつ、近い気持ちの言葉を探します', 'その気持ちが体のどこにあるか、感じてみます', '「わたしはいま〇〇を感じている」と書き直します', '名前をつけた気持ちに、「いてもいいよ」と言います'] },
+  { id: 'cbt3', title: '3行メモで考えを眺める', min: 10, e: [2, 4], n: [1, 3], tag: 'こころ', why: '認知行動療法では、考えを事実と分けて眺めることで、選択肢を増やしていきます。', steps: ['起きたことを、事実だけで1行書きます', 'そのとき浮かんだ考えを1行書きます', 'そのときの気持ちと強さ（0〜100）を書きます', '「ほかの見方をするなら？」と1行足します', 'もう一度、気持ちの強さをつけてみます'] },
+  { id: 'worrybox', title: '心配ごとの置き場所', min: 7, e: [1, 4], n: [1], night: true, tag: 'こころ', why: '心配する時間を決めて区切る方法は、心配の量を減らすのに役立つと報告されています。', steps: ['頭の中の心配ごとを、紙に全部書き出します', '「いま自分にできること」に印をつけます', '印のないものは、明日の決まった時間に考えると決めます', '紙を折りたたんで、箱や引き出しにしまいます', '「いまは置いておく」と心の中で言います'] },
+  { id: 'compassion', title: 'セルフ・コンパッション・ブレイク', min: 5, e: [0, 4], n: [0, 1], tag: 'こころ', why: 'セルフ・コンパッションの練習で、不安やストレスが減ったと報告されています（Neff & Germer, 2013）。', steps: ['胸かおなかに、そっと手をあてます', '「いま、つらいんだな」と心の中で言います', '「つらいのは、わたしだけじゃない」と言います', '「自分にやさしくしてもいい」と言います', '手のぬくもりを、しばらく感じます'] },
+  { id: 'threegood', title: '3つのよかったこと', min: 5, e: [1, 4], n: [3, 1], night: true, tag: 'こころ', why: '1日のよかったことを書く習慣で、幸福感が高まったと報告されています（Seligman et al., 2005）。', steps: ['今日あった、小さなよかったことを1つ書きます', 'もう2つ書きます。ほんの小さなことで大丈夫', 'それぞれ、なぜよかったのかを一言そえます', '書けなかったら「お茶がおいしかった」でも十分です'] },
+  { id: 'water', title: '水を一杯、ゆっくり飲む', min: 5, e: [0, 4], n: [2, 0], tag: 'からだ', why: 'ふだんの動作に注意を向けるのも、マインドフルネスの練習になります。', steps: ['コップに水かお湯を注ぎます', '注ぐ音を聴きます', '温度や重さを手で感じます', 'ひと口ずつ、のどを通る感覚を感じながら飲みます', '飲み終わったら、体の内側を感じてみます'] },
+  { id: 'window', title: '窓の外をぼんやり眺める', min: 5, e: [0, 4], n: [2, 0], tag: 'からだ', why: '遠くや自然を眺める時間は、目と心の休憩になります。', steps: ['窓の近くに行きます（写真の景色でも大丈夫）', 'ピントを合わせずに、全体をぼんやり見ます', '空、雲、木など、動いているものを探します', '視界の端に何があるか感じてみます', '最後にまばたきを3回します'] },
+  { id: 'neck', title: '首と肩をゆるめる', min: 5, e: [1, 4], n: [2], tag: 'からだ', why: '体のこわばりがゆるむと、気持ちの緊張もゆるみやすくなります。', steps: ['肩をゆっくり前に3回まわします', '後ろに3回まわします', '頭を右にゆっくり倒して、3呼吸', '左にも倒して、3呼吸', '最後に、肩の力をストンと抜きます'] },
+  { id: 'hum', title: 'ハミングで息を長く', min: 5, e: [1, 4], n: [2], tag: '音', why: 'ハミングは自然に吐く息が長くなり、ゆったりした呼吸になりやすい方法です。', steps: ['口を閉じて、鼻から吸います', '「んー」と、低めの声でハミングしながら吐きます', '顔や胸がふるえる感じを味わいます', '5〜10回くり返します', '最後に、静けさを少し聴きます'] },
+  { id: 'warmhands', title: '手をあたためる', min: 5, e: [0, 4], n: [2, 0], night: true, tag: 'からだ', why: '手のぬくもりを感じると、安心の感覚につながりやすくなります。', steps: ['両手をこすり合わせて、あたためます', 'あたたかい手を、目の上にそっとのせます', '暗さとぬくもりを感じます', '手を頬、首の後ろへと移します', '最後に、手を胸の上で重ねます'] },
+  { id: 'lowstim', title: '刺激を減らす5分', min: 5, e: [0, 4], n: [2, 0], night: true, tag: 'からだ', why: '感覚が細やかな人は、刺激を減らす時間をこまめにとると回復しやすくなります。', steps: ['スマホの通知を5分だけ切ります', '照明を少し暗くします', '耳栓やイヤーマフがあれば使います', '目を閉じて、何もしない時間を過ごします', '戻るときは、ゆっくり目を開けます'] },
+  { id: 'boundary', title: 'やさしい断りの一文', min: 7, e: [2, 4], n: [3, 1], tag: 'こころ', why: '自分の気持ちも相手も大切にする伝え方は、アサーションと呼ばれます。', steps: ['最近、断りたかったのに断れなかった場面を思い出します', '相手への気持ちを一文書きます（「誘ってくれてうれしい」）', '自分の事情を一文書きます（「今週は休みたくて」）', 'できることがあれば一文そえます（「来月なら」）', '声に出さず、心の中で読んでみます'] },
+  { id: 'notdo', title: 'やらないことリスト', min: 5, e: [1, 4], n: [3, 1], tag: 'こころ', why: 'やることを減らすと、心の余白が生まれます。', steps: ['今日やろうと思っていたことを書き出します', 'その中から、やらなくてもいいことを1つ選びます', '「今日は〇〇をしない」と書きます', '空いた時間に何をしたいか、ひとつ考えます'] },
+  { id: 'smallstep', title: 'いちばん小さな一歩', min: 5, e: [2, 4], n: [3], tag: 'こころ', why: '小さな行動を選んで実行する行動活性化は、気分の改善に役立つと報告されています。', steps: ['気になっていることを1つ選びます', 'それを「5分でできる大きさ」まで小さくします', 'いつやるかを決めます（今日じゃなくても大丈夫）', 'できたら、自分に「やったね」と言います'] },
+  { id: 'letter', title: '友だちに書くように、自分へ', min: 10, e: [2, 4], n: [1, 0], tag: 'こころ', why: '自分を三人称で呼ぶと、ストレス場面での不安が和らぎやすいと報告されています（Kross et al., 2014）。', steps: ['大切な友だちを思い浮かべます', 'その友だちが、いまの自分と同じ状況だと想像します', '友だちにかける言葉を、手紙のように書きます', '宛名を自分の名前に書きかえます', 'ゆっくり読み返します'] },
+  { id: 'cozy', title: '今日の「心地いい」探し', min: 5, e: [0, 4], n: [0, 3], tag: 'こころ', why: '心地よい感覚に注意を向けることは、自分の好きを知る手がかりになります。', steps: ['身のまわりで、さわって気持ちいいものを探します', '聴いて気持ちいい音を探します', '見て気持ちいい色や形を探します', 'いちばん心地よかったものを、ひとつメモします'] },
+  { id: 'walk', title: 'ゆっくり歩く5分', min: 5, e: [2, 4], n: [2, 3], tag: 'からだ', why: '歩く瞑想は、体の感覚に注意を向けながら気分転換もできる方法です。', steps: ['いつもの半分くらいの速さで歩きます', '足の裏が地面につく感覚を感じます', '右、左、と心の中で言いながら歩きます', 'まわりの音や風も感じます', '止まったら、立っている感覚を3呼吸味わいます'] },
+  { id: 'stream', title: '考えを葉っぱにのせて流す', min: 7, e: [1, 4], n: [1, 0], night: true, tag: 'こころ', why: '考えと距離をとる練習で、アクセプタンス＆コミットメント・セラピーで使われる方法です。', steps: ['目を閉じて、ゆっくり流れる小川を思い浮かべます', '水面に、葉っぱがいくつも流れてきます', '浮かんだ考えを、ひとつずつ葉っぱにのせます', '葉っぱが流れていくのを、ただ見送ります', '考えが止まっても、流れても、どちらでも大丈夫です'] },
+  { id: 'relief', title: '「ほっとした瞬間」メモ', min: 5, e: [0, 4], n: [0, 3], night: true, tag: 'こころ', why: 'がんばったことではなく、ゆるんだ瞬間に目を向ける練習です。', steps: ['今日、ほっとした瞬間を思い出します', 'そのとき、どこにいて何をしていたか書きます', '体はどんな感じだったか書きます', 'またその瞬間をつくれるとしたら、と考えてみます'] },
+  { id: 'braindump', title: '寝る前の書き出し', min: 5, e: [0, 4], n: [1], night: true, tag: 'こころ', why: '寝る前に明日のやることを書き出した人は、寝つきが早かったと報告されています（Scullin et al., 2018）。', steps: ['明日やることを、思いつくまま書きます', '気になっていることも、書いておきます', '「書いたから、もう覚えていなくていい」と心の中で言います', 'ノートを閉じて、明かりを少し落とします'] },
+  { id: 'hug', title: 'バタフライハグ', min: 5, e: [0, 4], n: [2, 0], night: true, tag: 'からだ', why: '自分の体をやさしくタッピングして、安心の感覚を思い出す方法です。', steps: ['両腕を胸の前で交差させ、手のひらを肩の近くに置きます', '左右の手で、交互にトントンとやさしくたたきます', 'ゆっくりした呼吸に合わせて続けます', '気持ちが落ちついてきたら止めます'] },
+  { id: 'face', title: '顔の力をぬく', min: 5, e: [0, 4], n: [2], night: true, tag: 'からだ', why: '眉間やあごは、知らないうちに力が入りやすい場所です。', steps: ['眉間にそっと指をあてて、力が入っていないか感じます', '奥歯を少しはなして、あごをゆるめます', '舌を上あごから下ろします', '目のまわりの力を抜きます', 'ゆるんだ顔のまま、3回呼吸します'] },
+  { id: 'rhythm', title: '指で刻む、ゆっくりリズム', min: 5, e: [1, 4], n: [2], tag: '音', why: '一定のゆっくりしたリズムに合わせると、呼吸もゆったりしやすくなります。', steps: ['机やひざを、指でトン、トン、とゆっくりたたきます', '4回トントンで吸って、6回トントンで吐きます', 'たたく音と、指の感覚を感じます', '少しずつ、たたくのをゆっくりにしていきます', '最後に止めて、静けさを聴きます'] },
+  { id: 'values', title: '大切にしたいこと、ひとつ', min: 7, e: [2, 4], n: [3], tag: 'こころ', why: '自分の価値を思い出すことは、ストレスの中で自分らしさを保つ助けになります。', steps: ['「どんなふうに生きていたいか」を考えます', '言葉をひとつ選びます（例：やさしさ、自由、ていねい）', 'その言葉が出てきた場面を思い出します', '今日、その言葉に沿ってできる小さなことを1つ書きます'] }
+];
+let workOffset = 0, current = null;
+function suggestWork(m) {
+  const night = m.time === 3 || m.mood === 9;
+  const fits = WORKS.filter(w => m.energy >= w.e[0] && m.energy <= w.e[1] && w.n.includes(m.need) && (!night || w.night || w.min <= 5));
+  const pool = fits.length ? fits : WORKS.filter(w => m.energy >= w.e[0]);
+  return pick(pool, daySeed() + m.mood + workOffset);
+}
+const doneLog = () => store.get('workLog', {});
+function renderWork(w) {
+  current = w || suggestWork(mode);
+  const card = $('#workCard'); card.textContent = '';
+  card.innerHTML = `
+    <div class="work-top">
+      <h3 class="work-title"></h3>
+      <span><span class="pill" data-k="tag"></span> <span class="pill" data-k="min"></span></span>
+    </div>
+    <p class="why"></p>
+    <ol class="steps"></ol>
+    <div class="guide-bar" hidden><span></span></div>
+    <div class="work-actions">
+      <button class="btn primary" type="button" data-a="start">いっしょにやる</button>
+      <button class="btn" type="button" data-a="other">ほかのワークにする</button>
+      <button class="btn" type="button" data-a="done">やってみた</button>
+    </div>`;
+  card.querySelector('.work-title').textContent = current.title;
+  card.querySelector('[data-k=tag]').textContent = current.tag;
+  card.querySelector('[data-k=min]').textContent = `約${current.min}分`;
+  card.querySelector('.why').textContent = current.why;
+  const ol = card.querySelector('.steps');
+  current.steps.forEach(s => { const li = document.createElement('li'); li.textContent = s; ol.append(li); });
+  card.querySelector('[data-a=start]').addEventListener('click', startGuide);
+  card.querySelector('[data-a=other]').addEventListener('click', () => { stopGuide(); workOffset++; renderWork(); });
+  card.querySelector('[data-a=done]').addEventListener('click', markDone);
+}
+let guide = null;
+function startGuide() {
+  stopGuide();
+  const card = $('#workCard'), lis = [...card.querySelectorAll('.steps li')], bar = card.querySelector('.guide-bar');
+  const per = Math.round(current.min * 60 / lis.length) * 1000, total = per * lis.length, t0 = Date.now();
+  bar.hidden = false; let last = -1;
+  speak(`「${current.title}」をはじめますね。ひとつずつ、ゆっくり。つらくなったら、いつでも止めて大丈夫です。`, '');
+  chime(0.5);
+  guide = setInterval(() => {
+    const el = Date.now() - t0, step = Math.min(lis.length - 1, Math.floor(el / per));
+    bar.firstElementChild.style.width = Math.min(100, el / total * 100) + '%';
+    if (step !== last) {
+      lis.forEach((li, i) => { li.className = i < step ? 'done' : i === step ? 'now' : ''; });
+      if (last >= 0) { speak(current.steps[step] + '。', ''); chime(0.35); }
+      last = step;
+    }
+    if (el >= total) { stopGuide(); lis.forEach(li => li.className = 'done'); speak('おつかれさまでした。いま、体はどんな感じですか。感じたことは、そのままにしておいて大丈夫です。', 'smile'); chime(0.6); markDone(true); }
+  }, 1000);
+}
+function stopGuide() { clearInterval(guide); guide = null; }
+function markDone(quiet) {
+  const log = doneLog(); const k = todayKey();
+  log[k] = Array.from(new Set([...(log[k] || []), current.id])); store.set('workLog', log); renderDays();
+  if (quiet !== true) speak('やってみてくれたんですね。どんな感じだったとしても、自分のために時間を使えたことが大切です。', 'smile');
+}
+function renderDays() {
+  const log = doneLog(), host = $('#days'); host.textContent = '';
+  for (let i = 13; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const el = document.createElement('div'); el.className = 'day' + (log[todayKey(d)] ? ' on' : '');
+    el.innerHTML = '<i></i>'; el.append(String(d.getDate()));
+    el.title = `${d.getMonth() + 1}/${d.getDate()}` + (log[todayKey(d)] ? ' やってみた日' : '');
+    host.append(el);
+  }
+}
+function renderWorkList() {
+  const host = $('#workList'); $('#workCount').textContent = WORKS.length;
+  WORKS.forEach(w => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'work-item';
+    b.textContent = w.title; const s = document.createElement('small'); s.textContent = `${w.tag}・約${w.min}分`; b.append(s);
+    b.addEventListener('click', () => { stopGuide(); renderWork(w); $('#workCard').scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' }); });
+    host.append(b);
+  });
+}
+
+/* ================= 音（水の音・やさしいチャイム） ================= */
+let ac = null, water = null;
+function ctx() { if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ac = new C(); } if (ac.state === 'suspended') ac.resume(); return ac; }
+function chime(vol = 0.5) {
+  const a = ctx(); if (!a) return;
+  [523.25, 783.99].forEach((f, i) => {
+    const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + i * 0.18;
+    o.type = 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.06 * vol, t + 0.04); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + 2.3);
+  });
+}
+function startWater() {
+  const a = ctx(); if (!a) return;
+  const len = a.sampleRate * 4, buf = a.createBuffer(1, len, a.sampleRate), d = buf.getChannelData(0);
+  let last = 0; for (let i = 0; i < len; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; d[i] = last * 3.2; }
+  const src = a.createBufferSource(); src.buffer = buf; src.loop = true;
+  const lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 900;
+  const g = a.createGain(); g.gain.value = 0;
+  const lfo = a.createOscillator(), lg = a.createGain(); lfo.frequency.value = 0.09; lg.gain.value = 0.05;
+  lfo.connect(lg).connect(g.gain);
+  src.connect(lp).connect(g).connect(a.destination);
+  g.gain.linearRampToValueAtTime(0.16, a.currentTime + 2);
+  src.start(); lfo.start();
+  water = { src, lfo, g };
+}
+function stopWater() {
+  if (!water || !ac) return;
+  const w = water; water = null;
+  w.g.gain.cancelScheduledValues(ac.currentTime); w.g.gain.setValueAtTime(w.g.gain.value, ac.currentTime);
+  w.g.gain.linearRampToValueAtTime(0, ac.currentTime + 1.5);
+  setTimeout(() => { try { w.src.stop(); w.lfo.stop(); } catch (e) {} }, 1600);
+}
+$('#waterBtn').addEventListener('click', (e) => {
+  const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+  e.currentTarget.setAttribute('aria-pressed', String(on));
+  e.currentTarget.textContent = on ? '水の音を止める' : '水の音を流す';
+  on ? startWater() : stopWater();
+});
+$('#themeBtn').addEventListener('click', () => {
+  const r = document.documentElement, cur = r.getAttribute('data-theme');
+  const dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+  r.setAttribute('data-theme', dark ? 'light' : 'dark'); store.set('theme', dark ? 'light' : 'dark');
+});
+{ const t = store.get('theme', null); if (t) document.documentElement.setAttribute('data-theme', t); }
+
+/* ================= 作業モード（ポモドーロ） ================= */
+const PRESETS = [
+  { label: 'ゆっくり 15/5', focus: 15, short: 5, long: 15 },
+  { label: 'ふつう 25/5', focus: 25, short: 5, long: 15 },
+  { label: 'じっくり 50/10', focus: 50, short: 10, long: 20 }
+];
+const P = { preset: store.get('preset', 1), phase: 'focus', round: 1, remain: 0, end: 0, running: false, timer: null };
+const PHASE_LABEL = { focus: '集中', short: '小休憩', long: '長めの休憩' };
+const START_MSG = ['はじめましょう。途中で止めても大丈夫です。', 'となりで静かにしていますね。ひとつだけ、ゆっくり。', '完ぺきじゃなくて大丈夫。手を動かすだけで十分です。'];
+const BREAK_TIPS = [
+  '画面から目をはなして、いちばん遠くを見てみましょう。', '肩をゆっくり3回まわしてみませんか。', '水をひと口、飲んでおきましょう。',
+  '目を閉じて、吐く息を長めに3回。', '立ち上がって、少しだけ伸びをしてみましょう。', '窓の外の音を、ひとつ探してみましょう。',
+  '手をこすり合わせて、目の上にのせてみませんか。', '何もしない5分も、ちゃんとした休憩です。'
+];
+const presetLen = (ph) => PRESETS[P.preset][ph] * 60;
+const circ = 2 * Math.PI * 96;
+function drawClock() {
+  const s = Math.max(0, Math.round(P.remain));
+  $('#clock').textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  $('#phaseLabel').textContent = PHASE_LABEL[P.phase];
+  $('#roundLabel').textContent = `${P.round}回目`;
+  $('#ringArc').setAttribute('stroke-dashoffset', String(circ * (1 - P.remain / presetLen(P.phase))));
+  $('#pStart').textContent = P.running ? 'ひと休み（一時停止）' : (P.remain < presetLen(P.phase) ? 'つづける' : 'はじめる');
+  document.title = P.running ? `${$('#clock').textContent} ${PHASE_LABEL[P.phase]}｜水音みおのへや` : '水音みおのへや';
+}
+function setPhase(ph) {
+  P.phase = ph; P.remain = presetLen(ph); P.running = false; clearInterval(P.timer);
+  const tip = $('#breakTip');
+  if (ph === 'focus') tip.hidden = true;
+  else { tip.hidden = false; tip.textContent = 'きゅうけいのヒント：' + pick(BREAK_TIPS, Date.now() / 1000 | 0); }
+  drawClock();
+}
+function tick() {
+  P.remain = (P.end - Date.now()) / 1000;
+  if (P.remain <= 0) {
+    clearInterval(P.timer); P.running = false; chime(1);
+    if (P.phase === 'focus') {
+      const c = store.get('focus', {}); c[todayKey()] = (c[todayKey()] || 0) + 1; store.set('focus', c); renderDrops();
+      const long = P.round % 4 === 0;
+      setPhase(long ? 'long' : 'short');
+      speak(long ? 'ここまで、ほんとうにおつかれさまでした。少し長めに休みましょう。体を伸ばしたり、横になったり。' : 'おつかれさまでした。ここで休憩です。' + $('#breakTip').textContent.replace('きゅうけいのヒント：', ''), 'smile');
+    } else {
+      P.round++; setPhase('focus');
+      speak('休憩おわりです。続けても、今日はここまでにしても、どちらでも大丈夫ですよ。', '');
+    }
+    return;
+  }
+  drawClock();
+}
+$('#pStart').addEventListener('click', () => {
+  ctx();
+  if (P.running) { P.running = false; clearInterval(P.timer); speak('一時停止しました。止まるのも、大事な時間です。', ''); drawClock(); return; }
+  P.running = true; P.end = Date.now() + P.remain * 1000; P.timer = setInterval(tick, 250);
+  if (P.phase === 'focus') {
+    const task = $('#taskName').value.trim();
+    speak((task ? `「${task}」ですね。` : '') + pick(START_MSG, P.round), '');
+  }
+  drawClock();
+});
+$('#pSkip').addEventListener('click', () => { P.end = Date.now(); if (!P.running) { P.running = true; } tick(); });
+$('#pReset').addEventListener('click', () => { P.round = 1; setPhase('focus'); speak('はじめにもどしました。いつでも、ここから。', ''); });
+$('#pDone').addEventListener('click', () => {
+  P.round = 1; setPhase('focus');
+  const n = (store.get('focus', {})[todayKey()] || 0);
+  speak(n ? `今日は${n}回、集中の時間をすごしました。ここまでで十分です。ゆっくり休んでくださいね。` : '今日はここまでにしましょう。やめると決められたことも、自分を大切にする選択です。', 'smile');
+});
+function renderPresets() {
+  const host = $('#presets'); host.textContent = '';
+  PRESETS.forEach((p, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip'; b.setAttribute('role', 'radio');
+    b.textContent = p.label; b.setAttribute('aria-checked', String(P.preset === i));
+    b.addEventListener('click', () => { P.preset = i; store.set('preset', i); renderPresets(); setPhase(P.phase); });
+    host.append(b);
+  });
+}
+function renderDrops() {
+  const n = store.get('focus', {})[todayKey()] || 0, host = $('#drops'); host.textContent = '';
+  if (!n) { const s = document.createElement('span'); s.className = 'sub'; s.textContent = 'まだありません。0回の日も、それでいい日です。'; host.append(s); return; }
+  for (let i = 0; i < n; i++) { const d = document.createElement('span'); d.className = 'drop'; d.title = `${i + 1}回目`; host.append(d); }
+}
+function renderTodo() {
+  const items = store.get('todo:' + todayKey(), [{ t: '', d: false }, { t: '', d: false }, { t: '', d: false }]);
+  const host = $('#todo'); host.textContent = '';
+  items.forEach((it, i) => {
+    const row = document.createElement('div'); row.className = 'todo-row';
+    const cb = document.createElement('input'); cb.type = 'checkbox'; cb.id = 'todo-c' + i; cb.checked = it.d; cb.setAttribute('aria-label', `${i + 1}つ目を終えた`);
+    const tx = document.createElement('input'); tx.type = 'text'; tx.id = 'todo-t' + i; tx.value = it.t; tx.placeholder = i === 0 ? 'ひとつ目（例：洗濯物をたたむ）' : (i === 1 ? 'ふたつ目（なくても大丈夫）' : 'みっつ目（なくても大丈夫）');
+    cb.addEventListener('change', () => { items[i].d = cb.checked; store.set('todo:' + todayKey(), items); if (cb.checked) speak('ひとつ、できましたね。', 'smile'); });
+    tx.addEventListener('input', () => { items[i].t = tx.value; store.set('todo:' + todayKey(), items); });
+    row.append(cb, tx); host.append(row);
+  });
+}
+
+/* ================= タブ ================= */
+const tabs = [...document.querySelectorAll('.tab')];
+function openTab(id) {
+  tabs.forEach(t => { const on = t.id === id; t.setAttribute('aria-selected', String(on)); $('#' + t.getAttribute('aria-controls')).hidden = !on; });
+  store.set('tab', id);
+}
+tabs.forEach(t => t.addEventListener('click', () => openTab(t.id)));
+const hashTab = { talk: 'tab-talk', work: 'tab-work', focus: 'tab-focus', about: 'tab-about' }[location.hash.slice(1)];
+
+/* ================= はじまり ================= */
+$('#modeTotal').textContent = TOTAL.toLocaleString('ja-JP');
+$('#aboutTotal').textContent = TOTAL.toLocaleString('ja-JP');
+renderAxes(); renderWork(); renderDays(); renderWorkList(); renderPresets(); setPhase('focus'); renderDrops(); renderTodo();
+openTab(hashTab || store.get('tab', 'tab-talk'));
+speak(`${pick(TIMES[mode.time].greet, daySeed())}水音みおです。\nここでは、何もしなくても大丈夫。話したくなったら、いまの気分をえらんでみてください。`, 'smile');
+})();
+</script>
+</body>
+</html>
