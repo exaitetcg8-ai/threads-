@@ -8,224 +8,225 @@
 <meta name="description" content="繊細さんのための、心地よく、自分らしく、自由にいられるAIコンパニオン。会話モード103,680通り、5〜10分のワーク、ポモドーロタイマー。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Klee+One:wght@400;600&family=Zen+Maru+Gothic:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap">
 <style>
-/* Layout: 左に「水辺のステージ」（キャラクター＋吹き出し）、右にタブ式の操作パネル。スマホでは縦に積む。 */
+/* Layout: 左に「水辺のステージ」（ドット絵のみお＋RPG風メッセージウィンドウ）、右にタブ式のメニュー。スマホでは縦に積む。
+   画面全体をドット絵ゲーム風に：ドットフォント、角のない段差ボーダー、整数倍で拡大するキャンバス。 */
 :root {
-  --bg: #f3f8fa;          /* 朝の水面 */
+  --bg: #e6f3f8;
   --surface: #ffffff;
-  --surface-2: #e6f2f6;
-  --ink: #23404d;         /* 深い水の色 */
-  --ink-sub: #5d7883;
-  --line: #cfe3ea;
-  --accent: #2f93b5;      /* 水色 */
+  --surface-2: #d6ecf4;
+  --ink: #1d3a4c;
+  --ink-sub: #4b6a78;
+  --line: #1d3a4c;        /* ドットの枠線 */
+  --line-soft: #a9cfdc;
+  --accent: #2a8fb8;      /* 水色 */
   --accent-ink: #ffffff;
-  --accent-soft: #d5edf5;
-  --stage-top: #dff1f7;
-  --stage-bottom: #bfe2ee;
-  --bubble: #ffffff;
+  --accent-soft: #bfe5f2;
+  --stage-top: #d4f1fb;
+  --stage-mid: #b6e4f3;
+  --stage-bottom: #93d3e8;
+  --win-bg: #1b3550;      /* メッセージウィンドウ */
+  --win-ink: #f2fbff;
+  --win-line: #f2fbff;
   --ok: #3f8f6e;
-  --care: #b5655a;
-  --care-soft: #f8e9e6;
-  --font-display: "Klee One", "Hiragino Mincho ProN", "Yu Mincho", serif;
-  --font-body: "Zen Maru Gothic", "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
-  --radius: 14px;
+  --care: #b5544a;
+  --care-soft: #f8e6e2;
+  --font-px: "DotGothic16", "MS Gothic", "Osaka-Mono", monospace;
+  --px: 3px;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1d24; --surface: #162a33; --surface-2: #1c3540; --ink: #dcedf3; --ink-sub: #98b6c1;
-    --line: #2a4652; --accent: #6cc4e0; --accent-ink: #0b1a20; --accent-soft: #1f4250;
-    --stage-top: #183441; --stage-bottom: #10252e; --bubble: #1d3742;
+    --bg: #0b1820; --surface: #12232d; --surface-2: #19313e; --ink: #e3f3f8; --ink-sub: #9dbcc8;
+    --line: #9fd8ea; --line-soft: #2c4a58; --accent: #6cc4e0; --accent-ink: #0b1a20; --accent-soft: #1f4250;
+    --stage-top: #17323f; --stage-mid: #122a36; --stage-bottom: #0e222c;
+    --win-bg: #08141c; --win-ink: #eaf8ff; --win-line: #9fd8ea;
     --ok: #79c9a5; --care: #e3a097; --care-soft: #3a2623; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0f1d24; --surface: #162a33; --surface-2: #1c3540; --ink: #dcedf3; --ink-sub: #98b6c1;
-  --line: #2a4652; --accent: #6cc4e0; --accent-ink: #0b1a20; --accent-soft: #1f4250;
-  --stage-top: #183441; --stage-bottom: #10252e; --bubble: #1d3742;
+  --bg: #0b1820; --surface: #12232d; --surface-2: #19313e; --ink: #e3f3f8; --ink-sub: #9dbcc8;
+  --line: #9fd8ea; --line-soft: #2c4a58; --accent: #6cc4e0; --accent-ink: #0b1a20; --accent-soft: #1f4250;
+  --stage-top: #17323f; --stage-mid: #122a36; --stage-bottom: #0e222c;
+  --win-bg: #08141c; --win-ink: #eaf8ff; --win-line: #9fd8ea;
   --ok: #79c9a5; --care: #e3a097; --care-soft: #3a2623; color-scheme: dark;
 }
-* { box-sizing: border-box; }
+* { box-sizing: border-box; border-radius: 0 !important; }
 [hidden] { display: none !important; }
 html, body { margin: 0; }
 body {
   background: var(--bg); color: var(--ink);
-  font-family: var(--font-body); font-size: 15.5px; line-height: 1.85;
-  -webkit-text-size-adjust: 100%;
+  font-family: var(--font-px); font-size: 16px; line-height: 1.8; letter-spacing: .02em;
+  -webkit-text-size-adjust: 100%; -webkit-font-smoothing: none;
 }
-button, input, select, textarea { font: inherit; color: inherit; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+button, input, select, textarea { font: inherit; color: inherit; letter-spacing: inherit; }
+:focus-visible { outline: 3px dashed var(--accent); outline-offset: 3px; }
+
+/* 段差つきのドット枠（角が1ドット欠ける） */
+.px, .stage, .panel, .btn, .chip, .work-card, .care-box, .mode-bar, .free textarea, .field input[type="text"], .todo-row input[type="text"], .work-item, .break-tip, .promise div, .msg {
+  border: 0;
+  box-shadow: 0 calc(-1 * var(--px)) 0 0 var(--line), 0 var(--px) 0 0 var(--line), calc(-1 * var(--px)) 0 0 0 var(--line), var(--px) 0 0 0 var(--line);
+  margin: var(--px);
+}
 
 .app {
   max-width: 1120px; margin: 0 auto;
   padding-block: 20px 40px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
-  display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 24px; align-items: start;
+  display: grid; grid-template-columns: minmax(0, 400px) minmax(0, 1fr); gap: 22px; align-items: start;
 }
-@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); gap: 16px; } }
+@media (max-width: 860px) { .app { grid-template-columns: minmax(0, 1fr); gap: 14px; } }
 
 /* ---------- ステージ ---------- */
 .stage {
   position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px);
-  background: linear-gradient(180deg, var(--stage-top), var(--stage-bottom));
-  border-radius: 22px; overflow: hidden; border: 1px solid var(--line);
-  display: grid; gap: 0;
+  background: linear-gradient(var(--stage-top) 0 30%, var(--stage-mid) 30% 62%, var(--stage-bottom) 62%);
+  display: grid; overflow: hidden;
 }
 @media (max-width: 860px) { .stage { position: static; } }
-.stage-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 12px; padding: 14px 18px 0; }
-.name { font-family: var(--font-display); font-size: 22px; font-weight: 600; letter-spacing: .04em; margin: 0; }
-.name small { white-space: nowrap; font-size: 12px; color: var(--ink-sub); font-family: var(--font-body); margin-left: 6px; letter-spacing: .1em; }
+.stage-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 0 12px; padding: 12px 16px 0; }
+.name { font-size: 22px; margin: 0; letter-spacing: .08em; }
+.name small { white-space: nowrap; font-size: 12px; color: var(--ink-sub); margin-left: 6px; letter-spacing: .1em; }
 .motto { font-size: 12px; color: var(--ink-sub); letter-spacing: .08em; }
-.avatar-wrap { position: relative; height: 330px; }
+.avatar-wrap { position: relative; height: 310px; overflow: hidden; display: grid; place-items: center; }
 @media (max-width: 860px) { .avatar-wrap { height: 250px; } }
-#avatar { width: 100%; height: 100%; display: block; }
+#avatar { display: block; image-rendering: pixelated; image-rendering: crisp-edges; }
 .bubble {
-  margin: -8px 14px 14px; background: var(--bubble); border-radius: 18px; border: 1px solid var(--line);
-  padding: 14px 16px; min-height: 92px; position: relative; font-size: 15px; line-height: 1.9;
+  margin: 14px 14px 14px; padding: 18px 16px 14px; position: relative; min-height: 104px;
+  background: var(--win-bg); color: var(--win-ink); font-size: 15.5px; line-height: 1.9;
+  box-shadow: inset 0 0 0 3px var(--win-bg), inset 0 0 0 6px var(--win-line), 0 0 0 3px var(--line);
 }
-.bubble::before {
-  content: ""; position: absolute; top: -9px; left: 50%; width: 16px; height: 16px; transform: translateX(-50%) rotate(45deg);
-  background: var(--bubble); border-left: 1px solid var(--line); border-top: 1px solid var(--line);
+.plate {
+  position: absolute; top: -14px; left: 14px; padding: 0 10px; font-size: 13px; line-height: 24px;
+  background: var(--win-bg); color: var(--win-ink); box-shadow: inset 0 0 0 3px var(--win-line);
 }
 #say { white-space: pre-wrap; margin: 0; position: relative; max-height: 232px; overflow-y: auto; }
-.stage-tools { display: flex; gap: 8px; padding: 0 14px 14px; flex-wrap: wrap; }
+#say.done::after { content: "▼"; display: inline-block; margin-left: 6px; font-size: 12px; animation: cursor 1s steps(1) infinite; }
+@keyframes cursor { 50% { opacity: 0; } }
+.stage-tools { display: flex; gap: 10px; padding: 0 14px 16px; flex-wrap: wrap; }
 
 /* ---------- 共通部品 ---------- */
 .btn {
-  border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 7px 16px;
-  cursor: pointer; font-size: 14px; line-height: 1.5;
+  background: var(--surface); padding: 6px 14px; cursor: pointer; font-size: 14px; line-height: 1.5;
 }
-.btn:hover { border-color: var(--accent); }
-.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 700; }
-.btn.small { font-size: 12.5px; padding: 4px 12px; }
-.btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
-.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; min-width: 0; }
-.tabs { display: flex; gap: 4px; padding: 8px; border-bottom: 1px solid var(--line); overflow-x: auto; }
-.tab {
-  border: 0; background: transparent; padding: 8px 14px; border-radius: 12px; cursor: pointer;
-  font-size: 14.5px; white-space: nowrap; color: var(--ink-sub);
-}
-.tab[aria-selected="true"] { background: var(--accent-soft); color: var(--ink); font-weight: 700; }
+.btn:hover { background: var(--accent-soft); }
+.btn:active { transform: translateY(2px); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary::before { content: "▶ "; }
+.btn.small { font-size: 12.5px; padding: 3px 10px; }
+.btn[aria-pressed="true"] { background: var(--accent-soft); }
+.panel { background: var(--surface); min-width: 0; }
+.tabs { display: flex; gap: 4px; padding: 8px; border-bottom: var(--px) solid var(--line); overflow-x: auto; }
+.tab { border: 0; background: transparent; padding: 6px 12px; cursor: pointer; font-size: 15px; white-space: nowrap; color: var(--ink-sub); }
+.tab::before { content: "▶"; visibility: hidden; margin-right: 4px; font-size: 12px; }
+.tab[aria-selected="true"] { color: var(--ink); background: var(--accent-soft); }
+.tab[aria-selected="true"]::before { visibility: visible; animation: cursor 1s steps(1) infinite; }
 .view { padding: 20px 22px 26px; display: grid; gap: 20px; }
-@media (max-width: 480px) { .view { padding: 16px 14px 22px; } }
-h2 { font-family: var(--font-display); font-weight: 600; font-size: 21px; margin: 0; text-wrap: balance; line-height: 1.5; }
-h3 { font-size: 15px; margin: 0; font-weight: 700; }
+@media (max-width: 480px) { .view { padding: 16px 12px 22px; } }
+h2 { font-weight: 400; font-size: 21px; margin: 0; text-wrap: balance; line-height: 1.5; }
+h2::before { content: "◆ "; color: var(--accent); }
+h3 { font-size: 15.5px; margin: 0; font-weight: 400; }
 .sub { color: var(--ink-sub); font-size: 13.5px; margin: 0; }
-.label { font-size: 12px; letter-spacing: .12em; color: var(--ink-sub); }
+.label { font-size: 12.5px; letter-spacing: .12em; color: var(--ink-sub); }
 
 /* ---------- 会話モード ---------- */
 .axes { display: grid; gap: 14px; }
 .axis { display: grid; gap: 6px; min-width: 0; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip {
-  border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 3px 12px;
-  font-size: 13.5px; cursor: pointer; line-height: 1.7;
-}
-.chip[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-details.more { border-top: 1px dashed var(--line); padding-top: 10px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px 8px; }
+.chip { --px: 2px; background: var(--surface); padding: 2px 10px; font-size: 13.5px; cursor: pointer; line-height: 1.7; }
+.chip:hover { background: var(--accent-soft); }
+.chip[aria-checked="true"] { background: var(--accent); color: var(--accent-ink); }
+.chip[aria-checked="true"]::before { content: "▶"; font-size: 11px; margin-right: 3px; }
+details.more { border-top: var(--px) dotted var(--line-soft); padding-top: 10px; }
 details.more > summary { cursor: pointer; font-size: 13.5px; color: var(--ink-sub); }
 details.more[open] > summary { margin-bottom: 12px; }
-.mode-bar {
-  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
-  background: var(--surface-2); border-radius: var(--radius); padding: 10px 14px;
-}
+.mode-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; background: var(--surface-2); padding: 10px 14px; }
 .mode-no { font-variant-numeric: tabular-nums; font-size: 13px; color: var(--ink-sub); }
-.mode-no b { color: var(--ink); font-size: 15px; letter-spacing: .04em; }
+.mode-no b { color: var(--ink); font-size: 16px; font-weight: 400; letter-spacing: .06em; }
 .free { display: grid; gap: 8px; }
-.free textarea {
-  width: 100%; min-height: 76px; resize: vertical; border: 1px solid var(--line); border-radius: var(--radius);
-  background: var(--bg); padding: 10px 12px; line-height: 1.7;
-}
+.free textarea { width: calc(100% - 2 * var(--px)); min-height: 76px; resize: vertical; background: var(--bg); padding: 10px 12px; line-height: 1.7; }
 .free-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-.log { display: grid; gap: 10px; max-height: 420px; overflow-y: auto; padding-right: 4px; }
-.msg { max-width: 92%; padding: 10px 14px; border-radius: 16px; font-size: 14.5px; white-space: pre-wrap; line-height: 1.85; }
-.msg.me { justify-self: end; background: var(--accent-soft); border-bottom-right-radius: 4px; }
-.msg.mio { justify-self: start; background: var(--surface-2); border-bottom-left-radius: 4px; }
-.msg .meta { display: block; font-size: 11px; color: var(--ink-sub); margin-bottom: 2px; letter-spacing: .06em; }
-.empty { color: var(--ink-sub); font-size: 13.5px; text-align: center; padding: 10px; border: 1px dashed var(--line); border-radius: var(--radius); }
+.log { display: grid; gap: 12px; max-height: 420px; overflow-y: auto; padding: 4px 6px 4px 4px; }
+.msg { max-width: 92%; padding: 10px 14px; font-size: 14.5px; white-space: pre-wrap; line-height: 1.85; }
+.msg.me { justify-self: end; background: var(--accent-soft); }
+.msg.mio { justify-self: start; background: var(--win-bg); color: var(--win-ink); }
+.msg .meta { display: block; font-size: 11.5px; opacity: .75; margin-bottom: 2px; letter-spacing: .06em; }
+.empty { color: var(--ink-sub); font-size: 13.5px; text-align: center; padding: 10px; border: 2px dashed var(--line-soft); }
 
-.care-box { background: var(--care-soft); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 6px; }
+.care-box { --line: var(--care); background: var(--care-soft); padding: 14px 16px; display: grid; gap: 6px; }
 .care-box h3 { color: var(--care); }
 .care-box ul { margin: 0; padding-left: 1.1em; font-size: 14px; }
-.tel { font-variant-numeric: tabular-nums; font-weight: 700; user-select: all; }
+.tel { font-variant-numeric: tabular-nums; user-select: all; letter-spacing: .04em; }
 
 /* ---------- ワーク ---------- */
-.work-card { border: 1px solid var(--line); border-radius: 18px; padding: 18px; display: grid; gap: 12px; background: var(--bg); }
+.work-card { padding: 18px; display: grid; gap: 12px; background: var(--bg); }
 .work-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
-.work-title { font-family: var(--font-display); font-size: 22px; font-weight: 600; margin: 0; line-height: 1.45; }
-.pill { display: inline-block; font-size: 12px; padding: 1px 10px; border-radius: 999px; background: var(--accent-soft); color: var(--ink); white-space: nowrap; }
+.work-title { font-size: 22px; font-weight: 400; margin: 0; line-height: 1.45; }
+.pill { display: inline-block; font-size: 12px; padding: 0 8px; background: var(--accent-soft); color: var(--ink); white-space: nowrap; box-shadow: inset 0 0 0 2px var(--line-soft); }
 .why { font-size: 13.5px; color: var(--ink-sub); margin: 0; }
-ol.steps { margin: 0; padding-left: 1.4em; display: grid; gap: 4px; }
-ol.steps li.now { font-weight: 700; color: var(--accent); }
-ol.steps li.done { color: var(--ink-sub); }
-.work-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.guide-bar { height: 6px; background: var(--surface-2); border-radius: 999px; overflow: hidden; }
-.guide-bar span { display: block; height: 100%; width: 0; background: var(--accent); transition: width .9s linear; }
+ol.steps { margin: 0; padding-left: 1.6em; display: grid; gap: 4px; }
+ol.steps li.now { color: var(--accent); }
+ol.steps li.now::marker { content: "▶ "; }
+ol.steps li.done { color: var(--ink-sub); text-decoration: line-through; text-decoration-thickness: 2px; }
+.work-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.guide-bar { height: 12px; background: var(--surface-2); box-shadow: 0 0 0 2px var(--line); margin: 2px; }
+.guide-bar span { display: block; height: 100%; width: 0; background: repeating-linear-gradient(90deg, var(--accent) 0 8px, transparent 8px 10px); transition: width .9s steps(4); }
 .days { display: flex; gap: 6px; flex-wrap: wrap; }
-.day { width: 26px; text-align: center; font-size: 10.5px; color: var(--ink-sub); font-variant-numeric: tabular-nums; }
-.day i { display: block; width: 18px; height: 18px; margin: 0 auto 2px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); border: 1px solid var(--line); background: var(--surface); }
-.day.on i { background: var(--accent); border-color: var(--accent); }
-.work-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 8px; }
-.work-item { text-align: left; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); padding: 8px 12px; cursor: pointer; font-size: 13.5px; line-height: 1.6; }
-.work-item:hover { border-color: var(--accent); }
+.day { width: 26px; text-align: center; font-size: 11px; color: var(--ink-sub); font-variant-numeric: tabular-nums; }
+.day i, .drop { position: relative; display: block; width: 15px; height: 21px; margin: 0 auto 2px; color: var(--line-soft); }
+.day.on i, .drop { color: var(--accent); }
+.drop { display: inline-block; margin: 0; }
+/* ドットのしずく（3px × 5×7） */
+.day i::before, .drop::before {
+  content: ""; position: absolute; left: 0; top: 0; width: 3px; height: 3px;
+  box-shadow: 6px 0, 6px 3px, 3px 6px, 6px 6px, 9px 6px,
+    0 9px, 3px 9px, 6px 9px, 9px 9px, 12px 9px,
+    0 12px, 3px 12px, 6px 12px, 9px 12px, 12px 12px,
+    0 15px, 3px 15px, 6px 15px, 9px 15px, 12px 15px,
+    3px 18px, 6px 18px, 9px 18px;
+}
+.work-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 10px; padding: 4px; }
+.work-item { --px: 2px; text-align: left; background: var(--surface); padding: 8px 12px; cursor: pointer; font-size: 13.5px; line-height: 1.6; }
+.work-item:hover { background: var(--accent-soft); }
 .work-item small { display: block; color: var(--ink-sub); font-size: 11.5px; }
 
-/* ---------- ポモドーロ ---------- */
-.pomo { display: grid; grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 22px; align-items: center; }
+/* ---------- ポモドーロ（ドットの水そう） ---------- */
+.pomo { display: grid; grid-template-columns: minmax(0, 230px) minmax(0, 1fr); gap: 22px; align-items: center; }
 @media (max-width: 600px) { .pomo { grid-template-columns: minmax(0, 1fr); justify-items: center; } }
-.ring { position: relative; width: 220px; max-width: 100%; aspect-ratio: 1; }
-.ring svg { width: 100%; height: 100%; display: block; }
-.ring-center { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
-.clock { font-size: 44px; font-variant-numeric: tabular-nums; letter-spacing: .02em; line-height: 1.1; font-weight: 500; }
+.ring { display: grid; justify-items: center; gap: 6px; }
+#tank { width: 192px; height: 192px; max-width: 100%; image-rendering: pixelated; image-rendering: crisp-edges; display: block; }
+.ring-center { text-align: center; }
+.clock { font-size: 44px; font-variant-numeric: tabular-nums; letter-spacing: .04em; line-height: 1.1; }
 .phase { font-size: 13px; color: var(--ink-sub); letter-spacing: .1em; }
 .pomo-side { display: grid; gap: 14px; min-width: 0; width: 100%; }
 .field { display: grid; gap: 4px; }
-.field input[type="text"] { border: 1px solid var(--line); border-radius: 12px; padding: 8px 12px; background: var(--bg); width: 100%; }
-.drops { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; min-height: 24px; }
-.drop { width: 14px; height: 14px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: var(--accent); }
-.todo { display: grid; gap: 6px; }
-.todo-row { display: flex; gap: 8px; align-items: center; }
-.todo-row input[type="text"] { flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 10px; padding: 6px 10px; background: var(--bg); }
-.todo-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
-.break-tip { background: var(--surface-2); border-radius: var(--radius); padding: 12px 14px; font-size: 14px; }
+.field input[type="text"] { padding: 6px 12px; background: var(--bg); width: calc(100% - 2 * var(--px)); }
+.drops { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; min-height: 24px; }
+.todo { display: grid; gap: 10px; }
+.todo-row { display: flex; gap: 12px; align-items: center; }
+.todo-row input[type="text"] { --px: 2px; flex: 1; min-width: 0; padding: 4px 10px; background: var(--bg); }
+.todo-row input[type="checkbox"] {
+  appearance: none; -webkit-appearance: none; width: 20px; height: 20px; margin: 2px; cursor: pointer; flex: none;
+  background: var(--surface); box-shadow: 0 0 0 3px var(--line);
+}
+.todo-row input[type="checkbox"]:checked { background: var(--accent); box-shadow: inset 0 0 0 4px var(--surface), 0 0 0 3px var(--line); }
+.break-tip { background: var(--surface-2); padding: 12px 14px; font-size: 14px; }
 
-/* ---------- このへやについて ---------- */
+/* ---------- このへやのこと ---------- */
 .prose { display: grid; gap: 12px; max-width: 62ch; }
 .prose p { margin: 0; }
 .prose ul { margin: 0; padding-left: 1.2em; }
-.promise { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; }
-.promise div { background: var(--surface-2); border-radius: var(--radius); padding: 12px 14px; }
-.promise b { font-family: var(--font-display); font-size: 17px; display: block; }
+.prose b { font-weight: 400; color: var(--accent); }
+.promise { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 12px; padding: 4px; }
+.promise div { background: var(--surface-2); padding: 12px 14px; }
+.promise b { font-weight: 400; font-size: 17px; display: block; }
 .promise span { font-size: 13px; color: var(--ink-sub); }
 footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-align: center; line-height: 1.8; }
 
-/* ---------- アバターのうごき ---------- */
-.blink { animation: blink 5.2s infinite; transform-origin: center 182px; transform-box: view-box; }
-@keyframes blink { 0%, 94%, 100% { transform: scaleY(1); } 96% { transform: scaleY(0.08); } }
-.breathe { animation: breathe 5s ease-in-out infinite; transform-origin: 160px 380px; transform-box: view-box; }
-@keyframes breathe { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-2.5px); } }
-.flow { stroke-dasharray: 26 18; animation: flow 6s linear infinite; }
-.flow.slow { animation-duration: 10s; }
-@keyframes flow { to { stroke-dashoffset: -440; } }
-.note-float { animation: rise 7s ease-in-out infinite; opacity: 0; }
-.note-float.n2 { animation-delay: 2.3s; }
-.note-float.n3 { animation-delay: 4.6s; }
-@keyframes rise { 0% { opacity: 0; transform: translateY(14px); } 20% { opacity: .85; } 80% { opacity: .5; } 100% { opacity: 0; transform: translateY(-46px); } }
-#mouthOpen { display: none; }
-.talking #mouthOpen { display: inline; animation: talk .24s ease-in-out infinite alternate; transform-origin: 160px 229px; transform-box: view-box; }
-.talking #mouthClosed { display: none; }
-@keyframes talk { from { transform: scaleY(.35); } to { transform: scaleY(1); } }
-#browL, #browR { transition: transform .5s ease; transform-box: fill-box; transform-origin: center; }
-.face-care #browL { transform: rotate(-9deg) translateY(1px); }
-.face-care #browR { transform: rotate(9deg) translateY(1px); }
-.face-smile #eyeSmile { display: inline; }
-.face-smile #eyesOpen { display: none; }
-#eyeSmile { display: none; }
 @media (prefers-reduced-motion: reduce) {
-  .blink, .breathe, .flow, .note-float, .talking #mouthOpen { animation: none !important; }
-  .note-float { opacity: .6; }
+  #say.done::after, .tab[aria-selected="true"]::before { animation: none; }
   .guide-bar span { transition: none; }
 }
 </style>
@@ -240,155 +241,9 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
       <span class="motto">心地よく、自分らしく、自由に</span>
     </div>
     <div class="avatar-wrap">
-      <svg id="avatar" viewBox="0 0 320 380" role="img" aria-label="2000年代の美少女アニメ風のキャラクター。水色のロングヘア、大きな瞳に眼鏡、頭にヘッドホン、セーラー服。髪に音符の髪留め、うしろを水の流れが通っている">
-        <defs>
-          <linearGradient id="hairG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#b6ecfa"/><stop offset=".45" stop-color="#86d2ea"/><stop offset="1" stop-color="#4fa9cf"/>
-          </linearGradient>
-          <linearGradient id="hairShadeG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#4a9fc6"/><stop offset="1" stop-color="#3b84b0"/>
-          </linearGradient>
-          <linearGradient id="irisG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stop-color="#123a5a"/><stop offset=".45" stop-color="#2479a8"/><stop offset=".85" stop-color="#5fd0ee"/><stop offset="1" stop-color="#b8f2ff"/>
-          </linearGradient>
-          <linearGradient id="waterG" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0" stop-color="#7fd0e6" stop-opacity="0"/><stop offset=".5" stop-color="#7fd0e6" stop-opacity=".9"/><stop offset="1" stop-color="#7fd0e6" stop-opacity="0"/>
-          </linearGradient>
-          <clipPath id="scleraClip" clipPathUnits="userSpaceOnUse">
-            <path d="M113 172 Q118 160 133 159 Q149 159 153 170 L152 194 Q146 205 133 205 Q118 204 114 193 Z"/>
-          </clipPath>
-          <!-- 片目ぶん（左目）。右目は左右反転して使う -->
-          <g id="eyeBase"><g transform="translate(133 182) scale(.84 .78) translate(-133 -182)">
-            <path d="M113 172 Q118 160 133 159 Q149 159 153 170 L152 194 Q146 205 133 205 Q118 204 114 193 Z" fill="#ffffff"/>
-            <g clip-path="url(#scleraClip)">
-              <ellipse cx="134" cy="184" rx="14.5" ry="19.5" fill="url(#irisG)"/>
-              <ellipse cx="134" cy="184" rx="14.5" ry="19.5" fill="none" stroke="#0f2c44" stroke-width="1.6"/>
-              <ellipse cx="134" cy="182" rx="6.5" ry="9" fill="#0d2438"/>
-              <path d="M113 160 L156 160 L156 172 Q134 164 113 174 Z" fill="#0f2c44" opacity=".28"/>
-            </g>
-            <!-- 上まつげ（太め＋目尻のはね） -->
-            <path d="M109 175 Q113 160 132 157 Q150 156 156 168" fill="none" stroke="#1b2f3d" stroke-width="4.6" stroke-linecap="round"/>
-            <path d="M111 171 L102 165 M112 175 L104 174" stroke="#1b2f3d" stroke-width="2.4" stroke-linecap="round"/>
-            <!-- 下まつげ -->
-            <path d="M122 205 Q133 208 146 203" fill="none" stroke="#3b5566" stroke-width="1.4" stroke-linecap="round"/>
-            <!-- 二重線 -->
-            <path d="M116 156 Q132 150 150 155" fill="none" stroke="#7a5f5a" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
-          </g></g>
-        </defs>
-
-        <!-- 水の流れ（背景） -->
-        <g fill="none" stroke-linecap="round">
-          <path class="flow slow" d="M-20 120 C 60 90, 110 150, 180 120 S 300 90, 340 120" stroke="url(#waterG)" stroke-width="3"/>
-          <path class="flow" d="M-20 300 C 50 270, 120 330, 190 300 S 290 270, 340 300" stroke="url(#waterG)" stroke-width="5"/>
-          <path class="flow slow" d="M-20 350 C 70 330, 130 370, 200 345 S 300 330, 340 350" stroke="url(#waterG)" stroke-width="3"/>
-        </g>
-        <!-- 浮かぶ音符 -->
-        <g fill="#4fb0d0">
-          <text class="note-float" x="34" y="130" font-size="26">♪</text>
-          <text class="note-float n2" x="266" y="110" font-size="22">♫</text>
-          <text class="note-float n3" x="276" y="214" font-size="18">♪</text>
-        </g>
-
-        <g class="breathe">
-          <!-- 後ろ髪（ロング） -->
-          <path d="M160 58 Q82 60 78 150 Q74 250 54 384 L266 384 Q246 250 242 150 Q238 60 160 58 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.6"/>
-          <path d="M104 220 Q160 262 216 220 L230 384 L90 384 Z" fill="url(#hairShadeG)"/>
-          <!-- 首 -->
-          <path d="M149 236 L149 266 Q160 272 171 266 L171 236 Z" fill="#f7dccf"/>
-          <path d="M149 244 Q160 256 171 244 L171 252 Q160 262 149 252 Z" fill="#e9c2b3"/>
-          <!-- セーラー服 -->
-          <path d="M84 384 Q88 298 136 274 L160 288 L184 274 Q232 298 236 384 Z" fill="#fbfdff" stroke="#b8d6e2" stroke-width="1.6"/>
-          <path d="M136 274 L160 318 L184 274 L216 292 Q206 314 186 320 L160 334 L134 320 Q114 314 104 292 Z" fill="#4fa9cf" stroke="#3a86ac" stroke-width="1.4"/>
-          <path d="M112 296 Q122 310 136 314 L160 326 L184 314 Q198 310 208 296" fill="none" stroke="#ffffff" stroke-width="2"/>
-          <!-- リボン -->
-          <path d="M160 324 L136 314 Q130 326 138 336 Z" fill="#2f7f9c"/>
-          <path d="M160 324 L184 314 Q190 326 182 336 Z" fill="#2f7f9c"/>
-          <path d="M156 328 L148 360 L156 356 L160 364 L164 356 L172 360 L164 328 Z" fill="#2f7f9c"/>
-          <circle cx="160" cy="325" r="5" fill="#3d97b8"/>
-          <!-- 水の流れのストール -->
-          <path class="flow slow" d="M80 346 C 120 326, 150 366, 190 342 S 236 334, 250 356" fill="none" stroke="#bfeaf6" stroke-width="7" stroke-linecap="round" opacity=".75"/>
-
-          <!-- 顔（とがったあご） -->
-          <path d="M98 136 Q96 196 124 226 Q146 248 160 254 Q174 248 196 226 Q224 196 222 136 Q222 86 160 84 Q98 86 98 136 Z" fill="#fdeae0"/>
-          <path d="M98 136 Q98 118 106 106 L214 106 Q222 118 222 136 Q190 150 160 150 Q130 150 98 136 Z" fill="#f4d3c6" opacity=".7"/>
-          <!-- ほほ（斜線） -->
-          <ellipse cx="122" cy="214" rx="13" ry="6" fill="#f6a8a4" opacity=".45"/>
-          <ellipse cx="198" cy="214" rx="13" ry="6" fill="#f6a8a4" opacity=".45"/>
-          <g stroke="#e57f86" stroke-width="1.3" stroke-linecap="round" opacity=".75">
-            <path d="M115 217 L119 211 M121 217 L125 211 M127 217 L131 211"/>
-            <path d="M191 217 L195 211 M197 217 L201 211 M203 217 L207 211"/>
-          </g>
-
-          <!-- 目 -->
-          <g id="eyesOpen" class="blink">
-            <use href="#eyeBase"/>
-            <use href="#eyeBase" transform="translate(320 0) scale(-1 1)"/>
-            <!-- ハイライト（左右とも左上） -->
-            <g fill="#ffffff"><g transform="translate(133 182) scale(.84 .78) translate(-133 -182)">
-              <ellipse cx="127" cy="173" rx="5.5" ry="7" transform="rotate(-20 127 173)"/>
-              <circle cx="140" cy="194" r="2.6"/>
-              <circle cx="131" cy="196" r="1.4" opacity=".8"/></g><g transform="translate(187 182) scale(.84 .78) translate(-187 -182)">
-              <ellipse cx="183" cy="173" rx="5.5" ry="7" transform="rotate(-20 183 173)"/>
-              <circle cx="196" cy="194" r="2.6"/>
-              <circle cx="187" cy="196" r="1.4" opacity=".8"/></g>
-            </g>
-          </g>
-          <g id="eyeSmile" fill="none" stroke="#1b2f3d" stroke-width="4" stroke-linecap="round">
-            <path d="M118 186 Q133 172 148 184"/><path d="M172 184 Q187 172 202 186"/>
-            <path d="M117 184 L110 180 M203 184 L210 180" stroke-width="2.2"/>
-          </g>
-
-          <!-- 鼻・口 -->
-          <path d="M161 212 L159 216" stroke="#d9a493" stroke-width="1.6" stroke-linecap="round"/>
-          <path id="mouthClosed" d="M154 228 Q160 232 166 228" fill="none" stroke="#b9615e" stroke-width="2" stroke-linecap="round"/>
-          <path id="mouthOpen" d="M154 226 Q160 224 166 226 Q164 234 160 234 Q156 234 154 226 Z" fill="#d46d6f"/>
-
-          <!-- 眼鏡（細いアンダーリム寄りの楕円フレーム） -->
-          <g fill="none" stroke="#2f5e78" stroke-width="2">
-            <rect x="110" y="162" width="46" height="42" rx="15" fill="#ffffff" fill-opacity=".1"/>
-            <rect x="164" y="162" width="46" height="42" rx="15" fill="#ffffff" fill-opacity=".1"/>
-            <path d="M156 180 Q160 176 164 180"/>
-            <path d="M110 174 L100 170"/><path d="M210 174 L220 170"/>
-          </g>
-          <path d="M116 196 L124 188 M121 200 L128 193" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <path d="M170 196 L178 188 M175 200 L182 193" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-
-          <!-- 前に流れる長いサイドの髪 -->
-          <path d="M100 110 Q84 180 88 240 Q92 290 78 332 Q104 296 106 236 Q107 176 106 126 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.4"/>
-          <path d="M220 110 Q236 180 232 240 Q228 290 242 332 Q216 296 214 236 Q213 176 214 126 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.4"/>
-          <path d="M100 150 Q94 200 96 250" fill="none" stroke="#3a86ac" stroke-width="1" opacity=".6"/>
-          <path d="M220 150 Q226 200 224 250" fill="none" stroke="#3a86ac" stroke-width="1" opacity=".6"/>
-
-          <!-- 前髪（とがった束） -->
-          <path d="M94 148 Q90 82 160 74 Q230 82 226 148 L216 122 L208 150 L196 110 L186 146 L172 106 L160 142 L148 106 L134 146 L124 110 L112 150 L104 124 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.6" stroke-linejoin="round"/>
-          <path d="M134 146 L140 118 M186 146 L180 116 M160 142 L160 112" stroke="#3a86ac" stroke-width="1" opacity=".55"/>
-          <!-- 天使の輪 -->
-          <path d="M106 108 Q160 82 214 108" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round" stroke-dasharray="14 7" opacity=".65"/>
-          <!-- アホ毛 -->
-          <path d="M160 58 Q148 30 176 24 Q160 38 166 58 Z" fill="#9adcef" stroke="#3a86ac" stroke-width="1.4" stroke-linejoin="round"/>
-
-          <!-- 眉（髪の上に描く） -->
-          <path id="browL" d="M118 152 Q130 147 146 150" fill="none" stroke="#3a86ac" stroke-width="2" stroke-linecap="round"/>
-          <path id="browR" d="M174 150 Q190 147 202 152" fill="none" stroke="#3a86ac" stroke-width="2" stroke-linecap="round"/>
-
-          <!-- ヘッドホン -->
-          <path d="M90 148 Q86 62 160 56 Q234 62 230 148" fill="none" stroke="#2f5e78" stroke-width="7" stroke-linecap="round"/>
-          <rect x="80" y="130" width="20" height="38" rx="9" fill="#2f5e78"/>
-          <rect x="220" y="130" width="20" height="38" rx="9" fill="#2f5e78"/>
-          <rect x="84" y="138" width="6" height="22" rx="3" fill="#8fd0e6"/>
-          <rect x="230" y="138" width="6" height="22" rx="3" fill="#8fd0e6"/>
-
-          <!-- 音符の髪留め -->
-          <g transform="translate(206 92) rotate(14)">
-            <ellipse cx="0" cy="14" rx="7" ry="5.4" fill="#2f7f9c" transform="rotate(-18 0 14)"/>
-            <rect x="5" y="-12" width="3" height="26" rx="1.5" fill="#2f7f9c"/>
-            <path d="M8 -12 Q20 -6 16 6 Q14 -2 8 -2 Z" fill="#2f7f9c"/>
-            <circle cx="-2.5" cy="12" r="1.6" fill="#ffffff" opacity=".8"/>
-          </g>
-        </g>
-      </svg>
+      <canvas id="avatar" width="48" height="50" role="img" aria-label="ドット絵のみお。水色のロングヘア、眼鏡、頭にヘッドホン、セーラー服。髪に音符の髪留め、まわりを水の流れと音符がただよっている"></canvas>
     </div>
-    <div class="bubble" aria-live="polite"><p id="say"></p></div>
+    <div class="bubble" aria-live="polite"><span class="plate">みお</span><p id="say"></p></div>
     <div class="stage-tools">
       <button class="btn small" id="waterBtn" aria-pressed="false" type="button">水の音を流す</button>
       <button class="btn small" id="themeBtn" type="button">表示の明るさ</button>
@@ -465,10 +320,7 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
       </div>
       <div class="pomo">
         <div class="ring">
-          <svg viewBox="0 0 220 220" aria-hidden="true">
-            <circle cx="110" cy="110" r="96" fill="none" stroke="var(--surface-2)" stroke-width="12"/>
-            <circle id="ringArc" cx="110" cy="110" r="96" fill="none" stroke="var(--accent)" stroke-width="12" stroke-linecap="round" transform="rotate(-90 110 110)" stroke-dasharray="603.19" stroke-dashoffset="0"/>
-          </svg>
+          <canvas id="tank" width="32" height="32" aria-hidden="true"></canvas>
           <div class="ring-center">
             <div class="phase" id="phaseLabel">集中</div>
             <div class="clock" id="clock">25:00</div>
@@ -518,7 +370,7 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
       </div>
       <div class="prose">
         <h3>水音 みお（みなと みお）</h3>
-        <p>水辺の音を聴くのが好きな、一人称「ぼく」のキャラクターです。見た目は2000年代の美少女アニメ風。眼鏡の奥の大きな瞳で、ゆっくり話します。音符の髪留めとヘッドホン、セーラー服がお気に入り。</p>
+        <p>水辺の音を聴くのが好きな、一人称「ぼく」のキャラクターです。見た目は2000年代の美少女アニメ風のドット絵。眼鏡の奥の瞳で、ゆっくり話します。音符の髪留めとヘッドホン、セーラー服がお気に入り。</p>
         <p>会話モードは、気分12 × 元気の量5 × 話題12 × 時間帯4 × ほしいこと4 × 話す長さ3 × 距離感3 の組み合わせで、<b id="aboutTotal"></b>通りあります。同じモードでも言い回しが少しずつ変わります。</p>
         <h3>大切なおしらせ</h3>
         <ul>
@@ -532,7 +384,7 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
     </div>
   </section>
 
-  <footer class="fine">水音みおはオリジナルキャラクターです。ワークは研究をもとにしたセルフケアで、効果には個人差があります。</footer>
+  <footer class="fine">水音みおはオリジナルキャラクターです（ドット絵）。ワークは研究をもとにしたセルフケアで、効果には個人差があります。</footer>
 </div>
 
 <script>
@@ -694,16 +546,173 @@ const ECHO = ['書いてくれて、ありがとうございます。', 'こと�
 const avatar = $('#avatar'), say = $('#say');
 const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 let typing = null;
+/* ================= ドット絵のみお（32×40ドット） ================= */
+const PAL = { K: '#1e3a4c', H: '#86d2ea', h: '#d2f4fc', S: '#4fa9cf', F: '#fde9e0', f: '#efc6b4', W: '#ffffff', E: '#2479a8', D: '#123a5a', e: '#7fdcf2', G: '#2f5e78', p: '#8fd0e6', B: '#f6a8a4', M: '#c0616a', U: '#f6fbfe', u: '#cfe3ea', C: '#4fa9cf', R: '#2f7f9c' };
+const SW = 32, SH = 40;
+function makeGrid() { return Array.from({ length: SH }, () => Array(SW).fill('.')); }
+function painter(g) {
+  const set = (x, y, c) => { if (x >= 0 && x < SW && y >= 0 && y < SH) g[y][x] = c; };
+  const row = (y, x0, x1, c) => { for (let x = x0; x <= x1; x++) set(x, y, c); };
+  return { set, row };
+}
+function buildBase() {
+  const g = makeGrid(), { set, row } = painter(g);
+  // 後ろ髪（ロング）
+  const top = { 3: [11, 20], 4: [8, 23], 5: [6, 25], 6: [5, 26] };
+  for (let y = 3; y < SH; y++) { const [a, b] = top[y] || (y < 30 ? [4, 27] : [3, 28]); row(y, a, b, 'H'); }
+  for (let y = 20; y < SH; y++) row(y, 8, 23, 'S');
+  for (let y = 22; y < SH; y++) { set(5, y, 'S'); set(26, y, 'S'); }
+  // セーラー服
+  for (let y = 28; y < SH; y++) { const a = y === 28 ? 10 : y === 29 ? 8 : 7; row(y, a, 31 - a, 'U'); set(a, y, 'u'); set(31 - a, y, 'u'); }
+  // 首
+  row(25, 14, 17, 'f'); row(26, 14, 17, 'F'); row(27, 14, 17, 'F');
+  // 襟とリボン
+  row(28, 10, 13, 'C'); row(28, 18, 21, 'C'); row(28, 14, 17, 'F');
+  row(29, 8, 14, 'C'); row(29, 17, 23, 'C'); row(29, 15, 16, 'U');
+  row(30, 7, 14, 'C'); row(30, 17, 24, 'C'); row(30, 15, 16, 'R');
+  row(31, 7, 12, 'C'); row(31, 8, 11, 'W'); row(31, 19, 24, 'C'); row(31, 20, 23, 'W'); row(31, 13, 18, 'R');
+  row(32, 7, 9, 'C'); row(32, 22, 24, 'C'); row(32, 14, 17, 'R');
+  set(14, 33, 'R'); set(17, 33, 'R'); set(14, 34, 'R'); set(17, 34, 'R');
+  // 顔（とがったあご）
+  for (let y = 9; y <= 24; y++) { const [a, b] = y <= 21 ? [9, 22] : y === 22 ? [10, 21] : y === 23 ? [11, 20] : [13, 18]; row(y, a, b, 'F'); }
+  set(9, 21, 'f'); set(22, 21, 'f'); set(10, 22, 'f'); set(21, 22, 'f'); set(11, 23, 'f'); set(20, 23, 'f'); row(24, 13, 18, 'f');
+  // 顔の横に流れる長い髪
+  for (let y = 9; y <= 34; y++) {
+    if (y < 26) { row(y, 6, 8, 'H'); row(y, 23, 25, 'H'); set(8, y, 'S'); set(23, y, 'S'); }
+    else if (y < 31) { row(y, 6, 7, 'H'); row(y, 24, 25, 'H'); }
+    else { set(6, y, 'H'); set(25, y, 'H'); }
+  }
+  // 前髪（とがった束）と天使の輪
+  row(6, 6, 25, 'H'); row(7, 6, 25, 'H'); row(8, 6, 25, 'H'); row(9, 7, 24, 'H');
+  [9, 10, 11, 14, 15, 16, 17, 20, 21, 22].forEach(x => set(x, 5, 'h'));
+  [11, 14, 17, 20].forEach(x => { set(x, 8, 'S'); set(x, 9, 'S'); });
+  [8, 9, 12, 13, 15, 16, 18, 19, 22, 23].forEach(x => set(x, 10, 'H'));
+  [8, 12, 16, 19, 23].forEach(x => set(x, 11, 'H'));
+  // アホ毛
+  set(18, 0, 'H'); set(17, 1, 'H'); set(16, 2, 'H');
+  // 眼鏡
+  row(12, 9, 14, 'G'); row(17, 9, 14, 'G'); row(12, 17, 22, 'G'); row(17, 17, 22, 'G');
+  for (let y = 12; y <= 17; y++) { set(9, y, 'G'); set(14, y, 'G'); set(17, y, 'G'); set(22, y, 'G'); }
+  set(15, 14, 'G'); set(16, 14, 'G'); set(8, 13, 'G'); set(23, 13, 'G');
+  // ほほ・鼻
+  row(18, 10, 11, 'B'); row(18, 20, 21, 'B'); set(16, 19, 'f');
+  // ヘッドホン
+  row(3, 11, 20, 'G'); [9, 10, 21, 22].forEach(x => set(x, 4, 'G')); [7, 8, 23, 24].forEach(x => set(x, 5, 'G'));
+  set(6, 6, 'G'); set(25, 6, 'G'); for (let y = 7; y <= 10; y++) { set(5, y, 'G'); set(26, y, 'G'); }
+  for (let y = 10; y <= 16; y++) { row(y, 3, 5, 'G'); row(y, 26, 28, 'G'); }
+  for (let y = 11; y <= 15; y++) { set(4, y, 'p'); set(27, y, 'p'); }
+  // 音符の髪留め
+  [[23, 5], [24, 5], [23, 6], [23, 7], [22, 8], [23, 8]].forEach(([x, y]) => set(x, y, 'R'));
+  // 外側の輪郭線
+  const out = g.map(r => r.slice());
+  for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) {
+    if (g[y][x] !== '.') continue;
+    if ([[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => (g[y + dy] || [])[x + dx] && g[y + dy][x + dx] !== '.')) out[y][x] = 'K';
+  }
+  return out;
+}
+const BASE = buildBase();
+function face(state) {
+  const g = BASE.map(r => r.slice()), { set, row } = painter(g);
+  const eyes = (fn) => { [[10, 1], [18, 1]].forEach(([x0]) => fn(x0)); };
+  const clear = () => eyes(x0 => { for (let y = 13; y <= 16; y++) row(y, x0, x0 + 3, 'F'); });
+  if (state.smile) {
+    clear();
+    eyes(x0 => { set(x0, 15, 'K'); set(x0 + 1, 14, 'K'); set(x0 + 2, 14, 'K'); set(x0 + 3, 15, 'K'); });
+  } else if (state.blink) {
+    clear(); eyes(x0 => row(15, x0, x0 + 3, 'K'));
+  } else {
+    // 開いた目：上まつげ／ハイライト／ひとみ／明るい下側
+    eyes(x0 => {
+      row(13, x0, x0 + 3, 'K');
+      set(x0, 14, 'E'); set(x0 + 1, 14, 'W'); set(x0 + 2, 14, 'E'); set(x0 + 3, 14, 'E');
+      set(x0, 15, 'E'); set(x0 + 1, 15, 'D'); set(x0 + 2, 15, 'D'); set(x0 + 3, 15, 'E');
+      row(16, x0, x0 + 3, 'e'); set(x0 + 3, 16, 'W');
+    });
+  }
+  // 眉
+  if (state.care) { set(10, 11, 'S'); set(11, 10, 'S'); set(21, 11, 'S'); set(20, 10, 'S'); }
+  else { row(11, 10, 11, 'S'); row(11, 20, 21, 'S'); }
+  // 口
+  if (state.mouthOpen) { row(21, 15, 16, 'M'); row(22, 15, 16, 'M'); }
+  else if (state.smile) row(21, 14, 17, 'M');
+  else row(21, 15, 16, 'M');
+  return g;
+}
+const NOTE = ['..XX', '..X.', '..X.', '.XX.', 'XXX.', '.X..'];
+const mio = { face: '', talking: false };
+const avatarCtx = avatar.getContext('2d');
+let frame = 0;
+function drawAvatar() {
+  const c = avatarCtx, W = 48, Hh = 50;
+  c.clearRect(0, 0, W, Hh);
+  const still = reduce;
+  // 水の流れ（奥）
+  for (const [base, amp, speed, alpha] of [[14, 1, 1, .45], [38, 1, 2, .6]]) {
+    c.fillStyle = `rgba(127, 208, 230, ${alpha})`;
+    for (let x = 0; x < W; x++) {
+      const k = still ? x : x + Math.floor(frame / speed);
+      if (k % 9 < 5) c.fillRect(x, base + (Math.floor(k / 6) % 2 ? amp : 0), 1, 1);
+    }
+  }
+  // 浮かぶ音符
+  [[1, 0], [42, 18], [39, 36]].forEach(([nx, ph], i) => {
+    const t = still ? 20 : (frame + ph * 2) % 60;
+    const ny = 26 - Math.floor(t / 3) - i * 3;
+    c.globalAlpha = still ? .7 : (t < 8 ? t / 8 : t > 48 ? (60 - t) / 12 : 1) * .8;
+    c.fillStyle = '#3a9fc4';
+    NOTE.forEach((r, y) => [...r].forEach((ch, x) => { if (ch === 'X') c.fillRect(nx + x, ny + y, 1, 1); }));
+  });
+  c.globalAlpha = 1;
+  // みお本体
+  const bob = still ? 0 : (Math.floor(frame / 16) % 2);
+  const blink = !still && frame % 52 >= 50;
+  const g = face({ smile: mio.face === 'smile', care: mio.face === 'care', blink, mouthOpen: mio.talking && Math.floor(frame / 2) % 2 === 0 });
+  for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) {
+    const ch = g[y][x]; if (ch === '.') continue;
+    c.fillStyle = PAL[ch]; c.fillRect(8 + x, 10 + y + bob, 1, 1);
+  }
+  // 水の流れ（手前）
+  c.fillStyle = 'rgba(200, 240, 250, .85)';
+  for (let x = 0; x < W; x++) {
+    const k = still ? x : x + Math.floor(frame / 1.5);
+    if (k % 7 < 4) c.fillRect(x, 46 + (Math.floor(k / 5) % 2), 1, 1);
+  }
+}
+function fitAvatar() {
+  const wrap = avatar.parentElement;
+  const s = Math.max(1, Math.floor(Math.min(wrap.clientWidth / 48, wrap.clientHeight / 50)));
+  avatar.style.width = 48 * s + 'px'; avatar.style.height = 50 * s + 'px';
+}
+window.addEventListener('resize', fitAvatar);
+fitAvatar(); drawAvatar();
+setInterval(() => { frame++; drawAvatar(); }, 110);
+
+/* ドットの水そう（作業モード） */
+const tankCtx = $('#tank').getContext('2d');
+function drawTank(progress) {
+  const cs = getComputedStyle(document.documentElement), col = (n) => cs.getPropertyValue(n).trim();
+  const c = tankCtx; c.clearRect(0, 0, 32, 32);
+  c.fillStyle = col('--line'); c.fillRect(4, 4, 24, 26);
+  c.fillStyle = col('--surface-2'); c.fillRect(5, 4, 22, 25);
+  c.fillStyle = col('--line'); c.fillRect(3, 4, 3, 1); c.fillRect(26, 4, 3, 1);
+  const h = Math.round(Math.max(0, Math.min(1, progress)) * 24), f = Math.floor(Date.now() / 400);
+  if (h > 0) {
+    c.fillStyle = col('--accent'); c.fillRect(5, 29 - h, 22, h);
+    c.fillStyle = col('--accent-soft');
+    for (let x = 5; x < 27; x++) if ((x + f) % 6 < 3) c.fillRect(x, 29 - h, 1, 1);
+    c.fillStyle = 'rgba(255,255,255,.7)';
+    if (h > 6) { c.fillRect(9, 27 - (f % Math.max(1, h - 3)), 1, 1); c.fillRect(20, 26 - ((f + 3) % Math.max(1, h - 4)), 1, 1); }
+  }
+}
 function speak(text, face = '') {
-  avatar.classList.remove('face-care', 'face-smile');
-  if (face) avatar.classList.add('face-' + face);
-  clearInterval(typing);
-  if (reduce) { say.textContent = text; return; }
-  let i = 0; say.textContent = '';
-  avatar.classList.add('talking');
+  mio.face = face;
+  clearInterval(typing); say.classList.remove('done');
+  if (reduce) { say.textContent = text; say.classList.add('done'); return; }
+  let i = 0; say.textContent = ''; mio.talking = true;
   typing = setInterval(() => {
     i += 2; say.textContent = text.slice(0, i);
-    if (i >= text.length) { clearInterval(typing); avatar.classList.remove('talking'); }
+    if (i >= text.length) { clearInterval(typing); mio.talking = false; say.classList.add('done'); }
   }, 45);
 }
 function logMsg(who, text, meta) {
@@ -889,11 +898,11 @@ let ac = null, water = null;
 function ctx() { if (!ac) { const C = window.AudioContext || window.webkitAudioContext; if (!C) return null; ac = new C(); } if (ac.state === 'suspended') ac.resume(); return ac; }
 function chime(vol = 0.5) {
   const a = ctx(); if (!a) return;
-  [523.25, 783.99].forEach((f, i) => {
-    const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + i * 0.18;
-    o.type = 'sine'; o.frequency.value = f;
-    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.06 * vol, t + 0.04); g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
-    o.connect(g).connect(a.destination); o.start(t); o.stop(t + 2.3);
+  [523.25, 659.25, 783.99].forEach((f, i) => {
+    const o = a.createOscillator(), g = a.createGain(), t = a.currentTime + i * 0.12;
+    o.type = 'triangle'; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(0.06 * vol, t + 0.04); g.gain.exponentialRampToValueAtTime(0.0001, t + 1.2);
+    o.connect(g).connect(a.destination); o.start(t); o.stop(t + 1.3);
   });
 }
 function startWater() {
@@ -926,7 +935,7 @@ $('#waterBtn').addEventListener('click', (e) => {
 $('#themeBtn').addEventListener('click', () => {
   const r = document.documentElement, cur = r.getAttribute('data-theme');
   const dark = cur ? cur === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-  r.setAttribute('data-theme', dark ? 'light' : 'dark'); store.set('theme', dark ? 'light' : 'dark');
+  r.setAttribute('data-theme', dark ? 'light' : 'dark'); store.set('theme', dark ? 'light' : 'dark'); drawClock();
 });
 { const t = store.get('theme', null); if (t) document.documentElement.setAttribute('data-theme', t); }
 
@@ -945,13 +954,12 @@ const BREAK_TIPS = [
   '手をこすり合わせて、目の上にのせてみませんか。', '何もしない5分も、ちゃんとした休憩です。'
 ];
 const presetLen = (ph) => PRESETS[P.preset][ph] * 60;
-const circ = 2 * Math.PI * 96;
 function drawClock() {
   const s = Math.max(0, Math.round(P.remain));
   $('#clock').textContent = `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
   $('#phaseLabel').textContent = PHASE_LABEL[P.phase];
   $('#roundLabel').textContent = `${P.round}回目`;
-  $('#ringArc').setAttribute('stroke-dashoffset', String(circ * (1 - P.remain / presetLen(P.phase))));
+  drawTank(1 - P.remain / presetLen(P.phase));
   $('#pStart').textContent = P.running ? 'ひと休み（一時停止）' : (P.remain < presetLen(P.phase) ? 'つづける' : 'はじめる');
   document.title = P.running ? `${$('#clock').textContent} ${PHASE_LABEL[P.phase]}｜水音みおのへや` : '水音みおのへや';
 }
