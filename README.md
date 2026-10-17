@@ -14,6 +14,7 @@
 ・04_product/product_plan.md：商品を作り続けないための18ヶ月商品計画
 ・05_link_page/：Threadsプロフィールのリンク先ページ（LINE登録へ誘導）
 ・06_affiliate/affiliate_plan.md：アフィリエイトの入れ方（法律の注意、置き場所、投稿テンプレ）
+・07_meditation_video/：中性ボイスのアファメーション瞑想動画（森林、川辺、神社の台本と制作手順）
 
 
 ## ヒアリング結果
