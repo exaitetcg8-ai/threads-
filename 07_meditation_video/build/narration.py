@@ -115,7 +115,49 @@ def _soften(x):
 
 def build(md_path, heading="## 台本（10分版）"):
     """ナレーション音声（mono, float32）と、各行・各パートの時刻を返す。"""
-    sections = parse_script(md_path, heading)
+    return assemble(parse_script(md_path, heading))
+
+
+LONG_ENDING = [Line("このまま、もう少し休んでいても、大丈夫です。", 6.0),
+               Line("おつかれさまでした。", 3.0)]
+
+
+def long_sections(md_path, total=3600.0, gap_target=80.0, tail=30.0):
+    """1時間版：10分版の余韻までを流し、そのあとアファメーションを1つずつ間をあけてくり返す。
+
+    最後は起こす言葉（目を開ける等）を入れず、そのまま休めるしめ方にする。
+    合計がちょうど total 秒になるように、くり返しの間の長さを自動で決める。
+    """
+    base = parse_script(md_path)
+    head = []
+    for sec in base:
+        if sec.label == "戻る":
+            break
+        head.append(sec)
+    aff = next(s for s in base if s.label == "アファメーション")
+    # 台本で2回くり返している言葉だけを使う（「ひとつ思い浮かべる」のような、続きのある言葉は外す）
+    texts = [ln.text for ln in aff.lines]
+    words = []
+    for w in texts:
+        if texts.count(w) >= 2 and w not in words:
+            words.append(w)
+    durs = {w: len(tts(w)) / SR for w in words}
+    t_head = sum(sec.silence or sum(len(tts(l.text)) / SR + l.pause for l in sec.lines) for sec in head)
+    t_end = sum(len(tts(l.text)) / SR + l.pause for l in LONG_ENDING) + tail
+    room = total - t_head - t_end
+    avg = sum(durs.values()) / len(durs)
+    n = max(int(round(room / (avg + gap_target))), 1)
+    seq = [words[i % len(words)] for i in range(n)]
+    pause = (room - sum(durs[w] for w in seq)) / n
+    loop = Section("アファメーション（くり返し）", lines=[Line(w, pause) for w in seq])
+    return head + [loop, Section("おわり", lines=list(LONG_ENDING)), Section("環境音をフェードアウト", silence=tail)]
+
+
+def build_long(md_path, total=3600.0):
+    return assemble(long_sections(md_path, total))
+
+
+def assemble(sections):
     pieces, t = [], 0.0
     events, chapters = [], []
     for sec in sections:
@@ -129,8 +171,9 @@ def build(md_path, heading="## 台本（10分版）"):
             dur = len(v) / SR
             events.append({"start": t, "end": t + dur, "pause": ln.pause,
                            "text": ln.text, "section": sec.label})
-            pieces += [v, np.zeros(int(ln.pause * SR), np.float32)]
-            t += dur + int(ln.pause * SR) / SR
+            gap = int(round(ln.pause * SR))
+            pieces += [v, np.zeros(gap, np.float32)]
+            t += dur + gap / SR
     voice = _soften(np.concatenate(pieces))
     # 話している部分のRMSを揃える（目安 -18dBFS）
     speech = np.concatenate([voice[int(e["start"] * SR): int(e["end"] * SR)] for e in events])

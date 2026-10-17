@@ -38,7 +38,7 @@ TITLE = {
 }
 ENTER = {"forest": "森の中へ", "riverside": "川辺へ", "shrine": "朝の森へ"}
 CHAPTER_NAME = {"環境音だけ": "環境音", "導入": "はじまり", "呼吸": "呼吸", "アファメーション": "アファメーション",
-                "戻る": "おわり"}
+                "アファメーション（くり返し）": "くり返しの言葉（聞き流し）", "戻る": "おわり"}
 
 CUT = 55.0       # 1カットの長さ（秒）
 DISSOLVE = 4.0   # 切り替えのディゾルブ（秒）
@@ -59,9 +59,9 @@ def mix(voice, amb):
     n = len(voice)
     amb = amb[:, :n]
     out = amb + voice[None, :]
-    fade_in = np.minimum(1, np.arange(n) / (4 * SR))
-    fade_out = np.minimum(1, (n - np.arange(n)) / (8 * SR))
-    out *= (fade_in * fade_out)[None, :]
+    fi, fo = int(4 * SR), int(8 * SR)  # 端だけにかける（1時間版でもメモリを食わない）
+    out[:, :fi] *= np.linspace(0, 1, fi, dtype=np.float32)
+    out[:, n - fo:] *= np.linspace(1, 0, fo, dtype=np.float32)
     peak = np.abs(out).max()
     if peak > 0.89:
         out *= 0.89 / peak
@@ -109,7 +109,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         rows.append(f"Dialogue: 0,{ass_time(total - 12 - offset)},{ass_time(total - 3 - offset)},Aff,,0,0,0,,{{\\fad(1200,1500)\\blur1.5\\fs40}}{end_note}")
     prev = None
     for e in events:
-        if e["section"] != "アファメーション" or "言葉を置いて" in e["text"] or "しっくりこない" in e["text"]:
+        if not e["section"].startswith("アファメーション") or "言葉を置いて" in e["text"] or "しっくりこない" in e["text"]:
             continue
         if prev and prev["text"] == e["text"]:  # 同じ言葉の2回目は1つの表示にまとめる
             prev["end_show"] = e["end"] + min(4.0, e["pause"] - 1.0)
@@ -130,7 +130,9 @@ def write_chapters(path, chapters, scene):
         if "フェードアウト" in label:
             continue
         name = ENTER[scene] if label == "場所に入る" else CHAPTER_NAME.get(label, label.split("（")[0])
-        out.append(f"{int(t // 60)}:{int(t % 60):02d} {name}")
+        stamp = f"{int(t // 3600)}:{int(t % 3600 // 60):02d}:{int(t % 60):02d}" if t >= 3600 or len(chapters) and chapters[-1][0] >= 3600 \
+            else f"{int(t // 60)}:{int(t % 60):02d}"
+        out.append(f"{stamp} {name}")
     Path(path).write_text("\n".join(out) + "\n", encoding="utf-8")
     return out
 
@@ -143,9 +145,13 @@ def thumb_text(md):
     return main, sub
 
 
-def thumbnail(comp, md, path):
+def thumbnail(comp, md, path, length=None):
     img = Image.fromarray(V.to_u8(comp.frame(30.0))).resize((1280, 720), Image.LANCZOS)
     main, sub = thumb_text(md)
+    if length:  # 「10分」を「1時間」などに差し替える
+        main, sub = main.replace("10分", length), sub.replace("10分", length)
+        if length not in main + sub:
+            sub = f"{length}｜{sub}"
     big = ImageFont.truetype(str(FONT), 92)
     small = ImageFont.truetype(str(FONT), 40)
     layer = Image.new("RGBA", img.size, (0, 0, 0, 0))

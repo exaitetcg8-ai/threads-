@@ -230,3 +230,25 @@ def shrine(seconds, seed=33):
 
 
 SCENES = {"forest": forest, "riverside": riverside, "shrine": shrine}
+
+
+def long(scene, seconds, chunk=600.0, xf=6.0):
+    """長い動画用：10分ずつ別の乱数で作り、6秒かけてつなぐ（メモリを使いすぎないため）。"""
+    fn = SCENES[scene]
+    n = int(seconds * SR)
+    out = np.zeros((2, n), np.float32)
+    nx = int(xf * SR)
+    fade = np.sin(np.linspace(0, np.pi / 2, nx)).astype(np.float32)
+    pos, i = 0, 0
+    while pos < n:
+        seg = fn(chunk + xf, seed=1000 + 37 * i).astype(np.float32)
+        m = min(seg.shape[1], n - pos)
+        seg = seg[:, :m]
+        if pos > 0:
+            k = min(nx, m)
+            seg[:, :k] *= fade[:k]
+            out[:, pos:pos + k] *= fade[::-1][:k]
+        out[:, pos:pos + m] += seg
+        pos += int(chunk * SR)
+        i += 1
+    return out
