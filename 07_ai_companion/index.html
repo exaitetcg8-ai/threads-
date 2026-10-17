@@ -258,7 +258,7 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
             <path d="M113 172 Q118 160 133 159 Q149 159 153 170 L152 194 Q146 205 133 205 Q118 204 114 193 Z"/>
           </clipPath>
           <!-- 片目ぶん（左目）。右目は左右反転して使う -->
-          <g id="eyeBase">
+          <g id="eyeBase"><g transform="translate(133 182) scale(.84 .78) translate(-133 -182)">
             <path d="M113 172 Q118 160 133 159 Q149 159 153 170 L152 194 Q146 205 133 205 Q118 204 114 193 Z" fill="#ffffff"/>
             <g clip-path="url(#scleraClip)">
               <ellipse cx="134" cy="184" rx="14.5" ry="19.5" fill="url(#irisG)"/>
@@ -273,7 +273,7 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
             <path d="M122 205 Q133 208 146 203" fill="none" stroke="#3b5566" stroke-width="1.4" stroke-linecap="round"/>
             <!-- 二重線 -->
             <path d="M116 156 Q132 150 150 155" fill="none" stroke="#7a5f5a" stroke-width="1.2" stroke-linecap="round" opacity=".6"/>
-          </g>
+          </g></g>
         </defs>
 
         <!-- 水の流れ（背景） -->
@@ -324,18 +324,18 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
             <use href="#eyeBase"/>
             <use href="#eyeBase" transform="translate(320 0) scale(-1 1)"/>
             <!-- ハイライト（左右とも左上） -->
-            <g fill="#ffffff">
+            <g fill="#ffffff"><g transform="translate(133 182) scale(.84 .78) translate(-133 -182)">
               <ellipse cx="127" cy="173" rx="5.5" ry="7" transform="rotate(-20 127 173)"/>
               <circle cx="140" cy="194" r="2.6"/>
-              <circle cx="131" cy="196" r="1.4" opacity=".8"/>
+              <circle cx="131" cy="196" r="1.4" opacity=".8"/></g><g transform="translate(187 182) scale(.84 .78) translate(-187 -182)">
               <ellipse cx="183" cy="173" rx="5.5" ry="7" transform="rotate(-20 183 173)"/>
               <circle cx="196" cy="194" r="2.6"/>
-              <circle cx="187" cy="196" r="1.4" opacity=".8"/>
+              <circle cx="187" cy="196" r="1.4" opacity=".8"/></g>
             </g>
           </g>
           <g id="eyeSmile" fill="none" stroke="#1b2f3d" stroke-width="4" stroke-linecap="round">
-            <path d="M114 186 Q133 168 152 184"/><path d="M168 184 Q187 168 206 186"/>
-            <path d="M113 184 L104 180 M207 184 L216 180" stroke-width="2.2"/>
+            <path d="M118 186 Q133 172 148 184"/><path d="M172 184 Q187 172 202 186"/>
+            <path d="M117 184 L110 180 M203 184 L210 180" stroke-width="2.2"/>
           </g>
 
           <!-- 鼻・口 -->
@@ -345,13 +345,13 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
 
           <!-- 眼鏡（細いアンダーリム寄りの楕円フレーム） -->
           <g fill="none" stroke="#2f5e78" stroke-width="2">
-            <rect x="107" y="158" width="51" height="52" rx="18" fill="#ffffff" fill-opacity=".1"/>
-            <rect x="162" y="158" width="51" height="52" rx="18" fill="#ffffff" fill-opacity=".1"/>
-            <path d="M158 178 Q160 174 162 178"/>
-            <path d="M107 172 L99 168"/><path d="M213 172 L221 168"/>
+            <rect x="110" y="162" width="46" height="42" rx="15" fill="#ffffff" fill-opacity=".1"/>
+            <rect x="164" y="162" width="46" height="42" rx="15" fill="#ffffff" fill-opacity=".1"/>
+            <path d="M156 180 Q160 176 164 180"/>
+            <path d="M110 174 L100 170"/><path d="M210 174 L220 170"/>
           </g>
-          <path d="M114 200 L124 190 M120 204 L128 196" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <path d="M170 200 L180 190 M176 204 L184 196" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          <path d="M116 196 L124 188 M121 200 L128 193" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+          <path d="M170 196 L178 188 M175 200 L182 193" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
 
           <!-- 前に流れる長いサイドの髪 -->
           <path d="M100 110 Q84 180 88 240 Q92 290 78 332 Q104 296 106 236 Q107 176 106 126 Z" fill="url(#hairG)" stroke="#3a86ac" stroke-width="1.4"/>
