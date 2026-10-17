@@ -106,6 +106,8 @@ button, input, select, textarea { font: inherit; color: inherit; letter-spacing:
 #say.done::after { content: "▼"; display: inline-block; margin-left: 6px; font-size: 12px; animation: cursor 1s steps(1) infinite; }
 @keyframes cursor { 50% { opacity: 0; } }
 .stage-tools { display: flex; gap: 10px; padding: 0 14px 16px; flex-wrap: wrap; }
+.vol { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; }
+.vol input { width: 110px; accent-color: var(--accent); }
 
 /* ---------- 共通部品 ---------- */
 .btn {
@@ -246,6 +248,8 @@ footer.fine { grid-column: 1 / -1; font-size: 12px; color: var(--ink-sub); text-
     <div class="bubble" aria-live="polite"><span class="plate">みお</span><p id="say"></p></div>
     <div class="stage-tools">
       <button class="btn small" id="waterBtn" aria-pressed="false" type="button">水の音を流す</button>
+      <button class="btn small" id="bgmBtn" aria-pressed="false" type="button">8bit BGMを流す</button>
+      <label class="vol" id="bgmVolWrap" hidden>音量 <input type="range" id="bgmVol" min="0" max="100" step="5"></label>
       <button class="btn small" id="themeBtn" type="button">表示の明るさ</button>
     </div>
   </section>
@@ -926,6 +930,76 @@ function stopWater() {
   w.g.gain.linearRampToValueAtTime(0, ac.currentTime + 1.5);
   setTimeout(() => { try { w.src.stop(); w.lfo.stop(); } catch (e) {} }, 1600);
 }
+/* チルな8bit BGM（ブラウザで生成。Fmaj7 → Em7 → Dm7 → Cmaj7 をゆっくりループ） */
+const BGM_BPM = 70;
+const BGM_CHORDS = [[53, 57, 60, 64], [52, 55, 59, 62], [50, 53, 57, 60], [48, 52, 55, 59]];
+const BGM_ARP = [0, 2, 1, 3, 2, 1, 3, 2];
+const BGM_LEAD = [72, 74, 76, 79, 81, 79, 76, 74];
+const mtof = (n) => 440 * Math.pow(2, (n - 69) / 12);
+let bgm = null;
+function bgmVolume() { const v = Number($('#bgmVol').value) / 100; return 0.6 * v * v; }
+function startBgm() {
+  const a = ctx(); if (!a) return;
+  const out = a.createGain(); out.gain.value = 0;
+  const lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1800; lp.Q.value = 0.3;
+  const bus = a.createGain();
+  const delay = a.createDelay(); delay.delayTime.value = 60 / BGM_BPM * 0.75;
+  const fb = a.createGain(); fb.gain.value = 0.28; const wet = a.createGain(); wet.gain.value = 0.3;
+  bus.connect(lp); bus.connect(delay); delay.connect(fb).connect(delay); delay.connect(wet).connect(lp);
+  lp.connect(out).connect(a.destination);
+  out.gain.linearRampToValueAtTime(bgmVolume(), a.currentTime + 2.5);
+  const noise = a.createBuffer(1, a.sampleRate * 0.2, a.sampleRate), nd = noise.getChannelData(0);
+  for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+  const tone = (type, f, t, dur, vol) => {
+    const o = a.createOscillator(), g = a.createGain();
+    o.type = type; o.frequency.value = f;
+    g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.015);
+    g.gain.setValueAtTime(vol * 0.7, t + dur * 0.6); g.gain.linearRampToValueAtTime(0, t + dur);
+    o.connect(g).connect(bus); o.start(t); o.stop(t + dur + 0.05);
+  };
+  const tick = (t, vol, hp) => {
+    const s = a.createBufferSource(), f = a.createBiquadFilter(), g = a.createGain();
+    s.buffer = noise; f.type = hp ? 'highpass' : 'bandpass'; f.frequency.value = hp ? 7000 : 1800;
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(0.0001, t + (hp ? 0.04 : 0.12));
+    s.connect(f).connect(g).connect(bus); s.start(t); s.stop(t + 0.15);
+  };
+  const step = 60 / BGM_BPM / 2;
+  let n = 0, next = a.currentTime + 0.15;
+  const schedule = (i, t) => {
+    const bar = Math.floor(i / 8), pos = i % 8, chord = BGM_CHORDS[bar % 4];
+    const swing = pos % 2 ? step * 0.14 : 0;
+    if (pos === 0) tone('triangle', mtof(chord[0] - 12), t, step * 3.5, 0.2);
+    if (pos === 4) tone('triangle', mtof(chord[0] - 5), t, step * 2.5, 0.14);
+    tone('square', mtof(chord[BGM_ARP[pos]] + 12), t + swing, step * 0.8, 0.028);
+    if (bar % 2 === 1 && (pos === 0 || pos === 3 || pos === 6)) {
+      tone('triangle', mtof(BGM_LEAD[(bar * 3 + pos) % BGM_LEAD.length]), t + swing, step * 2.2, 0.06);
+    }
+    if (pos % 2) tick(t + swing, 0.025, true);
+    if (pos === 4) tick(t, 0.05, false);
+  };
+  const timer = setInterval(() => { while (next < a.currentTime + 0.3) { schedule(n, next); n++; next += step; } }, 60);
+  bgm = { out, timer };
+}
+function stopBgm() {
+  if (!bgm || !ac) return;
+  const b = bgm; bgm = null;
+  b.out.gain.cancelScheduledValues(ac.currentTime); b.out.gain.setValueAtTime(b.out.gain.value, ac.currentTime);
+  b.out.gain.linearRampToValueAtTime(0, ac.currentTime + 1.5);
+  setTimeout(() => { clearInterval(b.timer); b.out.disconnect(); }, 1700);
+}
+$('#bgmBtn').addEventListener('click', (e) => {
+  const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
+  e.currentTarget.setAttribute('aria-pressed', String(on));
+  e.currentTarget.textContent = on ? '8bit BGMを止める' : '8bit BGMを流す';
+  $('#bgmVolWrap').hidden = !on;
+  if (on) { startBgm(); speak('チルな8bitの音を流しますね。大きく感じたら、音量を下げたり止めたりして大丈夫です。', 'smile'); }
+  else stopBgm();
+});
+$('#bgmVol').addEventListener('input', () => {
+  store.set('bgmVol', Number($('#bgmVol').value));
+  if (bgm && ac) bgm.out.gain.setTargetAtTime(bgmVolume(), ac.currentTime, 0.1);
+});
+$('#bgmVol').value = store.get('bgmVol', 40);
 $('#waterBtn').addEventListener('click', (e) => {
   const on = e.currentTarget.getAttribute('aria-pressed') !== 'true';
   e.currentTarget.setAttribute('aria-pressed', String(on));
