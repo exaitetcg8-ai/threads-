@@ -96,7 +96,7 @@ WrapStyle: 2
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Aff,Zen Maru Gothic,54,&H08FFFFFF,&H00FFFFFF,&H90303030,&H90000000,1,0,0,0,100,100,3,0,1,1.2,2.5,2,80,80,96,1
+Style: Aff,Zen Maru Gothic,54,&H00FFFFFF,&H00FFFFFF,&H70202020,&H50000000,1,0,0,0,100,100,3,0,1,1.8,3.5,2,80,80,96,1
 Style: Title,Zen Maru Gothic,58,&H10FFFFFF,&H00FFFFFF,&H50000000,&H78000000,0,0,0,0,100,100,6,0,1,0,2,5,80,80,0,1
 
 [Events]
