@@ -78,4 +78,4 @@ M.toast = (text) => {
 };
 
 // 名前の差しこみ
-M.fill = (text) => text.replace(/\{name\}/g, (M.store && M.store.get().settings.name) || 'あなた');
+M.fill = (text) => text.replace(/\{name\}/g, (M.store && M.store.get().settings.name) || 'キミ');

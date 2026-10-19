@@ -158,7 +158,7 @@ M.room = (() => {
     bindVal('#setRate', 'rate', null, true);
     bindVal('#setPitch', 'pitch', null, true);
     bindVal('#setVVol', 'vvol', null, true);
-    bindChk('#setVoice', 'voice', () => { if (s.voice) M.voice.say('声、きこえるかな。澪音です。よろしくね。', 'happy'); else M.voice.stop(); });
+    bindChk('#setVoice', 'voice', () => { if (s.voice) M.voice.say('声、きこえるかな。りんです。よろしくね。', 'happy'); else M.voice.stop(); });
     bindChk('#setCalm', 'calm', applyBody);
     bindChk('#setBigText', 'bigText', applyBody);
     bindChk('#setNotify', 'notify', () => {
@@ -166,10 +166,10 @@ M.room = (() => {
     });
     const name = M.$('#setName');
     name.value = s.name;
-    name.addEventListener('change', () => { s.name = name.value.trim(); M.store.save(); M.voice.say(s.name ? `${s.name}、ってよぶね。` : '「あなた」ってよぶね。', 'happy'); });
+    name.addEventListener('change', () => { s.name = name.value.trim(); M.store.save(); M.voice.say(s.name ? `${s.name}、ってよぶね。` : '「キミ」ってよぶね。', 'happy'); });
     M.$('#voiceTest').addEventListener('click', () => {
       const was = s.voice; s.voice = true;
-      M.voice.say(M.pick(['こんにちは、澪音です。ゆっくりしていってね。', '今日もここにいるよ。心地よく、自分らしく、自由にね。', 'おつかれさま。ひと休みしようか。']), 'smile');
+      M.voice.say(M.pick(['こんにちは、りんです♡ ゆっくりしていってね。', '今日もここにいるよ。心地よく、自分らしく、自由にね。', 'おつかれさま。ひと休みしようか。']), 'smile');
       s.voice = was;
     });
     fillVoiceSelect();
@@ -189,6 +189,17 @@ M.room = (() => {
     });
   }
 
+  function renderProfile() {
+    const P = M.story.PROFILE;
+    const box = M.$('#profileCard');
+    box.innerHTML = '';
+    box.append(M.el('h3', { text: 'Profile' }),
+      M.el('dl', { class: 'profile' }, M.el('dt', { text: '名前' }), M.el('dd', { text: P.name }),
+        ...P.rows.flatMap(([k, v]) => [M.el('dt', { text: k }), M.el('dd', { text: M.fill(v) })])),
+      M.el('div', { class: 'tiny muted', text: '好きなこと' }),
+      M.el('ul', { class: 'likes' }, ...P.likes.map((l) => M.el('li', { text: M.fill(l) }))));
+  }
+
   function applyBody() {
     const s = M.store.get().settings;
     document.body.classList.toggle('calm', s.calm);
@@ -200,6 +211,7 @@ M.room = (() => {
     applyScene();
     applyFurniture();
     renderUnlocks();
+    renderProfile();
     bindSettings();
     setInterval(() => { if (M.store.get().settings.time === 'auto') applyScene(); }, 10 * 60 * 1000);
   }

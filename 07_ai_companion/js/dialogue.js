@@ -103,7 +103,7 @@ M.dialogue = (() => {
   function reply(text) {
     const det = detect(text);
     if (det.type === 'crisis') {
-      const msg = 'そこまでつらい気持ちを、話してくれてありがとう。\nあなたのことが、とても大事だよ。\n今は、人の声につながってほしいな。相談先を出すね。';
+      const msg = 'そこまでつらい気持ちを、話してくれてありがとう。\nキミのことが、とても大事だよ。\n今は、人の声につながってほしいな。相談先を出すね。';
       addMsg('ai', msg);
       M.voice.say(msg, 'worry');
       M.$('#safeCard').hidden = false;

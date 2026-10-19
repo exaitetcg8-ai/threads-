@@ -7,7 +7,7 @@ M.store = (() => {
       voice: false,
       voiceName: '',
       rate: 95,
-      pitch: 112,
+      pitch: 120,
       vvol: 80,
       calm: false,
       bigText: false,
@@ -15,7 +15,7 @@ M.store = (() => {
       time: 'auto',
       weather: 'clear',
       theme: 'aqua',
-      outfit: 'hoodie',
+      outfit: 'knit',
       furniture: ['plant', 'lamp'],
       pomo: { work: 25, short: 5, long: 15, every: 4, auto: false, chime: true, talk: 1 },
       musicVol: 45,
@@ -45,6 +45,7 @@ M.store = (() => {
   data = Object.assign(base, data);
   data.settings = Object.assign(defaults().settings, data.settings);
   data.settings.pomo = Object.assign(defaults().settings.pomo, data.settings.pomo);
+  if (!['knit', 'parka', 'casual', 'bunny', 'idol', 'coat'].includes(data.settings.outfit)) data.settings.outfit = 'knit';
 
   let timer = null;
   const save = () => {

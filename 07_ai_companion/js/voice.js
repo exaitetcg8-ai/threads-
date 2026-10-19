@@ -1,4 +1,4 @@
-// 澪音の声：吹き出し表示＋端末の日本語女性音声で読み上げ
+// りんの声：吹き出し表示＋端末の日本語女性音声で読み上げ
 M.voice = (() => {
   const synth = window.speechSynthesis;
   let voices = [];

@@ -2,7 +2,9 @@
 M.app = (() => {
   const POKE = {
     any: ['なあに？', 'ふふ、くすぐったいよ。', 'ここにいるよ♪', '呼んだ？', 'いっしょにいられて、うれしいな。', '{name}、今日も来てくれてありがとう。',
-      'お水、飲んだ？', '肩、こってない？', 'なにもしなくても、ここにいていいんだよ。', 'いい音、聞こえる？', '心地よく、自分らしく、自由に、ね。', '今日の心の天気はどう？'],
+      'お水、飲んだ？', '肩、こってない？', 'なにもしなくても、ここにいていいんだよ。', 'いい音、聞こえる？', '心地よく、自分らしく、自由に、ね。', '今日の心の天気はどう？',
+      'にゃっ♪', 'キミが笑ってくれるだけで、わたしはうれしいよ♡', '今度、一緒にきれいな景色を見たいな。', 'ねえ、ごはん食べた？おいしいもの、教えてね。',
+      'この曲、すきなんだ♪', 'カフェの窓ぎわの席みたいな、のんびりした時間だね。', 'えへへ、来てくれてありがとう♡', 'ねこ、なでたいなぁ。'],
     working: ['しーっ、今は集中タイムだよ。', 'がんばってるね。応援してる。', 'わたしもノート書いてるよ。', 'あと少ししたら休憩だね。'],
     night: ['夜ふかしさん、目はつかれてない？', '眠くなったら、むりせず寝ようね。', '静かな夜だね。'],
     morning: ['朝の光、きれいだね。', 'ゆっくり起きて大丈夫だよ。'],
@@ -64,7 +66,7 @@ M.app = (() => {
     if (M.focus.running && M.focus.phase === 'work') pool = POKE.working;
     else if (tod === 'night' && Math.random() < 0.4) pool = POKE.night;
     else if (tod === 'morning' && Math.random() < 0.4) pool = POKE.morning;
-    M.voice.say(M.pickFresh('poke' + pool.length, pool, 4), M.pick(['smile', 'happy', 'surprise']));
+    M.voice.say(M.pickFresh('poke' + pool.length, pool, 4), M.pick(['smile', 'happy', 'wink', 'surprise']));
     M.room.floatNote();
   }
 
@@ -98,7 +100,7 @@ M.app = (() => {
     const s = M.store.get();
     const first = !s.talks && !s.bond;
     const greet = first
-      ? 'はじめまして。わたしは澪音（みおん）。\nここは、がんばっても、がんばらなくてもいい部屋だよ。\nおしゃべりしたり、5分ワークをしたり、一緒に作業したり。好きにすごしてね。'
+      ? 'はじめまして、りんです♡\nここは、がんばっても、がんばらなくてもいい部屋だよ。\nおしゃべりしたり、5分ワークをしたり、一緒に作業したり。キミの好きにすごしてね。'
       : M.pick(M.dialogueData.GREET[M.timeOfDay()]);
     setTimeout(() => M.voice.say(greet, 'smile'), 400);
 

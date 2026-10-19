@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>澪音のへや</title>
+<title>りんのへや</title>
 <meta name="description" content="繊細さんのためのメンタル最適化AIコンパニオン。おしゃべり、5分ワーク、作業支援（ポモドーロ・lo-fi・環境音）。心地よく、自分らしく、自由に。">
-<meta name="theme-color" content="#cfeef6">
+<meta name="theme-color" content="#e8eeff">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div id="app" class="app">
 
   <!-- ステージ：部屋とキャラクター -->
-  <section id="stage" class="stage" aria-label="澪音のへや">
+  <section id="stage" class="stage" aria-label="りんのへや">
     <div class="room" id="room">
       <div class="window" id="window">
         <div class="sky" id="sky"></div>
@@ -31,11 +31,11 @@
     </div>
 
     <div class="chara-wrap" id="charaWrap">
-      <div id="chara" class="chara" role="img" aria-label="澪音（みおん）"></div>
+      <div id="chara" class="chara" role="img" aria-label="りん"></div>
     </div>
 
     <div class="bubble" id="bubble" aria-live="polite">
-      <div class="bubble-name">澪音</div>
+      <div class="bubble-name">りん</div>
       <div class="bubble-text" id="bubbleText">…</div>
     </div>
 
@@ -135,7 +135,7 @@
           </div>
           <label class="check"><input type="checkbox" id="cAuto"> 休憩のあと自動で次をはじめる</label>
           <label class="check"><input type="checkbox" id="cChime" checked> 切りかわりにやさしいチャイム</label>
-          <label>作業中の澪音のひとこと
+          <label>作業中のりんのひとこと
             <select id="cTalk"><option value="0">話しかけない</option><option value="1">ときどき</option><option value="2">ふつう</option></select>
           </label>
         </details>
@@ -178,12 +178,13 @@
       <div class="stats" id="stats"></div>
       <div class="card"><h3>この7日間の集中（分）</h3><div id="weekChart"></div></div>
       <div class="card"><h3>ワークのスタンプ</h3><div id="stampCal" class="stamp-cal"></div></div>
-      <div class="card"><h3>澪音のものがたり</h3><div id="storyList" class="story-list"></div></div>
+      <div class="card"><h3>りんのものがたり</h3><div id="storyList" class="story-list"></div></div>
       <div class="card"><h3>こころの天気の記録</h3><div id="moodLog" class="mood-log"></div></div>
     </div>
 
     <!-- へや・設定 -->
     <div class="tab-body" data-body="room">
+      <div class="card" id="profileCard"></div>
       <div class="card">
         <h3>景色</h3>
         <div class="row-wrap">
@@ -193,10 +194,10 @@
         </div>
       </div>
       <div class="card"><h3>家具・小物</h3><div id="furnList" class="unlock-grid"></div></div>
-      <div class="card"><h3>澪音の服</h3><div id="outfitList" class="unlock-grid"></div></div>
+      <div class="card"><h3>りんの服</h3><div id="outfitList" class="unlock-grid"></div></div>
       <div class="card">
         <h3>声</h3>
-        <label class="check"><input type="checkbox" id="setVoice"> 澪音の声で読み上げる（女性ボイス）</label>
+        <label class="check"><input type="checkbox" id="setVoice"> りんの声で読み上げる（女性ボイス）</label>
         <div class="row-wrap">
           <label>声の種類<select id="setVoiceName"></select></label>
           <label class="slider">はやさ<input type="range" id="setRate" min="70" max="120"></label>
@@ -208,7 +209,7 @@
       </div>
       <div class="card">
         <h3>心地よさの設定</h3>
-        <label>呼び名<input id="setName" maxlength="12" placeholder="あなた"></label>
+        <label>呼び名<input id="setName" maxlength="12" placeholder="キミ"></label>
         <label class="check"><input type="checkbox" id="setCalm"> 動きを少なくする</label>
         <label class="check"><input type="checkbox" id="setBigText"> 文字を大きくする</label>
         <label class="check"><input type="checkbox" id="setNotify"> 時間になったら通知する</label>
@@ -222,7 +223,7 @@
       </div>
       <div class="card about">
         <h3>このアプリについて</h3>
-        <p>テーマは「心地よく、自分らしく、自由に」。やらなくても大丈夫、休んでも大丈夫。できた日も、できなかった日も、あなたのペースが正解です。</p>
+        <p>テーマは「心地よく、自分らしく、自由に」。やらなくても大丈夫、休んでも大丈夫。できた日も、できなかった日も、キミのペースが正解です。</p>
         <p class="tiny muted">このアプリはセルフケアのためのもので、医療や心理療法の代わりではありません。つらさが2週間以上続く、眠れない、食べられない時は、医療機関や相談窓口を頼ってください。</p>
       </div>
     </div>
@@ -232,7 +233,7 @@
   <div class="overlay" id="safeCard" hidden>
     <div class="sheet">
       <h3>話してくれて、ありがとう</h3>
-      <p>いま、とてもつらいんだね。ひとりで抱えなくていいよ。<br>澪音はAIだから、あなたを直接守ることができない。だから、人の声につながってほしいな。</p>
+      <p>いま、とてもつらいんだね。ひとりで抱えなくていいよ。<br>りんはAIだから、キミを直接守ることができない。だから、人の声につながってほしいな。</p>
       <ul class="hotline">
         <li><b>いのちの電話</b>　<a href="tel:0570783556">0570-783-556</a></li>
         <li><b>よりそいホットライン</b>（24時間・無料）　<a href="tel:0120279338">0120-279-338</a></li>

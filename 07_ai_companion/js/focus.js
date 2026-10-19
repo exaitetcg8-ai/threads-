@@ -10,7 +10,7 @@ M.focus = (() => {
 
   const LINES = {
     start: ['じゃあ、はじめよっか。わたしもとなりで書きものするね。', 'いってらっしゃい。ここで一緒にがんばるよ。', 'ゆっくりいこう。わからなくなったら、深呼吸ね。', 'スタート。完ぺきじゃなくて大丈夫だよ。', '一緒にいるから、ひとりじゃないよ。'],
-    during: ['……♪', '（澪音はノートに何か書いている）', 'いい調子だね。', '肩の力、ぬけてるかな？', 'お水、近くにある？', '（ページをめくる音）', 'ここ、静かでいいね。', '……ふう。', 'その調子、その調子。', '（澪音は小さく鼻歌をうたっている）', 'わたしもがんばるね。', '姿勢、ちょっとだけ伸ばしてみる？'],
+    during: ['……♪', '（りんはノートに何か書いている）', 'いい調子だね。', '肩の力、ぬけてるかな？', 'お水、近くにある？', '（ページをめくる音）', 'ここ、静かでいいね。', '……ふう。', 'その調子、その調子。', '（りんは小さく鼻歌をうたっている）', 'わたしもがんばるね。', '姿勢、ちょっとだけ伸ばしてみる？'],
     toBreak: ['おつかれさま！休憩の時間だよ。', 'ひと区切り！えらいね。少し休もう。', 'できたね。休憩しよっか。', 'おつかれさま。画面から目をはなして、遠くを見てね。', 'わあ、集中できたね。ひと休みしよう。'],
     breakTip: ['立ち上がって、ぐーっと伸びをしてみよう。', 'お水かお茶を一杯どうぞ。', '窓の外を眺めて、目を休めよう。', '肩をストンと落として、3回呼吸しよう。', 'ちょっと歩いてみる？', '休憩中は、スマホも少しお休みしよう。', '手首と指を、ぶらぶらほぐそう。', '目を閉じて、30秒だけ何もしないでみよう。'],
     toLong: ['たくさんがんばったね。長めの休憩にしよう。', 'ここまで本当にえらいよ。ゆっくり休んでね。', '長い休憩だよ。おやつタイムにしちゃう？'],
@@ -131,7 +131,7 @@ M.focus = (() => {
   function notify(title, body) {
     const s = M.store.get().settings;
     if (!s.notify || !('Notification' in window) || Notification.permission !== 'granted' || !document.hidden) return;
-    try { new Notification('澪音：' + title, { body }); } catch (e) {}
+    try { new Notification('りん：' + title, { body }); } catch (e) {}
   }
 
   function render() {
@@ -147,7 +147,7 @@ M.focus = (() => {
     M.$('#miniTime').textContent = t;
     M.$('#miniPhase').textContent = PHASE_LABEL[phase];
     M.$('#miniTimer').hidden = !running && remain === total;
-    document.title = running ? `${t} ${PHASE_LABEL[phase]}｜澪音のへや` : '澪音のへや';
+    document.title = running ? `${t} ${PHASE_LABEL[phase]}｜りんのへや` : 'りんのへや';
     if (pip) {
       pip.document.getElementById('t').textContent = t;
       pip.document.getElementById('p').textContent = PHASE_LABEL[phase] + (running ? '' : '（停止中）');
@@ -256,7 +256,7 @@ M.focus = (() => {
           <style>body{margin:0;font-family:sans-serif;background:linear-gradient(180deg,#e8f6f9,#d4eef4);color:#2f4753;display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh}
           #t{font-size:44px;font-variant-numeric:tabular-nums}#p{font-size:13px;color:#5f7a86}.n{color:#3f9fbf;font-size:12px}
           button{border:none;background:#3f9fbf;color:#fff;border-radius:999px;padding:4px 16px;margin-top:4px;cursor:pointer}</style>
-          <div class="n">♪ 澪音といっしょ</div><div id="p"></div><div id="t"></div><button id="b"></button>`;
+          <div class="n">♪ りんといっしょ</div><div id="p"></div><div id="t"></div><button id="b"></button>`;
         pip.document.getElementById('b').addEventListener('click', start);
         pip.addEventListener('pagehide', () => { pip = null; });
         render();

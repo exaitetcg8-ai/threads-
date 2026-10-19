@@ -1,160 +1,233 @@
-// 澪音（みおん）：水色・音符・水の流れがモチーフの中性的なキャラクター
-// SVGで描いた2Dモデル。まばたき、呼吸、髪ゆれ、表情、口パク、作業中ポーズに対応。
+// りん：銀白の髪に水色・ラベンダーのグラデーション、青紫の瞳、白い花と水色リボンのヘアピン
+// SVGで描いた2Dモデル。まばたき、呼吸、髪ゆれ、表情（ウインク含む）、口パク、作業中ポーズ、服ごとの小物に対応。
 M.chara = (() => {
+  // body: normal（ふつうの首まわり）/ off（オフショルダー）
+  // acc: 表示する小物（catears, bunny, headphones, twintails, bigbow, hood）
   const OUTFITS = {
-    hoodie:  { label: 'みずいろパーカー', main: '#f4fbff', sub: '#8fd8ea', accent: '#3f9fbf', lv: 1 },
-    sailor:  { label: 'なみまセーラー',   main: '#ffffff', sub: '#4d8fc4', accent: '#7fd3e6', lv: 3 },
-    knit:    { label: 'ゆったりニット',   main: '#e9f1f7', sub: '#b9d3e3', accent: '#6fa8c8', lv: 5 },
-    yukata:  { label: 'みなも浴衣',       main: '#e6f6fb', sub: '#5fb7d3', accent: '#2f7ea3', lv: 7 },
-    pajama:  { label: 'くもパジャマ',     main: '#f1eefc', sub: '#cfc8f2', accent: '#8f86c9', lv: 9 },
-    coat:    { label: 'しずくコート',     main: '#dff1f6', sub: '#7cbcd2', accent: '#2c6f8c', lv: 12 },
+    knit:   { label: 'もこもこニット',       lv: 1,  main: '#fbfbff', sub: '#eef0fa', accent: '#8fb4f0', body: 'off',    acc: [] },
+    parka:  { label: 'ねこみみパーカー',     lv: 3,  main: '#eaf3ff', sub: '#ffffff', accent: '#5b7fd6', body: 'normal', acc: ['hood', 'catears', 'bigbow'] },
+    casual: { label: 'ヘッドホンとツインテ', lv: 5,  main: '#3a3f5c', sub: '#f4f6ff', accent: '#8fb4f0', body: 'normal', acc: ['twintails', 'headphones'] },
+    bunny:  { label: 'うさみみルームウェア', lv: 7,  main: '#f3f1fb', sub: '#e4e0f5', accent: '#a99be0', body: 'normal', acc: ['hood', 'bunny'] },
+    idol:   { label: 'ステージ衣装',         lv: 9,  main: '#ffffff', sub: '#2e3a78', accent: '#4f7fe6', body: 'normal', acc: ['bigbow'] },
+    coat:   { label: 'ふわふわコート',       lv: 12, main: '#f6f8ff', sub: '#dfe7fb', accent: '#7f9ee0', body: 'normal', acc: ['bigbow'] },
   };
+
+  const SKIN = '#fff0ea';
+
+  const eye = (x, y, flip) => `
+    <g class="c-eye c-eye-${flip ? 'r' : 'l'}" transform="translate(${x} ${y}) scale(1.12)">
+      <g class="c-eye-open">
+        <ellipse rx="15" ry="18.5" fill="#fff"/>
+        <g class="c-iris">
+          <ellipse rx="13" ry="17" fill="url(#irisG)"/>
+          <ellipse rx="13" ry="17" fill="none" stroke="#3d3f8f" stroke-width="1.2" opacity=".6"/>
+          <ellipse cy="2" rx="6" ry="8" fill="#2f3277"/>
+          <ellipse cy="9" rx="9" ry="5" fill="#b9cbff" opacity=".55"/>
+          <circle cx="-5" cy="-7" r="4.6" fill="#fff"/>
+          <circle cx="5" cy="-9" r="1.8" fill="#fff"/>
+          <circle cx="4" cy="7" r="2.2" fill="#fff" opacity=".9"/>
+        </g>
+        <path d="${flip ? 'M-17 -11 C-9 -22 9 -23 17 -14 L18 -9' : 'M17 -11 C9 -22 -9 -23 -17 -14 L-18 -9'}" stroke="#4a4f7a" stroke-width="3.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M-8 18 C-3 20 3 20 8 18" stroke="#c9b8c8" stroke-width="1.2" fill="none"/>
+      </g>
+      <path class="c-eye-closed" style="display:none" d="M-14 2 C-8 -9 8 -9 14 2" stroke="#4a4f7a" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+      <path class="c-eye-sleepy" style="display:none" d="M-14 2 C-8 8 8 8 14 2" stroke="#4a4f7a" stroke-width="3.4" fill="none" stroke-linecap="round"/>
+    </g>`;
 
   const svg = `
 <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <linearGradient id="hairG" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#bff0fa"/>
-      <stop offset=".55" stop-color="#86d6ea"/>
-      <stop offset="1" stop-color="#5fb8d6"/>
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset=".45" stop-color="#eef0fa"/>
+      <stop offset=".8" stop-color="#d6dcf3"/>
+      <stop offset="1" stop-color="#b9c6ee"/>
     </linearGradient>
-    <linearGradient id="hairShade" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#6cc3dd"/>
-      <stop offset="1" stop-color="#4a9fc0"/>
+    <linearGradient id="hairBack" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#dfe3f5"/>
+      <stop offset=".6" stop-color="#c9d2f0"/>
+      <stop offset="1" stop-color="#a9bdf0"/>
     </linearGradient>
-    <radialGradient id="irisG" cx=".5" cy=".35" r=".7">
-      <stop offset="0" stop-color="#c9f6ff"/>
-      <stop offset=".45" stop-color="#5cc7e3"/>
-      <stop offset="1" stop-color="#2a7fa6"/>
+    <radialGradient id="irisG" cx=".5" cy=".3" r=".8">
+      <stop offset="0" stop-color="#dfe8ff"/>
+      <stop offset=".35" stop-color="#8ea6f2"/>
+      <stop offset=".75" stop-color="#5a62cf"/>
+      <stop offset="1" stop-color="#3a3c94"/>
     </radialGradient>
     <linearGradient id="skinG" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fff3ec"/>
-      <stop offset="1" stop-color="#fde4d8"/>
+      <stop offset="0" stop-color="#fff6f2"/>
+      <stop offset="1" stop-color="${SKIN}"/>
     </linearGradient>
+    <pattern id="knit" width="10" height="12" patternUnits="userSpaceOnUse">
+      <path d="M5 0 L5 12" stroke="#000" stroke-width="1" opacity=".035"/>
+    </pattern>
   </defs>
 
   <g class="c-body">
-    <!-- うしろ髪 -->
-    <path class="c-hair-back" fill="url(#hairShade)"
-      d="M128 150 C118 200 116 250 124 296 C140 306 160 300 172 290 L228 290 C240 300 260 306 276 296 C284 250 282 200 272 150 Z"/>
+   <g transform="translate(0 14)">
+    <!-- ツインテール（服によって表示） -->
+    <g class="acc acc-twintails">
+      <path class="c-tail-l" fill="url(#hairBack)" d="M134 130 C80 150 62 240 76 330 C84 380 70 410 60 430 C96 420 112 380 110 330 C106 260 118 190 150 150 Z"/>
+      <path class="c-tail-r" fill="url(#hairBack)" d="M266 130 C320 150 338 240 324 330 C316 380 330 410 340 430 C304 420 288 380 290 330 C294 260 282 190 250 150 Z"/>
+    </g>
 
+    <!-- フード（うしろ） -->
+    <g class="acc acc-hood">
+      <path class="c-sub-fill" d="M108 230 C92 120 150 66 200 66 C250 66 308 120 292 230 C300 270 280 300 250 306 L150 306 C120 300 100 270 108 230 Z"/>
+      <path class="c-accent-stroke" fill="none" stroke-width="2" opacity=".4" d="M120 220 C112 130 160 84 200 84 C240 84 288 130 280 220"/>
+    </g>
+
+    <!-- うしろ髪（長め） -->
+    <path class="c-hair-back" fill="url(#hairBack)" stroke="#c3cbea" stroke-width="1.5"
+      d="M124 140 C98 220 94 330 102 462 C126 478 154 474 172 456 L228 456 C246 474 274 478 298 462 C306 330 302 220 276 140 Z"/>
+
+   </g>
     <!-- 首 -->
-    <path fill="#f9dccf" d="M182 246 L218 246 L220 300 L180 300 Z"/>
+    <path fill="#fbe2d8" d="M184 258 L216 258 L218 306 L182 306 Z"/>
 
-    <!-- 服 -->
-    <g class="c-clothes">
-      <path class="c-main" d="M96 500 C96 380 128 318 182 300 L200 318 L218 300 C272 318 304 380 304 500 Z"/>
-      <path class="c-sub" d="M150 312 C170 330 188 336 200 318 C212 336 230 330 250 312 C262 318 270 326 276 336 C250 352 226 350 200 340 C174 350 150 352 124 336 C130 326 138 318 150 312 Z"/>
-      <path class="c-accent" d="M200 340 L200 500" stroke-width="3" fill="none"/>
-      <!-- すそ：水の流れ模様 -->
-      <path class="c-wave" fill="none" stroke-width="3" stroke-linecap="round"
-        d="M110 460 C130 448 150 472 170 460 S210 448 230 460 S270 472 292 458"/>
-      <path class="c-wave" fill="none" stroke-width="2" stroke-linecap="round" opacity=".6"
-        d="M106 478 C126 466 146 490 166 478 S206 466 226 478 S266 490 296 476"/>
-      <!-- 胸の音符ブローチ -->
-      <g class="c-brooch" transform="translate(200 352)">
-        <circle r="11" fill="#fff" class="c-accent-stroke" stroke-width="2"/>
-        <path d="M-2 5 L-2 -6 L5 -8 L5 3" stroke="#3f9fbf" stroke-width="1.8" fill="none"/>
-        <circle cx="-4" cy="5" r="2.6" fill="#3f9fbf"/><circle cx="3" cy="3" r="2.6" fill="#3f9fbf"/>
+    <!-- 服：オフショルダー -->
+    <g class="body body-off">
+      <path fill="${SKIN}" d="M206 298 C240 300 282 314 306 348 L296 360 L230 340 Z"/>
+      <path d="M252 314 L262 350" stroke="#9cc0f2" stroke-width="3.5" stroke-linecap="round"/>
+      <path class="c-main" d="M66 500 C66 392 104 318 166 300 C176 312 186 318 198 320 C232 330 266 340 300 352 C326 390 334 440 334 500 Z"/>
+      <path fill="url(#knit)" d="M66 500 C66 392 104 318 166 300 C176 312 186 318 198 320 C232 330 266 340 300 352 C326 390 334 440 334 500 Z"/>
+      <path class="c-sub-stroke" fill="none" stroke-width="9" stroke-linecap="round" d="M164 302 C176 318 190 322 200 323 C236 332 268 342 302 352"/>
+      <path fill="none" stroke="#e0e4f2" stroke-width="1.2" stroke-dasharray="2 3" d="M164 302 C176 318 190 322 200 323 C236 332 268 342 302 352"/>
+      <!-- 胸元の水色リボン -->
+      <g transform="translate(198 346)">
+        <path class="c-accent-fill" d="M0 0 L-14 -7 L-14 7 Z M0 0 L14 -7 L14 7 Z"/>
+        <circle r="3.5" class="c-accent-fill"/>
+        <path class="c-accent-stroke" stroke-width="2.5" fill="none" d="M-2 2 L-7 18 M2 2 L7 18"/>
       </g>
     </g>
 
-    <!-- 首にかけたヘッドホン -->
-    <g class="c-phones">
-      <path d="M150 300 C150 330 250 330 250 300" stroke="#e8f4f8" stroke-width="7" fill="none"/>
-      <rect x="138" y="290" width="20" height="26" rx="8" fill="#fff" stroke="#8fd8ea" stroke-width="3"/>
-      <rect x="242" y="290" width="20" height="26" rx="8" fill="#fff" stroke="#8fd8ea" stroke-width="3"/>
+    <!-- 服：ふつう -->
+    <g class="body body-normal">
+      <path class="c-main" d="M66 500 C66 390 106 318 168 300 L200 318 L232 300 C294 318 334 390 334 500 Z"/>
+      <path class="c-sub-fill" d="M150 308 C170 330 188 336 200 318 C212 336 230 330 250 308 C262 314 272 324 278 336 C252 352 226 350 200 340 C174 350 148 352 122 336 C128 324 138 314 150 308 Z"/>
+      <path class="c-accent-stroke" d="M200 340 L200 500" stroke-width="2.5" fill="none"/>
+    </g>
+
+    <!-- 大きなリボン -->
+    <g class="acc acc-bigbow" transform="translate(200 334)">
+      <path class="c-accent-fill" d="M0 0 C-10 -16 -34 -18 -34 -2 C-34 12 -12 10 0 0 Z M0 0 C10 -16 34 -18 34 -2 C34 12 12 10 0 0 Z"/>
+      <path class="c-accent-fill" d="M-3 2 L-14 34 L-6 30 L0 4 Z M3 2 L14 34 L6 30 L0 4 Z" opacity=".85"/>
+      <circle r="5" fill="#fff"/><circle r="3" class="c-accent-fill"/>
     </g>
 
     <!-- 頭 -->
+   <g transform="translate(0 14)">
     <g class="c-head">
-      <path fill="url(#skinG)" d="M140 162 C140 104 260 104 260 162 C260 214 236 258 200 262 C164 258 140 214 140 162 Z"/>
+      <path fill="url(#skinG)" d="M142 164 C142 106 258 106 258 164 C258 214 234 252 200 256 C166 252 142 214 142 164 Z"/>
 
       <!-- ほお -->
-      <ellipse class="c-blush" cx="160" cy="214" rx="13" ry="6" fill="#ffb7c2" opacity=".45"/>
-      <ellipse class="c-blush" cx="240" cy="214" rx="13" ry="6" fill="#ffb7c2" opacity=".45"/>
+      <g class="c-blush-g">
+        <ellipse class="c-blush" cx="160" cy="216" rx="15" ry="7" fill="#ffadbd" opacity=".55"/>
+        <ellipse class="c-blush" cx="240" cy="216" rx="15" ry="7" fill="#ffadbd" opacity=".55"/>
+        <path d="M152 214 l4 -5 M159 215 l4 -5 M166 216 l4 -5 M234 214 l4 -5 M241 215 l4 -5 M248 216 l4 -5" stroke="#f497a8" stroke-width="1.2" opacity=".6"/>
+      </g>
 
-      <!-- 目（ひらき） -->
-      <g class="c-eyes-open">
-        <g class="c-eye" transform="translate(172 192)">
-          <ellipse rx="13" ry="16" fill="#fff"/>
-          <g class="c-iris"><ellipse rx="11" ry="14.5" fill="url(#irisG)"/>
-            <ellipse rx="5" ry="6.5" fill="#1f5f80"/>
-            <circle cx="-4" cy="-6" r="3.6" fill="#fff"/><circle cx="4" cy="5" r="1.6" fill="#fff" opacity=".85"/>
-          </g>
-          <path d="M-15 -12 C-8 -20 8 -20 15 -11" stroke="#2f5d72" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-        </g>
-        <g class="c-eye" transform="translate(228 192)">
-          <ellipse rx="13" ry="16" fill="#fff"/>
-          <g class="c-iris"><ellipse rx="11" ry="14.5" fill="url(#irisG)"/>
-            <ellipse rx="5" ry="6.5" fill="#1f5f80"/>
-            <circle cx="-4" cy="-6" r="3.6" fill="#fff"/><circle cx="4" cy="5" r="1.6" fill="#fff" opacity=".85"/>
-          </g>
-          <path d="M-15 -11 C-8 -20 8 -20 15 -12" stroke="#2f5d72" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-        </g>
-      </g>
-      <!-- 目（にっこり・とじ） -->
-      <g class="c-eyes-closed" style="display:none">
-        <path d="M159 194 C165 184 179 184 185 194" stroke="#2f5d72" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-        <path d="M215 194 C221 184 235 184 241 194" stroke="#2f5d72" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-      </g>
-      <g class="c-eyes-sleepy" style="display:none">
-        <path d="M159 194 C165 199 179 199 185 194" stroke="#2f5d72" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-        <path d="M215 194 C221 199 235 199 241 194" stroke="#2f5d72" stroke-width="3.2" fill="none" stroke-linecap="round"/>
-      </g>
+      ${eye(171, 192, false)}
+      ${eye(229, 192, true)}
 
       <!-- まゆ -->
-      <path class="c-brow c-brow-l" d="M160 168 C166 164 176 164 182 166" stroke="#5aa9c6" stroke-width="2.4" fill="none" stroke-linecap="round"/>
-      <path class="c-brow c-brow-r" d="M218 166 C224 164 234 164 240 168" stroke="#5aa9c6" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path class="c-brow c-brow-l" d="M158 165 C164 161 174 161 182 164" stroke="#b9bfdc" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path class="c-brow c-brow-r" d="M218 164 C226 161 236 161 242 165" stroke="#b9bfdc" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M200 214 l-1.5 4" stroke="#f0c4b8" stroke-width="1.4" stroke-linecap="round"/>
 
       <!-- 口 -->
       <g class="c-mouth">
-        <path data-m="normal" d="M193 232 C197 235 203 235 207 232" stroke="#c97a7a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <path data-m="smile" d="M190 229 C195 237 205 237 210 229" stroke="#c97a7a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <path data-m="happy" d="M189 228 C192 240 208 240 211 228 Z" fill="#e88f95"/>
-        <path data-m="worry" d="M193 234 C197 231 203 231 207 234" stroke="#c97a7a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <ellipse data-m="o" cx="200" cy="233" rx="4.5" ry="5.5" fill="#e88f95"/>
-        <ellipse data-m="a" cx="200" cy="232" rx="6.5" ry="4" fill="#e88f95"/>
+        <path data-m="normal" d="M194 232 C197 235 203 235 206 232" stroke="#c4707e" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <g data-m="smile"><path d="M190 228 C192 238 208 238 210 228 Z" fill="#e0727f"/><path d="M194 234 C198 238 202 238 206 234" fill="#ffa7b2"/></g>
+        <g data-m="happy"><path d="M186 226 C188 244 212 244 214 226 Z" fill="#d9606f"/><path d="M191 236 C196 243 204 243 209 236 C205 233 195 233 191 236 Z" fill="#ff9fab"/><path d="M188 227 L212 227" stroke="#fff" stroke-width="2"/></g>
+        <path data-m="worry" d="M193 234 C197 230 203 230 207 234" stroke="#c4707e" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <ellipse data-m="o" cx="200" cy="233" rx="5" ry="6" fill="#d9606f"/>
+        <ellipse data-m="a" cx="200" cy="232" rx="8" ry="5.5" fill="#d9606f"/>
+      </g>
+
+      <!-- ヘッドホン（頭につける） -->
+      <g class="acc acc-headphones">
+        <path d="M134 176 C128 74 272 74 266 176" stroke="#2c2f45" stroke-width="9" fill="none" stroke-linecap="round"/>
       </g>
 
       <!-- 前髪 -->
-      <path class="c-hair-front" fill="url(#hairG)"
-        d="M134 178 C126 106 168 78 200 80 C236 78 276 104 266 180 L256 150 L247 174 L236 130 L222 166 L208 122 L192 164 L178 126 L166 170 L152 138 L144 182 Z"/>
-      <!-- サイドの髪（ゆれる） -->
-      <path class="c-lock c-lock-l" fill="url(#hairG)" d="M138 150 C126 186 128 236 142 268 C148 250 150 226 152 196 Z"/>
-      <path class="c-lock c-lock-r" fill="url(#hairG)" d="M262 150 C274 186 272 236 258 268 C252 250 250 226 248 196 Z"/>
-      <!-- 髪のハイライト（水面の反射） -->
-      <path d="M160 104 C178 94 200 92 218 96" stroke="#ffffff" stroke-width="3" fill="none" opacity=".7" stroke-linecap="round"/>
-      <!-- アホ毛 -->
-      <path class="c-ahoge" d="M200 82 C196 60 214 52 222 62 C212 60 206 68 204 82 Z" fill="#86d6ea"/>
+      <path class="c-hair-front" fill="url(#hairG)" stroke="#cdd4ee" stroke-width="1.2" stroke-linejoin="round"
+        d="M134 182 C122 104 166 76 200 78 C238 76 280 102 266 184 L258 150 L250 178 L240 128 L228 170 L214 118 L204 166 L192 120 L182 168 L170 126 L160 176 L152 140 L144 186 Z"/>
+      <path d="M170 126 L166 160 M192 120 L190 150 M214 118 L218 150 M240 128 L244 158" stroke="#c6cfee" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".9"/>
+      <!-- 横の長い髪（ゆれる） -->
+      <path class="c-lock c-lock-l" fill="url(#hairG)" d="M140 150 C122 210 118 320 134 410 C150 380 156 300 156 200 Z"/>
+      <path class="c-lock c-lock-r" fill="url(#hairG)" d="M260 150 C278 210 282 320 266 410 C250 380 244 300 244 200 Z"/>
+      <path d="M140 220 C134 280 136 340 140 380 M260 220 C266 280 264 340 260 380" stroke="#c6cfee" stroke-width="1.4" fill="none" opacity=".8"/>
+      <!-- 天使の輪 -->
+      <path d="M156 106 C178 94 222 94 244 106" stroke="#ffffff" stroke-width="4" fill="none" opacity=".9" stroke-linecap="round"/>
+      <path class="c-ahoge" d="M198 80 C192 58 210 50 218 60 C208 58 202 66 202 80 Z" fill="#eef0fa"/>
 
-      <!-- 音符のヘアピン -->
-      <g class="c-pin" transform="translate(246 120) rotate(14)">
-        <path d="M0 10 L0 -10 L12 -14 L12 6" stroke="#3f9fbf" stroke-width="3" fill="none" stroke-linejoin="round"/>
-        <ellipse cx="-3.5" cy="10" rx="5" ry="4" fill="#3f9fbf" transform="rotate(-20 -3.5 10)"/>
-        <ellipse cx="8.5" cy="6" rx="5" ry="4" fill="#3f9fbf" transform="rotate(-20 8.5 6)"/>
+      <!-- ヘッドホンのイヤーカップ -->
+      <g class="acc acc-headphones">
+        <rect x="120" y="160" width="24" height="40" rx="10" fill="#2c2f45"/>
+        <rect x="256" y="160" width="24" height="40" rx="10" fill="#2c2f45"/>
+        <rect x="124" y="168" width="8" height="24" rx="4" fill="#8fb4f0"/>
+        <rect x="268" y="168" width="8" height="24" rx="4" fill="#8fb4f0"/>
       </g>
-      <!-- しずくのピン -->
-      <path transform="translate(152 128)" d="M0 -9 C5 -2 7 2 7 5 A7 7 0 0 1 -7 5 C-7 2 -5 -2 0 -9 Z" fill="#c9f2fb" stroke="#5fb8d6" stroke-width="1.5"/>
+
+      <!-- ねこみみ -->
+      <g class="acc acc-catears">
+        <path class="c-sub-fill c-accent-stroke" stroke-width="1.5" d="M136 118 L130 60 L178 92 Z"/>
+        <path class="c-sub-fill c-accent-stroke" stroke-width="1.5" d="M264 118 L270 60 L222 92 Z"/>
+        <path d="M140 108 L137 74 L166 94 Z M260 108 L263 74 L234 94 Z" fill="#ffd3dc"/>
+      </g>
+      <!-- うさみみ -->
+      <g class="acc acc-bunny">
+        <path class="c-sub-fill c-accent-stroke c-ear-l" stroke-width="1.5" d="M150 96 C110 70 82 110 96 170 C106 186 120 160 130 130 Z"/>
+        <path class="c-sub-fill c-accent-stroke c-ear-r" stroke-width="1.5" d="M250 96 C290 70 318 110 304 170 C294 186 280 160 270 130 Z"/>
+        <path d="M140 104 C116 92 102 116 106 150 Z M260 104 C284 92 298 116 294 150 Z" fill="#ffdbe3"/>
+      </g>
+
+      <!-- ヘアクリップ（2本） -->
+      <g transform="translate(236 132)">
+        <rect x="-3" y="-16" width="6" height="32" rx="3" fill="#ffffff" stroke="#8fb4f0" stroke-width="1.6" transform="rotate(35)"/>
+        <rect x="-3" y="-16" width="6" height="32" rx="3" fill="#ffffff" stroke="#8fb4f0" stroke-width="1.6" transform="rotate(-25)"/>
+      </g>
+      <!-- 白い花と水色リボンのヘアピン -->
+      <g class="c-flower" transform="translate(262 146)">
+        <path d="M0 6 C-4 20 -8 34 -12 46 M2 6 C6 22 10 34 16 44" stroke="#7fa6ec" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <path d="M0 4 L-12 -2 L-10 10 Z M0 4 L12 -2 L10 10 Z" fill="#7fa6ec"/>
+        ${[0, 72, 144, 216, 288].map((a) => `<ellipse cx="0" cy="-10" rx="7" ry="11" fill="#ffffff" stroke="#c9d4f5" stroke-width="1.2" transform="rotate(${a})"/>`).join('')}
+        <circle r="5" fill="#ffe9a8"/><circle r="2.4" fill="#9db7f2"/>
+      </g>
+      <!-- 小さな花（左） -->
+      <g transform="translate(150 132) scale(.55)">
+        ${[0, 72, 144, 216, 288].map((a) => `<ellipse cx="0" cy="-10" rx="7" ry="11" fill="#ffffff" stroke="#c9d4f5" stroke-width="1.6" transform="rotate(${a})"/>`).join('')}
+        <circle r="5" fill="#9db7f2"/>
+      </g>
     </g>
+   </g>
   </g>
 
   <!-- 机と小物 -->
   <g class="c-desk">
-    <rect x="40" y="440" width="320" height="60" rx="10" fill="#f6efe6"/>
-    <rect x="40" y="440" width="320" height="8" rx="4" fill="#e9dccb"/>
-    <g class="c-mug" transform="translate(300 420)">
-      <rect x="0" y="0" width="28" height="28" rx="6" fill="#fff" stroke="#8fd8ea" stroke-width="2"/>
-      <path d="M28 8 C38 8 38 22 28 22" stroke="#8fd8ea" stroke-width="2" fill="none"/>
-      <path class="c-steam" d="M8 -4 C4 -12 12 -16 8 -24 M18 -4 C14 -12 22 -16 18 -24" stroke="#cfe9f1" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <rect x="40" y="440" width="320" height="60" rx="10" fill="#f6f1ee"/>
+    <rect x="40" y="440" width="320" height="8" rx="4" fill="#e7ddd8"/>
+    <g class="c-mug" transform="translate(300 412)">
+      <rect x="0" y="0" width="26" height="34" rx="5" fill="#ffffff" stroke="#c9d4f5" stroke-width="2" opacity=".95"/>
+      <rect x="2" y="12" width="22" height="20" rx="4" fill="#d9e4ff"/>
+      <path d="M16 -14 L12 12" stroke="#8fb4f0" stroke-width="3" stroke-linecap="round"/>
+      <path class="c-steam" d="M6 -4 C2 -12 10 -16 6 -24" stroke="#dfe6f7" stroke-width="2" fill="none" stroke-linecap="round"/>
+    </g>
+    <g class="c-plush" transform="translate(70 404)">
+      <ellipse cx="22" cy="28" rx="24" ry="16" fill="#ffffff" stroke="#e3e7f3" stroke-width="1.5"/>
+      <circle cx="22" cy="12" r="14" fill="#ffffff" stroke="#e3e7f3" stroke-width="1.5"/>
+      <path d="M10 4 C6 -4 12 -6 14 0 M34 4 C38 -4 32 -6 30 0" fill="#ffffff" stroke="#e3e7f3"/>
+      <path d="M15 12 q2 -2 4 0 M25 12 q2 -2 4 0 M19 17 q3 3 6 0" stroke="#7a7f99" stroke-width="1.4" fill="none"/>
+      <ellipse cx="13" cy="16" rx="3" ry="1.6" fill="#ffc2cc"/><ellipse cx="31" cy="16" rx="3" ry="1.6" fill="#ffc2cc"/>
     </g>
     <g class="c-work" style="display:none">
-      <path d="M120 446 L190 432 L260 446 L190 460 Z" fill="#ffffff" stroke="#cfe3ea" stroke-width="2"/>
-      <path d="M190 432 L190 460" stroke="#cfe3ea" stroke-width="2"/>
-      <path d="M140 444 L176 437 M140 450 L172 444 M206 438 L240 444 M206 444 L236 450" stroke="#cde4ec" stroke-width="2"/>
-      <g class="c-pen"><ellipse cx="238" cy="440" rx="12" ry="9" fill="#fde4d8"/>
-        <path d="M232 444 L262 410" stroke="#3f9fbf" stroke-width="4" stroke-linecap="round"/></g>
-      <ellipse cx="150" cy="446" rx="12" ry="9" fill="#fde4d8"/>
+      <path d="M120 446 L190 432 L260 446 L190 460 Z" fill="#ffffff" stroke="#dfe3f2" stroke-width="2"/>
+      <path d="M190 432 L190 460" stroke="#dfe3f2" stroke-width="2"/>
+      <path d="M140 444 L176 437 M140 450 L172 444 M206 438 L240 444 M206 444 L236 450" stroke="#dde3f4" stroke-width="2"/>
+      <g class="c-pen"><ellipse cx="238" cy="440" rx="13" ry="10" class="c-main" stroke="#e3e7f3"/>
+        <path d="M232 444 L262 410" stroke="#8fb4f0" stroke-width="4" stroke-linecap="round"/></g>
+      <ellipse cx="150" cy="446" rx="13" ry="10" class="c-main" stroke="#e3e7f3"/>
     </g>
   </g>
 </svg>`;
@@ -176,19 +249,22 @@ M.chara = (() => {
     const style = document.createElement('style');
     style.textContent = `
       .chara .c-body { transform-origin: 200px 500px; animation: breathe 5s ease-in-out infinite; }
-      .chara .c-head { transform-origin: 200px 260px; animation: tilt 9s ease-in-out infinite; }
+      .chara .c-head { transform-origin: 200px 256px; animation: tilt 9s ease-in-out infinite; }
       .chara .c-lock-l { transform-origin: 140px 150px; animation: sway 6s ease-in-out infinite; }
       .chara .c-lock-r { transform-origin: 260px 150px; animation: sway 6s ease-in-out infinite reverse; }
-      .chara .c-ahoge { transform-origin: 204px 82px; animation: sway 4s ease-in-out infinite; }
+      .chara .c-tail-l { transform-origin: 140px 140px; animation: sway 5s ease-in-out infinite; }
+      .chara .c-tail-r { transform-origin: 260px 140px; animation: sway 5s ease-in-out infinite reverse; }
+      .chara .c-ear-l { transform-origin: 140px 110px; animation: sway 4s ease-in-out infinite; }
+      .chara .c-ear-r { transform-origin: 260px 110px; animation: sway 4s ease-in-out infinite reverse; }
+      .chara .c-ahoge { transform-origin: 202px 80px; animation: sway 4s ease-in-out infinite; }
+      .chara .c-flower { animation: none; }
       .chara .c-steam { animation: steam 3s ease-in-out infinite; }
-      .chara .c-eye { transition: transform .08s; }
-      .chara.blink .c-eyes-open .c-eye { transform-box: fill-box; }
       .chara.working .c-head { animation: none; transform: rotate(3deg) translateY(4px); }
       .chara.working .c-iris { transform: translateY(5px); }
       .chara.working .c-pen { transform-origin: 238px 440px; animation: write 1.2s ease-in-out infinite; }
       .chara.hop .c-body { animation: hop .5s ease; }
       @keyframes breathe { 50% { transform: translateY(-3px) scaleY(1.004); } }
-      @keyframes tilt { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-1.6deg); } }
+      @keyframes tilt { 0%,100% { transform: rotate(0); } 50% { transform: rotate(-1.8deg); } }
       @keyframes sway { 50% { transform: rotate(2.2deg); } }
       @keyframes steam { 0% { opacity: 0; transform: translateY(4px); } 50% { opacity: .9; } 100% { opacity: 0; transform: translateY(-6px); } }
       @keyframes write { 50% { transform: translate(-10px, 3px); } }
@@ -199,50 +275,50 @@ M.chara = (() => {
 
   function scheduleBlink() {
     clearTimeout(blinkTimer);
-    blinkTimer = setTimeout(() => {
-      blink();
-      scheduleBlink();
-    }, 2500 + Math.random() * 3500);
+    blinkTimer = setTimeout(() => { blink(); scheduleBlink(); }, 2500 + Math.random() * 3500);
   }
 
   function blink() {
     if (!root) return;
-    const open = root.querySelector('.c-eyes-open');
-    if (open.style.display === 'none') return;
     M.$$('.c-eye', root).forEach((e) => {
-      const t = e.getAttribute('transform').replace(/ scale\([^)]*\)/, '');
-      e.setAttribute('transform', t + ' scale(1 0.1)');
-      setTimeout(() => e.setAttribute('transform', t), 120);
+      const open = e.querySelector('.c-eye-open');
+      if (open.style.display === 'none') return;
+      open.setAttribute('transform', 'scale(1 0.1)');
+      setTimeout(() => open.removeAttribute('transform'), 120);
     });
   }
 
-  // 表情：normal / smile / happy / worry / surprise / sleepy / calm
+  function eyeMode(e, mode) {
+    e.querySelector('.c-eye-open').style.display = mode === 'open' ? '' : 'none';
+    e.querySelector('.c-eye-closed').style.display = mode === 'closed' ? '' : 'none';
+    e.querySelector('.c-eye-sleepy').style.display = mode === 'sleepy' ? '' : 'none';
+  }
+
+  // 表情：normal / smile / happy / wink / worry / surprise / sleepy / calm
   function setExp(exp) {
     if (!root) return;
     state.exp = exp;
-    const eyesMode = { happy: 'closed', calm: 'closed', sleepy: 'sleepy' }[exp] || 'open';
-    root.querySelector('.c-eyes-open').style.display = eyesMode === 'open' ? '' : 'none';
-    root.querySelector('.c-eyes-closed').style.display = eyesMode === 'closed' ? '' : 'none';
-    root.querySelector('.c-eyes-sleepy').style.display = eyesMode === 'sleepy' ? '' : 'none';
+    const both = { happy: 'closed', calm: 'closed', sleepy: 'sleepy' }[exp] || 'open';
+    eyeMode(root.querySelector('.c-eye-l'), both);
+    eyeMode(root.querySelector('.c-eye-r'), exp === 'wink' ? 'closed' : both);
     const browL = root.querySelector('.c-brow-l');
     const browR = root.querySelector('.c-brow-r');
     if (exp === 'worry') {
-      browL.setAttribute('d', 'M160 164 C166 166 176 168 182 172');
-      browR.setAttribute('d', 'M218 172 C224 168 234 166 240 164');
+      browL.setAttribute('d', 'M158 168 C164 166 174 162 182 158');
+      browR.setAttribute('d', 'M218 158 C226 162 236 166 242 168');
     } else if (exp === 'surprise') {
-      browL.setAttribute('d', 'M160 162 C166 157 176 157 182 160');
-      browR.setAttribute('d', 'M218 160 C224 157 234 157 240 162');
+      browL.setAttribute('d', 'M158 160 C164 155 174 155 182 158');
+      browR.setAttribute('d', 'M218 158 C226 155 236 155 242 160');
     } else {
-      browL.setAttribute('d', 'M160 168 C166 164 176 164 182 166');
-      browR.setAttribute('d', 'M218 166 C224 164 234 164 240 168');
+      browL.setAttribute('d', 'M158 165 C164 161 174 161 182 164');
+      browR.setAttribute('d', 'M218 164 C226 161 236 161 242 165');
     }
-    root.querySelector('.c-blush').parentNode.querySelectorAll('.c-blush')
-      .forEach((b) => b.setAttribute('opacity', exp === 'happy' ? '.7' : '.45'));
+    M.$$('.c-blush', root).forEach((b) => b.setAttribute('opacity', ['happy', 'wink'].includes(exp) ? '.75' : '.55'));
     if (!state.speaking) showMouth(baseMouth());
   }
 
   function baseMouth() {
-    return { smile: 'smile', happy: 'happy', calm: 'smile', worry: 'worry', surprise: 'o', sleepy: 'normal' }[state.exp] || 'normal';
+    return { smile: 'smile', happy: 'happy', wink: 'happy', calm: 'smile', worry: 'worry', surprise: 'o', sleepy: 'normal' }[state.exp] || 'normal';
   }
 
   function showMouth(m) {
@@ -264,8 +340,7 @@ M.chara = (() => {
 
   function setWorking(on) {
     state.working = on;
-    const wrap = M.$('#chara');
-    wrap.classList.toggle('working', on);
+    M.$('#chara').classList.toggle('working', on);
     root.querySelector('.c-work').style.display = on ? '' : 'none';
     root.querySelector('.c-mug').style.display = on ? 'none' : '';
   }
@@ -279,13 +354,19 @@ M.chara = (() => {
   }
 
   function setOutfit(id) {
-    const o = OUTFITS[id] || OUTFITS.hoodie;
+    const o = OUTFITS[id] || OUTFITS.knit;
     if (!root) return;
     M.$$('.c-main', root).forEach((p) => p.setAttribute('fill', o.main));
-    M.$$('.c-sub', root).forEach((p) => p.setAttribute('fill', o.sub));
-    M.$$('.c-accent', root).forEach((p) => p.setAttribute('stroke', o.accent));
+    M.$$('.c-sub-fill', root).forEach((p) => p.setAttribute('fill', o.sub));
+    M.$$('.c-sub-stroke', root).forEach((p) => p.setAttribute('stroke', o.sub === '#ffffff' ? '#eef0fa' : o.sub));
+    M.$$('.c-accent-fill', root).forEach((p) => p.setAttribute('fill', o.accent));
     M.$$('.c-accent-stroke', root).forEach((p) => p.setAttribute('stroke', o.accent));
-    M.$$('.c-wave', root).forEach((p) => p.setAttribute('stroke', o.sub));
+    root.querySelector('.body-off').style.display = o.body === 'off' ? '' : 'none';
+    root.querySelector('.body-normal').style.display = o.body === 'off' ? 'none' : '';
+    M.$$('.acc', root).forEach((g) => {
+      const name = [...g.classList].find((c) => c.startsWith('acc-')).slice(4);
+      g.style.display = o.acc.includes(name) ? '' : 'none';
+    });
   }
 
   return { mount, setExp, speak, setWorking, hop, setOutfit, OUTFITS, get state() { return state; } };

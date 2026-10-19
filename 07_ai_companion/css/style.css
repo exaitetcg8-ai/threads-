@@ -1,16 +1,16 @@
 :root {
-  --ink: #2f4753;
-  --sub: #5f7a86;
-  --muted: #8aa1ab;
-  --aqua: #7fd3e6;
-  --aqua-deep: #3f9fbf;
-  --aqua-soft: #e3f6fb;
+  --ink: #35395a;
+  --sub: #646a8c;
+  --muted: #9a9fbb;
+  --aqua: #9db7f2;
+  --aqua-deep: #5b7fd6;
+  --aqua-soft: #ecf1ff;
   --mint: #bfeee3;
   --lav: #d9d6f5;
-  --bg: #f4fbfd;
+  --bg: #f7f8ff;
   --card: #ffffff;
-  --line: #d6ebf1;
-  --shadow: 0 6px 20px rgba(63, 159, 191, .12);
+  --line: #dfe5f7;
+  --shadow: 0 6px 20px rgba(91, 127, 214, .12);
   --radius: 18px;
   --wall: #e8f6f9;
   --wall2: #d4eef4;
@@ -93,7 +93,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .water-flow svg { width: 200%; height: 100%; }
 .wave { fill: var(--aqua); }
 .wave.w1 { opacity: .45; animation: flow 18s linear infinite; }
-.wave.w2 { opacity: .35; fill: #a6e3f0; animation: flow 26s linear infinite reverse; }
+.wave.w2 { opacity: .35; fill: #c5d6fa; animation: flow 26s linear infinite reverse; }
 @keyframes flow { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 
 .notes-float { position: absolute; inset: 0; pointer-events: none; }
@@ -170,7 +170,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .link { border: none; background: none; color: var(--aqua-deep); cursor: pointer; text-decoration: underline; padding: 4px; }
 .file-btn { display: inline-block; }
 input[type=text], input:not([type]), input[type=number], select, textarea {
-  border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 12px; background: #fbfeff; outline: none;
+  border: 1.5px solid var(--line); border-radius: 12px; padding: 8px 12px; background: #fcfdff; outline: none;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--aqua); }
 textarea { width: 100%; resize: vertical; }
@@ -230,7 +230,7 @@ input[type=checkbox] { accent-color: var(--aqua-deep); width: 18px; height: 18px
 .pomo-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
 .ring-bg { fill: none; stroke: var(--aqua-soft); stroke-width: 8; }
 .ring-fg { fill: none; stroke: var(--aqua); stroke-width: 8; stroke-linecap: round; stroke-dasharray: 326.7; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke .6s; }
-.pomo.break .ring-fg { stroke: #9fe0c9; }
+.pomo.break .ring-fg { stroke: #c9b8f0; }
 .pomo-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 .pomo-phase { color: var(--sub); font-size: 14px; }
 .pomo-time { font-size: 44px; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
@@ -273,6 +273,13 @@ input[type=checkbox] { accent-color: var(--aqua-deep); width: 18px; height: 18px
 .unlock.on { border-color: var(--aqua-deep); background: var(--aqua-soft); }
 .unlock.locked { color: var(--muted); cursor: default; background: #f6fafb; }
 .unlock small { display: block; font-size: 11px; color: var(--muted); }
+
+/* プロフィール */
+dl.profile { display: grid; grid-template-columns: 4em 1fr; gap: 2px 8px; margin: 0 0 8px; }
+dl.profile dt { color: var(--sub); }
+dl.profile dd { margin: 0; }
+ul.likes { list-style: none; padding: 0; margin: 4px 0 0; }
+ul.likes li::before { content: "♡ "; color: var(--aqua-deep); }
 
 /* オーバーレイ */
 .overlay { position: fixed; inset: 0; background: rgba(40, 70, 85, .35); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 16px; }
