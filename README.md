@@ -14,6 +14,7 @@
 ・04_product/product_plan.md：商品を作り続けないための18ヶ月商品計画
 ・05_link_page/：Threadsプロフィールのリンク先ページ（LINE登録へ誘導）
 ・06_affiliate/affiliate_plan.md：アフィリエイトの入れ方（法律の注意、置き場所、投稿テンプレ）
+・07_acquisition/acquisition_guide.md：集客ガイド（0フォロワー期の動き方、1行目の型、数字の見方）
 
 
 ## ヒアリング結果
