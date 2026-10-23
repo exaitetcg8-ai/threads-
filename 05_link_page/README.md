@@ -35,7 +35,7 @@ X・Threadsプロフィールのリンク → このページ → LINE友だち�
 ・あいさつメッセージ：03_line_step/line_step_7days.md のDay0を貼る
 　PDFのURL（GoogleドライブなどでリンクURLを知っている人は閲覧可にしたもの）を入れる
 ・ステップ配信：Day1〜Day7を、友だち追加の翌日から1日1通で設定
-・リッチメニュー：無料PDF、21日間 心のチューニングワーク、相談する、の3つ
+・リッチメニュー、応答メッセージ、ステップ配信：03_line_step/richmenu_and_delivery.md
 
 ## 先に確認しておくこと
 
