@@ -28,6 +28,7 @@
 ・03_line_step/day0_greeting.md：LINE登録直後のあいさつ（音声導線版）
 ・03_line_step/audio_7days_script.md：7日間の無料音声の録音用台本（10/25録音）
 ・03_line_step/richmenu_and_delivery.md：リッチメニュー（画像はrichmenu/）、応答メッセージ、ステップ配信、12/16の3通
+・04_product/notion/：Notion版ワークシート（読み込み用ファイル、設定手順、購入者への案内文）
 ・04_product/worksheet/：21日間ワークシートv8（入力欄の制限を修正）と確認結果
 ・07_acquisition/hsp-nayami-100_v2.xlsx：悩み100（支払い意欲と実測の列を追加）
 ・03_line_step/line_step_7days.md：7日間 心のチューニング講座（LINEステップ配信）＋販売後フォロー
