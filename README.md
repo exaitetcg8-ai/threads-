@@ -14,6 +14,7 @@
 ・04_product/product_plan.md：商品を作り続けないための18ヶ月商品計画
 ・05_link_page/：Threadsプロフィールのリンク先ページ（LINE登録へ誘導）
 ・06_affiliate/affiliate_plan.md：アフィリエイトの入れ方（法律の注意、置き場所、投稿テンプレ）
+・07_irodori_tts/：読み上げAI（Irodori-TTS）のWindows導入セット（install.batをダブルクリック）
 
 
 ## ヒアリング結果
