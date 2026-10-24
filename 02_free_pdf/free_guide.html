@@ -4,58 +4,141 @@
 <meta charset="utf-8">
 <title>心のチューニング 5分リセット習慣7選</title>
 <style>
+  /* 水辺の朝：上から朝の光、下に水の波紋、見出しのそばに音の流れ。枠で囲まず、余白で包む */
+  @font-face { font-family: "Zen Maru Gothic"; src: url("fonts/ZenMaruGothic-Regular.ttf"); font-weight: 400; }
+  @font-face { font-family: "Zen Maru Gothic"; src: url("fonts/ZenMaruGothic-Bold.ttf"); font-weight: 700; }
   @page { size: A4; margin: 0; }
-  :root { --ink:#3d3a36; --sub:#7a7268; --accent:#7f9c8b; --soft:#eef3ef; --warm:#f7f1ea; --line:#d9d2c8; }
+  :root {
+    --ink: #4a585e;        /* 本文：黒ではなく、水の底のような灰青 */
+    --deep: #3d5f6b;       /* 見出し：深い水の色 */
+    --soft: #7d8f96;       /* 補足 */
+    --water: #8fbccb;      /* 水 */
+    --mist: #e9f2f4;       /* 朝もや */
+    --light: #f8e9c9;      /* 朝の光 */
+    --leaf: #9dbb9a;       /* 水辺の葉 */
+    --paper: #fdfbf7;      /* 紙 */
+  }
   * { box-sizing: border-box; }
-  html, body { margin:0; padding:0; }
-  body { font-family: "WenQuanYi Zen Hei", "Noto Sans CJK JP", "Hiragino Sans", sans-serif; color: var(--ink); background:#fff; line-height: 1.85; font-size: 11pt; }
-  .page { width: 210mm; height: 297mm; padding: 20mm 18mm 16mm; position: relative; overflow: hidden; page-break-after: always; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: "Zen Maru Gothic", sans-serif; color: var(--ink); background: var(--paper); font-size: 10.8pt; line-height: 2; letter-spacing: .02em; }
+  .page { width: 210mm; height: 297mm; padding: 20mm 22mm 30mm; position: relative; overflow: hidden; page-break-after: always;
+    background:
+      radial-gradient(ellipse 120mm 90mm at 88% -6%, rgba(248,233,201,.95), rgba(248,233,201,0) 70%),
+      radial-gradient(ellipse 140mm 70mm at 10% 104%, rgba(143,188,203,.35), rgba(143,188,203,0) 70%),
+      linear-gradient(180deg, #fffaf1 0%, var(--paper) 35%, #f4f8f8 100%); }
   .page:last-child { page-break-after: auto; }
-  .folio { position:absolute; bottom: 9mm; left:0; right:0; text-align:center; font-size: 8.5pt; color: var(--sub); letter-spacing:.1em; }
-  .cover { display:flex; flex-direction:column; justify-content:center; text-align:center; background: linear-gradient(180deg, var(--soft), var(--warm)); }
-  .cover .lead { color: var(--accent); letter-spacing: .25em; font-size: 11pt; }
-  .cover h1 { font-size: 30pt; line-height: 1.5; margin: 12mm 0 8mm; font-weight: normal; }
-  .cover .sub { color: var(--sub); font-size: 12.5pt; }
-  .cover .leaf { font-size: 26pt; color: var(--accent); margin-top: 16mm; }
-  .cover .note { margin-top: 6mm; font-size: 10.5pt; color: var(--sub); }
-  .eyebrow { color: var(--accent); font-size: 9.5pt; letter-spacing: .2em; margin-bottom: 2mm; }
-  h2 { font-size: 17pt; font-weight: normal; border-left: 5px solid var(--accent); padding-left: 10px; margin: 0 0 7mm; }
-  h3 { font-size: 13pt; margin: 0 0 2mm; color: var(--accent); font-weight: normal; }
-  p { margin: 0 0 4mm; }
-  .box { background: var(--soft); border-radius: 10px; padding: 5mm 6mm; margin: 5mm 0; }
-  .warm { background: var(--warm); }
-  .evidence { font-size: 9pt; color: var(--sub); border-top: 1px dashed var(--line); margin-top: 3mm; padding-top: 2mm; line-height: 1.7; }
-  ol, ul { padding-left: 1.4em; margin: 2mm 0; }
-  .check { padding-left: 0; }
-  .check li { list-style: none; padding: 1.5mm 0; border-bottom: 1px dotted var(--line); }
-  .check li::before { content: "□　"; color: var(--accent); }
-  .habit { margin-bottom: 11mm; }
-  .habit .when { background: var(--warm); border-radius: 6px; padding: 1.5mm 4mm; display:inline-block; font-size: 10pt; margin-bottom: 2mm; }
-  .num { display:inline-block; background: var(--accent); color:#fff; border-radius: 50%; width: 9mm; height: 9mm; text-align:center; line-height: 9mm; font-size: 11pt; margin-right: 3mm; }
-  .small { font-size: 9pt; color: var(--sub); line-height: 1.7; }
-  .quote { font-size: 13pt; text-align:center; color: var(--accent); margin: 10mm 0; line-height: 2; }
-  table.log { width: 100%; border-collapse: collapse; font-size: 10pt; margin-top: 4mm; }
-  table.log th, table.log td { border: 1px solid var(--line); padding: 3mm 2mm; text-align: center; vertical-align: middle; }
-  table.log th { background: var(--soft); font-weight: normal; }
-  table.log td.blank { height: 16mm; }
-  .scale { letter-spacing: .4em; color: var(--sub); }
+  .page > * { position: relative; z-index: 1; }
+  .deco { position: absolute; z-index: 0; pointer-events: none; }
+  .deco.waves { left: 0; bottom: 0; width: 210mm; height: 28mm; }
+  .deco.ripple { left: 12mm; bottom: 8mm; width: 60mm; height: 18mm; }
+  .deco.staff { right: -6mm; top: 14mm; width: 120mm; height: 22mm; opacity: .8; }
+  .folio { position: absolute; bottom: 10mm; left: 0; right: 0; text-align: center; font-size: 8.5pt; color: var(--soft); letter-spacing: .3em; z-index: 2; }
+
+  /* 表紙 */
+  .cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-bottom: 46mm;
+    background:
+      radial-gradient(ellipse 150mm 120mm at 50% 8%, rgba(248,233,201,1), rgba(248,233,201,0) 70%),
+      linear-gradient(180deg, #fff7ea 0%, #f6f3ec 45%, #e3eff2 78%, #cfe3ea 100%); }
+  .cover .tag { color: var(--deep); font-size: 10.5pt; letter-spacing: .35em; }
+  .cover h1 { font-size: 27pt; line-height: 1.7; font-weight: 700; color: var(--deep); margin: 10mm 0 6mm; letter-spacing: .08em; }
+  .cover .sub { color: var(--soft); font-size: 11.5pt; }
+  .cover .words { margin-top: 18mm; color: var(--ink); font-size: 11pt; line-height: 2.3; }
+  .cover .by { margin-top: 10mm; color: var(--soft); font-size: 9.5pt; letter-spacing: .2em; }
+  .cover .deco.waves { height: 60mm; }
+  .cover .deco.ripple { left: 50%; transform: translateX(-50%); bottom: 22mm; width: 90mm; height: 26mm; }
+
+  /* 見出し */
+  .kicker { color: var(--leaf); font-size: 9.5pt; letter-spacing: .3em; margin-bottom: 1mm; }
+  h2 { font-size: 17pt; font-weight: 700; color: var(--deep); margin: 0 0 7mm; letter-spacing: .06em; }
+  h3 { font-size: 12.5pt; font-weight: 700; color: var(--deep); margin: 5mm 0 1mm; letter-spacing: .04em; }
+  p { margin: 0 0 3.5mm; }
+  .small { font-size: 9pt; color: var(--soft); line-height: 1.9; }
+
+  /* 包む形：枠ではなく、水たまりのようなにじみ */
+  .pool { margin: 5mm 0; padding: 5mm 7mm; border-radius: 10mm; background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.95), rgba(233,242,244,.8)); }
+  .pool.sun { background: radial-gradient(ellipse at 70% 10%, rgba(255,252,244,1), rgba(248,233,201,.65)); }
+  .pool strong { color: var(--deep); }
+  .quote { text-align: center; font-size: 13pt; line-height: 2.1; color: var(--deep); margin: 4mm 0 5mm; }
+  .quote::before, .quote::after { content: "〜"; display: block; color: var(--water); font-size: 10pt; letter-spacing: .5em; }
+
+  ul, ol { margin: 1.5mm 0; padding-left: 0; list-style: none; }
+  ul li, ol li { position: relative; padding-left: 7mm; margin: .6mm 0; }
+  ul li::before { content: ""; position: absolute; left: 1.5mm; top: 2.6mm; width: 2.2mm; height: 2.2mm; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff, var(--water)); }
+  ol { counter-reset: s; }
+  ol li { counter-increment: s; }
+  ol li::before { content: counter(s); position: absolute; left: 0; top: 1.3mm; width: 4.8mm; height: 4.8mm; border-radius: 50%; background: var(--mist); color: var(--deep); font-size: 7.5pt; line-height: 4.8mm; text-align: center; }
+  .check li::before { width: 3.4mm; height: 3.4mm; top: 2.1mm; left: 1mm; background: none; border: .35mm solid var(--water); }
+  .check li { border-bottom: .25mm dotted rgba(143,188,203,.6); padding-block: .6mm; }
+
+  /* 習慣 */
+  .habit { margin-bottom: 10mm; }
+  .habit h3 { display: flex; align-items: center; gap: 3.5mm; margin-top: 0; font-size: 13.5pt; }
+  .drop { flex: 0 0 auto; width: 10mm; height: 10mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 11pt; font-weight: 700;
+    background: radial-gradient(circle at 32% 28%, #e8f4f7 0%, var(--water) 55%, #6fa3b4 100%); box-shadow: 0 1.2mm 3mm rgba(111,163,180,.35); }
+  .when { display: inline-block; font-size: 9.5pt; color: var(--deep); background: rgba(248,233,201,.7); border-radius: 6mm; padding: .6mm 4mm; margin: 1mm 0 2mm; }
+  .evidence { position: relative; margin-top: 3mm; padding-top: 3mm; font-size: 8.8pt; color: var(--soft); line-height: 1.85; }
+  .evidence::before { content: ""; position: absolute; left: 0; top: 0; width: 34mm; height: 2mm;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'><path d='M0 4 Q10 0 20 4 T40 4 T60 4 T80 4 T100 4 T120 4' fill='none' stroke='%239dbb9a' stroke-width='1.2'/></svg>") no-repeat left center / contain; }
+  .evidence b { color: var(--leaf); font-weight: 700; margin-right: 1.5mm; }
+
+  /* 書き込み */
+  .lines { margin-top: 2mm; }
+  .lines div { height: 9mm; border-bottom: .3mm dashed rgba(143,188,203,.7); }
+  table.log { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 9.5pt; margin-top: 3mm; }
+  table.log th { font-weight: 400; color: var(--deep); background: rgba(233,242,244,.9); padding: 2.5mm 2mm; }
+  table.log th:first-child { border-radius: 4mm 0 0 4mm; }
+  table.log th:last-child { border-radius: 0 4mm 4mm 0; }
+  table.log td { padding: 2.5mm 2mm; text-align: center; border-bottom: .3mm dashed rgba(143,188,203,.7); }
+  table.log td.blank { height: 15mm; }
+  table.list td.blank { height: 14mm; }
+  .scale { text-align: center; font-size: 15pt; letter-spacing: .9em; color: var(--deep); margin: 3mm 0 0; }
 </style>
 </head>
 <body>
 
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcd9e2" stop-opacity=".55"/><stop offset="1" stop-color="#8fbccb" stop-opacity=".75"/></linearGradient>
+    <linearGradient id="wg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8eaef" stop-opacity=".7"/><stop offset="1" stop-color="#a9cdd8" stop-opacity=".8"/></linearGradient>
+    <symbol id="waves" viewBox="0 0 800 130" preserveAspectRatio="none">
+      <path d="M0 58 C120 30 220 82 360 56 S620 28 800 52 L800 130 L0 130 Z" fill="url(#wg2)"/>
+      <path d="M0 86 C140 60 260 108 420 84 S660 62 800 82 L800 130 L0 130 Z" fill="url(#wg)"/>
+      <path d="M0 70 C130 46 240 92 380 70 S640 44 800 66" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="ripple" viewBox="0 0 300 90">
+      <ellipse cx="150" cy="45" rx="40" ry="10" fill="none" stroke="#8fbccb" stroke-opacity=".55" stroke-width="1.4"/>
+      <ellipse cx="150" cy="45" rx="85" ry="22" fill="none" stroke="#8fbccb" stroke-opacity=".35" stroke-width="1.2"/>
+      <ellipse cx="150" cy="45" rx="140" ry="38" fill="none" stroke="#8fbccb" stroke-opacity=".2" stroke-width="1"/>
+    </symbol>
+    <symbol id="staff" viewBox="0 0 500 90" preserveAspectRatio="none">
+      <g fill="none" stroke="#9dbb9a" stroke-opacity=".45" stroke-width="1">
+        <path d="M0 30 C120 10 220 50 340 28 S460 14 500 22"/>
+        <path d="M0 38 C120 18 220 58 340 36 S460 22 500 30"/>
+        <path d="M0 46 C120 26 220 66 340 44 S460 30 500 38"/>
+        <path d="M0 54 C120 34 220 74 340 52 S460 38 500 46"/>
+        <path d="M0 62 C120 42 220 82 340 60 S460 46 500 54"/>
+      </g>
+      <g fill="#8fbccb" fill-opacity=".55"><ellipse cx="150" cy="40" rx="5" ry="3.6"/><ellipse cx="300" cy="44" rx="5" ry="3.6"/><ellipse cx="420" cy="26" rx="5" ry="3.6"/></g>
+    </symbol>
+  </defs>
+</svg>
+
 <!-- 1 表紙 -->
 <section class="page cover">
-  <div class="lead">♪HSP×心のチューニング♪</div>
+  <svg class="deco staff" style="top:30mm; right:auto; left:-10mm; width:240mm; height:30mm"><use href="#staff"/></svg>
+  <div class="tag">♪ HSP × 心のチューニング ♪</div>
   <h1>心のチューニング<br>5分リセット習慣7選</h1>
   <div class="sub">論文をもとにした、今日からできる小さなケア</div>
-  <div class="leaf">🎵</div>
-  <div class="note">心地よく、自分らしく、自由に。</div>
-  <div class="note" style="margin-top:14mm">もの｜優しい世界を届ける</div>
+  <div class="words">心地よく、<br>自分らしく、<br>自由に。</div>
+  <div class="by">もの ｜ 優しい世界を届ける</div>
+  <svg class="deco ripple"><use href="#ripple"/></svg>
+  <svg class="deco waves"><use href="#waves"/></svg>
 </section>
 
 <!-- 2 はじめに -->
 <section class="page">
-  <div class="eyebrow">INTRODUCTION</div>
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">はじまりに</div>
   <h2>はじめに</h2>
   <p>このPDFを手に取ってくれて、ありがとうございます。</p>
   <p>人混みのあと、ぐったりする。<br>
@@ -73,21 +156,23 @@
   <p>わたしも、HSP気質の当事者です。疲れている日は、話し声や物音が大きく聞こえすぎてしまうことがあります。</p>
   <p>だからこのPDFでは、研究で確かめられていることの中から、疲れている日でもできるもの、道具なしで5分以内にできるものだけを選びました。ゆっくり、1つずつで大丈夫です。</p>
 
-  <div class="box warm">
+  <div class="pool sun">
     <strong>このPDFの使い方</strong><br>
     7つ全部やらなくて大丈夫です。今日の気分で、1つだけ選んでください。後半に、好きな時間リストと7日間の記録表もつけています。
   </div>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">2</div>
 </section>
 
 <!-- 3 HSPとは -->
 <section class="page">
-  <div class="eyebrow">ABOUT HSP</div>
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">繊細さのこと</div>
   <h2>HSPとは</h2>
   <p>HSP（Highly Sensitive Person）は病名ではなく、心理学で感覚処理感受性と呼ばれる気質のことです。心理学者エレイン・アーロン博士が1990年代に研究を始めました。</p>
   <p>2018年の研究では、人口のおよそ3割が感受性の高いグループに入ると推定されています。少数派ではあるけれど、決してひとりではありません。</p>
 
-  <div class="box">
+  <div class="pool">
     <strong>HSPの4つの特徴（DOES）</strong>
     <ul>
       <li>D：物事を深く処理する　→　本質に気づける</li>
@@ -108,132 +193,141 @@
     <li>決める前に、たくさん考えてしまう</li>
   </ul>
   <p style="margin-top:4mm">当てはまる数が多いほど、次のページからの習慣があなたの助けになるはずです。</p>
+  <svg class="deco ripple"><use href="#ripple"/></svg>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">3</div>
 </section>
 
 <!-- 4 習慣1-2 -->
 <section class="page">
-  <div class="eyebrow">7 RESET HABITS</div>
-  <h2>7つのリセット習慣</h2>
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">7つのリセット習慣</div>
+  <h2>ゆっくり、1つずつ</h2>
 
   <div class="habit">
-    <h3><span class="num">1</span>吐く息を長くする呼吸</h3>
-    <div class="when">こんな時に：人混みや会議のあと、心臓がざわざわする時</div>
+    <h3><span class="drop">1</span>吐く息を長くする呼吸</h3>
+    <div class="when">人混みや会議のあと、心臓がざわざわする時に</div>
     <ol>
       <li>鼻から吸う</li>
       <li>もう一度、鼻から少しだけ吸い足す</li>
       <li>口からゆっくり、長く吐く</li>
       <li>これを1〜5分くり返す</li>
     </ol>
-    <div class="evidence">根拠：スタンフォード大学の研究（Balban et al., 2023）で、1日5分の呼吸法を1ヶ月続けたところ、この方法（サイクリック・サイ）でポジティブな気分の改善が大きかったと報告されています。</div>
+    <div class="evidence"><b>研究では</b>スタンフォード大学の研究（Balban et al., 2023）で、1日5分の呼吸法を1ヶ月続けたところ、この方法（サイクリック・サイ）でポジティブな気分の改善が大きかったと報告されています。</div>
   </div>
 
   <div class="habit">
-    <h3><span class="num">2</span>感情に名前をつける</h3>
-    <div class="when">こんな時に：モヤモヤの正体がわからない時</div>
+    <h3><span class="drop">2</span>感情に名前をつける</h3>
+    <div class="when">モヤモヤの正体がわからない時に</div>
     <ol>
       <li>メモ帳を開く</li>
       <li>「今わたしは〇〇を感じている」と書く</li>
       <li>不安、悲しい、悔しい、さみしい、焦り。一番近い言葉を探す</li>
       <li>解決しようとしなくていい。名前をつけたら終わり</li>
     </ol>
-    <div class="evidence">根拠：UCLAの研究（Lieberman et al., 2007）で、感情を言葉にすると、不安や恐れに関わる扁桃体の反応が弱まったと報告されています。</div>
+    <div class="evidence"><b>研究では</b>UCLAの研究（Lieberman et al., 2007）で、感情を言葉にすると、不安や恐れに関わる扁桃体の反応が弱まったと報告されています。</div>
   </div>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">4</div>
 </section>
 
 <!-- 5 習慣3-4 -->
 <section class="page">
+  <svg class="deco staff"><use href="#staff"/></svg>
   <div class="habit">
-    <h3><span class="num">3</span>自分を名前で呼ぶ</h3>
-    <div class="when">こんな時に：自分を責める声が止まらない時</div>
+    <h3><span class="drop">3</span>自分を名前で呼ぶ</h3>
+    <div class="when">自分を責める声が止まらない時に</div>
     <ol>
       <li>「わたしは」を自分の名前に置き換える</li>
       <li>「〇〇は今、疲れているんだね」と、友達に話すように語りかける</li>
       <li>最後に、大切な人にかけるような一言を足す</li>
     </ol>
-    <div class="evidence">根拠：Kross et al.（2014）で、自分を名前や三人称で呼ぶと、ストレス場面での不安が和らぎやすいと報告されています。</div>
+    <div class="evidence"><b>研究では</b>Kross et al.（2014）で、自分を名前や三人称で呼ぶと、ストレス場面での不安が和らぎやすいと報告されています。</div>
   </div>
 
   <div class="habit">
-    <h3><span class="num">4</span>聞こえる音を3つ数える</h3>
-    <div class="when">こんな時に：考えごとで頭がいっぱいの時</div>
+    <h3><span class="drop">4</span>聞こえる音を3つ数える</h3>
+    <div class="when">考えごとで頭がいっぱいの時に</div>
     <ol>
       <li>目を閉じるか、視線を落とす</li>
       <li>遠くの音、近くの音、自分の呼吸の音。3つ見つける</li>
       <li>良い悪いを判断せず、ただ聞く</li>
       <li>考えごとに流れたら、また音に戻る</li>
     </ol>
-    <div class="evidence">根拠：Killingsworth &amp; Gilbert（2010）で、人は起きている時間の約47％を今ここ以外のことを考えて過ごし、その時ほど幸福感が低い傾向が報告されています。瞑想プログラムが不安や抑うつの軽減に役立つことは、メタ分析（Goyal et al., 2014）でも示されています。</div>
+    <div class="evidence"><b>研究では</b>Killingsworth &amp; Gilbert（2010）で、人は起きている時間の約47％を今ここ以外のことを考えて過ごし、その時ほど幸福感が低い傾向が報告されています。瞑想プログラムが不安や抑うつの軽減に役立つことは、メタ分析（Goyal et al., 2014）でも示されています。</div>
   </div>
+  <svg class="deco ripple"><use href="#ripple"/></svg>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">5</div>
 </section>
 
 <!-- 6 習慣5-6 -->
 <section class="page">
+  <svg class="deco staff"><use href="#staff"/></svg>
   <div class="habit">
-    <h3><span class="num">5</span>心配ごとを予約する</h3>
-    <div class="when">こんな時に：寝る前に不安がぐるぐるする時</div>
+    <h3><span class="drop">5</span>心配ごとを予約する</h3>
+    <div class="when">寝る前に不安がぐるぐるする時に</div>
     <ol>
       <li>毎日決まった15分を「心配タイム」にする（例：19時から。寝る直前は避ける）</li>
       <li>それ以外の時間に心配が浮かんだら、メモして「あとで考える」と保留する</li>
       <li>心配タイムにメモを見て、今も気になるものだけ考える</li>
     </ol>
-    <div class="evidence">根拠：心配を決まった時間に先送りする方法（McGowan &amp; Behar, 2013）で、心配や不安の軽減が報告されています。</div>
+    <div class="evidence"><b>研究では</b>心配を決まった時間に先送りする方法（McGowan &amp; Behar, 2013）で、心配や不安の軽減が報告されています。</div>
   </div>
 
   <div class="habit">
-    <h3><span class="num">6</span>緑の中に身を置く</h3>
-    <div class="when">こんな時に：同じ悩みを何度も考えてしまう時</div>
+    <h3><span class="drop">6</span>緑の中に身を置く</h3>
+    <div class="when">同じ悩みを何度も考えてしまう時に</div>
     <ol>
       <li>帰り道を、木の多いルートに変える</li>
       <li>公園のベンチで5分、葉の揺れを眺める</li>
       <li>難しい日は、ベランダの植物や空を眺めるだけでOK</li>
     </ol>
-    <div class="evidence">根拠：Bratman et al.（2015）で、自然の中を90分歩いた人は都市部を歩いた人に比べ、反すう（ぐるぐる思考）が減ったと報告されています。まずはできる範囲で、小さく取り入れてみてください。</div>
+    <div class="evidence"><b>研究では</b>Bratman et al.（2015）で、自然の中を90分歩いた人は都市部を歩いた人に比べ、反すう（ぐるぐる思考）が減ったと報告されています。まずはできる範囲で、小さく取り入れてみてください。</div>
   </div>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">6</div>
 </section>
 
 <!-- 7 習慣7 + 今日の1つ -->
 <section class="page">
+  <svg class="deco staff"><use href="#staff"/></svg>
   <div class="habit">
-    <h3><span class="num">7</span>好きな音に触れる</h3>
-    <div class="when">こんな時に：心がざらざらして落ち着かない時</div>
+    <h3><span class="drop">7</span>好きな音に触れる</h3>
+    <div class="when">心がざらざらして落ち着かない時に</div>
     <ol>
       <li>雨音、波の音、ピアノなど、心地いいと感じる音を1つ選ぶ</li>
       <li>小さめの音量で5分流す</li>
       <li>その間は、音の高さやリズムだけに耳を澄ませる</li>
     </ol>
-    <div class="evidence">根拠：de Witte et al.（2020）のメタ分析で、音楽を取り入れることが心拍や血圧などの体の反応とストレス感の両方を下げると報告されています。大切なのは正解の曲ではなく、あなたが心地いいと感じる音です。</div>
+    <div class="evidence"><b>研究では</b>de Witte et al.（2020）のメタ分析で、音楽を取り入れることが心拍や血圧などの体の反応とストレス感の両方を下げると報告されています。大切なのは正解の曲ではなく、あなたが心地いいと感じる音です。</div>
   </div>
 
-  <div class="box">
+  <div class="pool">
     <strong>わたしの好きな音メモ</strong>
-    <p class="small" style="margin:1mm 0 3mm">思いつくだけ書いてみてください。</p>
-    <ul class="check">
-      <li>　</li>
-      <li>　</li>
-      <li>　</li>
-    </ul>
+    <p class="small" style="margin:0">思いつくだけ書いてみてください。</p>
+    <div class="lines"><div></div><div></div><div></div></div>
   </div>
 
-  <div class="box warm">
+  <div class="pool sun">
     <strong>今日の1つを決めよう</strong><br>
-    いちばんやってみたい番号に丸をつけてください。
-    <p class="scale" style="text-align:center; font-size:15pt; margin:4mm 0 0">1 2 3 4 5 6 7</p>
+    いちばんやってみたい番号に、丸をつけてください。
+    <p class="scale">1 2 3 4 5 6 7</p>
   </div>
+  <svg class="deco ripple"><use href="#ripple"/></svg>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">7</div>
 </section>
 
 <!-- 8 休符を置く -->
 <section class="page">
-  <div class="eyebrow">REST NOTE</div>
-  <h2>休符を置く｜好きな時間の大切さ</h2>
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">休符を置く</div>
+  <h2>好きな時間の大切さ</h2>
   <p>休符も、音楽の一部です。休符のない曲は、弾く人も聴く人も苦しくなります。</p>
   <p>好きな時間は、がんばったあとのごほうびではありません。ずれた音を、自分の音に戻すための調律です。だから「空いたらやる」ではなく、がんばる前に先に置いてください。</p>
 
-  <div class="box">
+  <div class="pool">
     <strong>研究でわかっていること</strong>
     <ul>
       <li>余暇を楽しんでいる時ほど、ストレスや悲しみが低く、心拍も落ち着いていたと報告されています（Zawadzki et al., 2015）。</li>
@@ -245,23 +339,25 @@
 
   <h3>好きな時間リスト</h3>
   <p class="small">疲れた心は、選ぶ力も落ちています。元気な今のうちに書いておくと、しんどい日に迷わずにすみます。</p>
-  <table class="log">
+  <table class="log list">
     <tr><th style="width:24%">かかる時間</th><th>好きなこと（3つずつ）</th></tr>
     <tr><td>5分</td><td class="blank"></td></tr>
     <tr><td>30分</td><td class="blank"></td></tr>
-    <tr><td>休日</td><td class="blank"></td></tr>
+    <tr><td>休みの日</td><td class="blank"></td></tr>
   </table>
-  <p style="margin-top:5mm">書けたら、今週のカレンダーに1つだけ、先に予定として入れてみてください。</p>
+  <p style="margin-top:4mm">書けたら、今週の予定に1つだけ、先に入れてみてください。</p>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">8</div>
 </section>
 
 <!-- 9 7日間記録表 -->
 <section class="page">
-  <div class="eyebrow">7 DAYS LOG</div>
-  <h2>7日間の記録表</h2>
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">7日間の記録</div>
+  <h2>心の音を、少しずつ</h2>
   <p>やった習慣の番号と、やる前とやった後の心のざわざわを0〜10で書いてください。できなかった日は、空欄のままで大丈夫です。</p>
   <table class="log">
-    <tr><th style="width:12%">日</th><th style="width:18%">やった習慣</th><th style="width:15%">前</th><th style="width:15%">後</th><th>ひとことメモ</th></tr>
+    <tr><th style="width:13%">日</th><th style="width:19%">やった習慣</th><th style="width:14%">前</th><th style="width:14%">後</th><th>ひとことメモ</th></tr>
     <tr><td>1日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
     <tr><td>2日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
     <tr><td>3日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
@@ -270,22 +366,24 @@
     <tr><td>6日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
     <tr><td>7日目</td><td class="blank"></td><td></td><td></td><td></td></tr>
   </table>
-  <div class="box warm" style="margin-top:7mm">
+  <div class="pool sun" style="margin-top:6mm">
     7日間で、いちばん自分に合っていた習慣はどれでしたか？<br>
     番号とひとことを、LINEで送ってもらえたらうれしいです。
   </div>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">9</div>
 </section>
 
 <!-- 10 おわりに -->
 <section class="page">
-  <div class="eyebrow">CLOSING</div>
-  <h2>おわりに</h2>
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">おわりに</div>
+  <h2>あなたの中に、優しい音を</h2>
   <p>繊細さは、なくすものではありません。<br>
   感じたものとの距離の取り方は、練習で身につけられます。</p>
   <p>2010年の研究では、感受性の高い人が8週間のマインドフルネス・プログラムに参加したところ、ストレスや社会的不安が減り、自己受容が高まったと報告されています。この7つと好きな時間は、心のチューニングの入り口です。</p>
 
-  <div class="box">
+  <div class="pool sun">
     <strong>LINEで、7日間の声のメッセージをお届けします</strong>
     <p style="margin:2mm 0 0">明日から1日1本、2〜3分ほどの音声が届きます。寝る前や、帰り道に聞ける長さです。</p>
     <p style="margin:2mm 0 0">7日後、しんどい日に「こうすれば戻ってこられる」と思える、自分だけの方法が手元に残るように作りました。</p>
@@ -298,6 +396,8 @@
   <p class="small">
   Aron &amp; Aron (1997) J Pers Soc Psychol 73(2) / Lionetti et al. (2018) Transl Psychiatry 8:24 / Balban et al. (2023) Cell Rep Med 4(1) / Lieberman et al. (2007) Psychol Sci 18(5) / Kross et al. (2014) J Pers Soc Psychol 106(2) / Killingsworth &amp; Gilbert (2010) Science 330 / Goyal et al. (2014) JAMA Intern Med 174(3) / McGowan &amp; Behar (2013) Behav Modif 37(1) / Bratman et al. (2015) PNAS 112(28) / de Witte et al. (2020) Health Psychol Rev 14(2) / Soons et al. (2010) Eur J Psychol 6(4) / Zawadzki et al. (2015) Ann Behav Med 49(4) / Mak et al. (2023) Nat Med 29 / Cuijpers et al. (2007) Clin Psychol Rev 27(3) / Pluess &amp; Belsky (2013) Psychol Bull 139(4)
   </p>
+  <svg class="deco ripple"><use href="#ripple"/></svg>
+  <svg class="deco waves"><use href="#waves"/></svg>
   <div class="folio">10</div>
 </section>
 
