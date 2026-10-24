@@ -1,3 +1,5 @@
+> 旧版（文章の7日間・9,800円版のころ）。今のLINEは音声（audio_7days_script.md）とday0_greeting.md、richmenu_and_delivery.md を使う。
+
 # LINE 7日間ステップ配信（文章版）
 
 LINEの7日間は音声（audio_7days_script.md）がメイン。
