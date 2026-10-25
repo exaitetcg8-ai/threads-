@@ -28,6 +28,9 @@
 ・02_free_pdf/free_guide.html：PDFの元データ（文言を直したらPDFを再出力）
 ・03_line_step/day0_greeting.md：LINE登録直後のあいさつ（音声導線版）
 ・03_line_step/audio_7days_script.md：7日間の無料音声の録音用台本（10/25録音）
+・03_line_step/line_paste_sheet.md：LINE貼り付けシート（プロフィール、あいさつ、応答、ステップ配信、リッチメニュー、12/16の販売3通）
+・03_line_step/audio/：7日間の音声の配信用（音量をそろえた版、1〜5日目）
+・03_line_step/richmenu/：リッチメニュー画像（販売前・販売後）、プロフィール背景画像
 ・03_line_step/line_setup_full.md：LINE公式アカウントを作るところから公開まで（全部の流れ）
 ・03_line_step/richmenu_and_delivery.md：リッチメニュー（画像はrichmenu/）、応答メッセージ、ステップ配信、12/16の3通
 ・04_product/notion/：Notion版ワークシート（読み込み用ファイル、設定手順、購入者への案内文）
