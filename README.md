@@ -21,6 +21,7 @@
 ## ファイル構成
 
 ・00_brand/schedule.md：これからのスケジュール（毎日の型、年内の週ごとのタスク、18ヶ月の流れ）
+・00_brand/hsp_traits_reference.md：HSPの特徴の参考（4つの特徴、あるある20とやさしい言い換え）
 ・00_brand/brand.md：ブランドの土台（名前、4つのチューニング、好きな時間の大切さと研究）
 ・01_threads_posts/x_posts_30.md：X投稿30本（140字以内。Threadsにもそのまま使える。メイン）
 ・01_threads_posts/posts_30.md：Threads投稿30本（長文版、参考文献つき）
