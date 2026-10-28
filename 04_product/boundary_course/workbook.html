@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>境界線講座 ワークブック</title>
+<style>
+  /* 水辺の朝：上から朝の光、下に水の波紋、見出しのそばに音の流れ。枠で囲まず、余白で包む */
+  @font-face { font-family: "Zen Maru Gothic"; src: url("../../02_free_pdf/fonts/ZenMaruGothic-Regular.ttf"); font-weight: 400; }
+  @font-face { font-family: "Zen Maru Gothic"; src: url("../../02_free_pdf/fonts/ZenMaruGothic-Bold.ttf"); font-weight: 700; }
+  @page { size: A4; margin: 0; }
+  :root {
+    --ink: #4a585e;        /* 本文：黒ではなく、水の底のような灰青 */
+    --deep: #3d5f6b;       /* 見出し：深い水の色 */
+    --soft: #7d8f96;       /* 補足 */
+    --water: #8fbccb;      /* 水 */
+    --mist: #e9f2f4;       /* 朝もや */
+    --light: #f8e9c9;      /* 朝の光 */
+    --leaf: #9dbb9a;       /* 水辺の葉 */
+    --paper: #fdfbf7;      /* 紙 */
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body { font-family: "Zen Maru Gothic", sans-serif; color: var(--ink); background: var(--paper); font-size: 10.8pt; line-height: 2; letter-spacing: .02em; }
+  .page { width: 210mm; height: 297mm; padding: 20mm 22mm 30mm; position: relative; overflow: hidden; page-break-after: always;
+    background:
+      radial-gradient(ellipse 120mm 90mm at 88% -6%, rgba(248,233,201,.95), rgba(248,233,201,0) 70%),
+      radial-gradient(ellipse 140mm 70mm at 10% 104%, rgba(143,188,203,.35), rgba(143,188,203,0) 70%),
+      linear-gradient(180deg, #fffaf1 0%, var(--paper) 35%, #f4f8f8 100%); }
+  .page:last-child { page-break-after: auto; }
+  .page > * { position: relative; z-index: 1; }
+  .deco { position: absolute; z-index: 0; pointer-events: none; }
+  .deco.waves { left: 0; bottom: 0; width: 210mm; height: 28mm; }
+  .deco.ripple { left: 12mm; bottom: 8mm; width: 60mm; height: 18mm; }
+  .deco.staff { right: -6mm; top: 14mm; width: 120mm; height: 22mm; opacity: .8; }
+  .folio { position: absolute; bottom: 10mm; left: 0; right: 0; text-align: center; font-size: 8.5pt; color: var(--soft); letter-spacing: .3em; z-index: 2; }
+
+  /* 表紙 */
+  .cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding-bottom: 46mm;
+    background:
+      radial-gradient(ellipse 150mm 120mm at 50% 8%, rgba(248,233,201,1), rgba(248,233,201,0) 70%),
+      linear-gradient(180deg, #fff7ea 0%, #f6f3ec 45%, #e3eff2 78%, #cfe3ea 100%); }
+  .cover .tag { color: var(--deep); font-size: 10.5pt; letter-spacing: .35em; }
+  .cover h1 { font-size: 27pt; line-height: 1.7; font-weight: 700; color: var(--deep); margin: 10mm 0 6mm; letter-spacing: .08em; }
+  .cover .sub { color: var(--soft); font-size: 11.5pt; }
+  .cover .words { margin-top: 18mm; color: var(--ink); font-size: 11pt; line-height: 2.3; }
+  .cover .by { margin-top: 10mm; color: var(--soft); font-size: 9.5pt; letter-spacing: .2em; }
+  .cover .deco.waves { height: 60mm; }
+  .cover .deco.ripple { left: 50%; transform: translateX(-50%); bottom: 22mm; width: 90mm; height: 26mm; }
+
+  /* 見出し */
+  .kicker { color: var(--leaf); font-size: 9.5pt; letter-spacing: .3em; margin-bottom: 1mm; }
+  h2 { font-size: 17pt; font-weight: 700; color: var(--deep); margin: 0 0 7mm; letter-spacing: .06em; }
+  h3 { font-size: 12.5pt; font-weight: 700; color: var(--deep); margin: 5mm 0 1mm; letter-spacing: .04em; }
+  p { margin: 0 0 3.5mm; }
+  .small { font-size: 9pt; color: var(--soft); line-height: 1.9; }
+
+  /* 包む形：枠ではなく、水たまりのようなにじみ */
+  .pool { margin: 5mm 0; padding: 5mm 7mm; border-radius: 10mm; background: radial-gradient(ellipse at 30% 20%, rgba(255,255,255,.95), rgba(233,242,244,.8)); }
+  .pool.sun { background: radial-gradient(ellipse at 70% 10%, rgba(255,252,244,1), rgba(248,233,201,.65)); }
+  .pool strong { color: var(--deep); }
+  .quote { text-align: center; font-size: 13pt; line-height: 2.1; color: var(--deep); margin: 4mm 0 5mm; }
+  .quote::before, .quote::after { content: "〜"; display: block; color: var(--water); font-size: 10pt; letter-spacing: .5em; }
+
+  ul, ol { margin: 1.5mm 0; padding-left: 0; list-style: none; }
+  ul li, ol li { position: relative; padding-left: 7mm; margin: .6mm 0; }
+  ul li::before { content: ""; position: absolute; left: 1.5mm; top: 2.6mm; width: 2.2mm; height: 2.2mm; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #fff, var(--water)); }
+  ol { counter-reset: s; }
+  ol li { counter-increment: s; }
+  ol li::before { content: counter(s); position: absolute; left: 0; top: 1.3mm; width: 4.8mm; height: 4.8mm; border-radius: 50%; background: var(--mist); color: var(--deep); font-size: 7.5pt; line-height: 4.8mm; text-align: center; }
+  .check li::before { width: 3.4mm; height: 3.4mm; top: 2.1mm; left: 1mm; background: none; border: .35mm solid var(--water); }
+  .check li { border-bottom: .25mm dotted rgba(143,188,203,.6); padding-block: .6mm; }
+
+  .tight { line-height: 1.82; }
+  .tight p { margin-bottom: 2.4mm; }
+  .tight h2 { margin-bottom: 5mm; }
+  .tight .quote { line-height: 1.9; margin: 2mm 0 3mm; }
+  .tight .quote::before, .tight .quote::after { font-size: 8pt; line-height: 1.4; }
+  .tight .pool { padding: 4mm 7mm; margin: 4mm 0 0; }
+  /* 習慣 */
+  .habit { margin-bottom: 10mm; }
+  .habit h3 { display: flex; align-items: center; gap: 3.5mm; margin-top: 0; font-size: 13.5pt; }
+  .drop { flex: 0 0 auto; width: 10mm; height: 10mm; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-size: 11pt; font-weight: 700;
+    background: radial-gradient(circle at 32% 28%, #e8f4f7 0%, var(--water) 55%, #6fa3b4 100%); box-shadow: 0 1.2mm 3mm rgba(111,163,180,.35); }
+  .when { display: inline-block; font-size: 9.5pt; color: var(--deep); background: rgba(248,233,201,.7); border-radius: 6mm; padding: .6mm 4mm; margin: 1mm 0 2mm; }
+  .evidence { position: relative; margin-top: 3mm; padding-top: 3mm; font-size: 8.8pt; color: var(--soft); line-height: 1.85; }
+  .evidence::before { content: ""; position: absolute; left: 0; top: 0; width: 34mm; height: 2mm;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 8'><path d='M0 4 Q10 0 20 4 T40 4 T60 4 T80 4 T100 4 T120 4' fill='none' stroke='%239dbb9a' stroke-width='1.2'/></svg>") no-repeat left center / contain; }
+  .evidence b { color: var(--leaf); font-weight: 700; margin-right: 1.5mm; }
+
+  /* 書き込み */
+  .lines { margin-top: 2mm; }
+  .lines div { height: 9mm; border-bottom: .3mm dashed rgba(143,188,203,.7); }
+  table.log { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 9.5pt; margin-top: 3mm; }
+  table.log th { font-weight: 400; color: var(--deep); background: rgba(233,242,244,.9); padding: 2.5mm 2mm; }
+  table.log th:first-child { border-radius: 4mm 0 0 4mm; }
+  table.log th:last-child { border-radius: 0 4mm 4mm 0; }
+  table.log td { padding: 2.5mm 2mm; text-align: center; border-bottom: .3mm dashed rgba(143,188,203,.7); }
+  table.log td.blank { height: 15mm; }
+  table.list td.blank { height: 14mm; }
+  .scale { text-align: center; font-size: 15pt; letter-spacing: .9em; color: var(--deep); margin: 3mm 0 0; }
+  .card { margin: 4mm 0; padding: 5mm 7mm 3mm; border-radius: 8mm; border: .4mm dashed var(--water); background: rgba(255,255,255,.7); }
+  .card .lab { font-size: 9pt; color: var(--leaf); letter-spacing: .2em; }
+  .card .lines div { height: 8.5mm; }
+  .map li { margin: 1.4mm 0; }
+  .map b { color: var(--deep); }
+  .steps { display: flex; gap: 4mm; justify-content: center; margin: 5mm 0; }
+  .steps span { flex: 1; text-align: center; padding: 4mm 2mm; border-radius: 8mm; background: rgba(233,242,244,.95); color: var(--deep); font-weight: 700; }
+  .steps i { align-self: center; font-style: normal; color: var(--water); }
+  table.log td.blank { height: 16mm; }
+  table.log td { text-align: left; }
+  .big { font-size: 14pt; text-align: center; color: var(--deep); line-height: 2; margin: 6mm 0; }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="wg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#bcd9e2" stop-opacity=".55"/><stop offset="1" stop-color="#8fbccb" stop-opacity=".75"/></linearGradient>
+    <linearGradient id="wg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d8eaef" stop-opacity=".7"/><stop offset="1" stop-color="#a9cdd8" stop-opacity=".8"/></linearGradient>
+    <symbol id="waves" viewBox="0 0 800 130" preserveAspectRatio="none">
+      <path d="M0 58 C120 30 220 82 360 56 S620 28 800 52 L800 130 L0 130 Z" fill="url(#wg2)"/>
+      <path d="M0 86 C140 60 260 108 420 84 S660 62 800 82 L800 130 L0 130 Z" fill="url(#wg)"/>
+      <path d="M0 70 C130 46 240 92 380 70 S640 44 800 66" fill="none" stroke="#ffffff" stroke-opacity=".8" stroke-width="1.4"/>
+    </symbol>
+    <symbol id="ripple" viewBox="0 0 300 90">
+      <ellipse cx="150" cy="45" rx="40" ry="10" fill="none" stroke="#8fbccb" stroke-opacity=".55" stroke-width="1.4"/>
+      <ellipse cx="150" cy="45" rx="85" ry="22" fill="none" stroke="#8fbccb" stroke-opacity=".35" stroke-width="1.2"/>
+      <ellipse cx="150" cy="45" rx="140" ry="38" fill="none" stroke="#8fbccb" stroke-opacity=".2" stroke-width="1"/>
+    </symbol>
+    <symbol id="staff" viewBox="0 0 500 90" preserveAspectRatio="none">
+      <g fill="none" stroke="#9dbb9a" stroke-opacity=".45" stroke-width="1">
+        <path d="M0 30 C120 10 220 50 340 28 S460 14 500 22"/>
+        <path d="M0 38 C120 18 220 58 340 36 S460 22 500 30"/>
+        <path d="M0 46 C120 26 220 66 340 44 S460 30 500 38"/>
+        <path d="M0 54 C120 34 220 74 340 52 S460 38 500 46"/>
+        <path d="M0 62 C120 42 220 82 340 60 S460 46 500 54"/>
+      </g>
+      <g fill="#8fbccb" fill-opacity=".55"><ellipse cx="150" cy="40" rx="5" ry="3.6"/><ellipse cx="300" cy="44" rx="5" ry="3.6"/><ellipse cx="420" cy="26" rx="5" ry="3.6"/></g>
+    </symbol>
+  </defs>
+</svg>
+
+<section class="page cover">
+  <svg class="deco staff" style="top:30mm; right:auto; left:-10mm; width:240mm; height:30mm"><use href="#staff"/></svg>
+  <div class="tag">境界線講座　ワークブック</div>
+  <h1>「断れない」と<br>「人の機嫌に疲れる」を、<br>やさしくほどく4週間</h1>
+  <div class="sub">人との間に、低くてやさしい柵をつくる練習</div>
+  <div class="words">これは、誰の気持ち？<br>休む予定も、大切な予定。<br>少し考えてから、お返事しますね。</div>
+  <div class="by">もの ｜ 優しい世界を届ける</div>
+  <svg class="deco ripple"><use href="#ripple"/></svg>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page ">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">はじめに</div>
+  <h2>このワークブックの使い方</h2>
+  <ul>
+    <li>音声を聞いたあとに、そのページをひらいてください</li>
+    <li>全部書かなくて大丈夫です。ひとつ書けたら、それで十分です</li>
+    <li>印刷しても、スマホで見ながらノートに書いても大丈夫です</li>
+    <li>書きながら苦しくなったら、そこでやめて、休んでください</li>
+  </ul>
+  <h3>4週間の地図</h3>
+  <ol class="map">
+    <li><b>1週目　これは、誰の気持ち？</b>　人の気持ちと、自分の気持ちを分ける</li>
+    <li><b>2週目　回復の時間を、先に</b>　休む予定を、先に置く</li>
+    <li><b>3週目　気づいても、すぐ動かない</b>　ひと呼吸と、やさしい断り方</li>
+    <li><b>4週目　自分への声かけ</b>　責める声から、やさしい声へ</li>
+  </ol>
+  <div class="pool">
+    <p><strong>この講座は、セルフケアの講座です。</strong>カウンセリングや治療の代わりではありません。</p>
+    <p class="small">眠れない、食べられない日が続く時や、気持ちがとても重い時は、病院や相談窓口を頼ってください。よりそいホットライン 0120-279-338（24時間）。通院中の方は、主治医に相談しながら進めてください。</p>
+  </div>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page tight">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">1週目｜これは、誰の気持ち？</div>
+  <h2>境界線は、壁ではなく柵</h2>
+  <p>自分の場所がどこまでかを知っていて、門をあけるかどうかを、自分で選べる。それが、この講座でいう境界線です。人を遠ざけるためではなく、やさしい関係を続けるためのものです。</p>
+  <h3>今の、わたしの柵の高さ（音声1-1）</h3>
+  <p class="small">低い、高い、ところどころ穴があいている。絵でも言葉でも大丈夫です。</p>
+  <div class="card" style="height:52mm"><div class="lab">わたしの柵</div></div>
+  <h3>3つの問い（音声1-3）</h3>
+  <div class="steps"><span>今、何を<br>感じている？</span><i>→</i><span>名前を<br>つけるなら？</span><i>→</i><span>これは、<br>誰の気持ち？</span></div>
+  <p class="quote">これは、あの人の気持ち。</p>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page ">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">1週目のワーク</div>
+  <h2>気持ちの持ち主ノート</h2>
+  <p>1日にひとつだけ、心が動いた場面を書きます。1週間で2つか3つ書けたら、それで十分です。両方の気持ちが混ざっている時は「半分ずつ」と書いて大丈夫です。</p>
+  <table class="log"><tr><th>日にち</th><th>場面</th><th>体の感じ</th><th>気持ちの名前</th><th>持ち主</th></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr></table>
+  <p class="small" style="margin-top:4mm">気持ちの名前の例：不安、さみしさ、焦り、イライラ、悲しみ、ほっとした、うれしい</p>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page ">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">2週目｜回復の時間を、先に</div>
+  <h2>回復の4つのかたち</h2>
+  <p>休むことを、疲れたあとのごほうびではなく、予定として先に置いておく。2週目は、その練習です。まずは、自分に合う回復のかたちを探してみます（音声2-2）。</p>
+  <table class="log"><tr><th style="width:30%">かたち</th><th>わたしにできそうなこと</th></tr>
+  <tr><td><b>離れる</b><br><span class="small">出来事や人の言葉から、心の距離をとる</span></td><td class="blank" style="height:30mm"></td></tr>
+  <tr><td><b>ゆるめる</b><br><span class="small">体と心の力を抜く</span></td><td class="blank" style="height:30mm"></td></tr>
+  <tr><td><b>夢中になる</b><br><span class="small">好きなことに、時間を忘れて入りこむ</span></td><td class="blank" style="height:30mm"></td></tr>
+  <tr><td><b>自分で選ぶ</b><br><span class="small">何をするかを、自分で決める</span></td><td class="blank" style="height:30mm"></td></tr></table>
+  <p class="small" style="margin-top:4mm">空いたところは、空けたままで大丈夫です。</p>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page tight">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">2週目のワーク</div>
+  <h2>回復の予定表と、わたしの定員</h2>
+  <h3>人と会う予定や、にぎやかな予定のあとに（音声2-1）</h3>
+  <table class="log"><tr><th>予定</th><th>そのあとに置く、休む時間</th></tr><tr><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td></tr></table>
+  <h3>わたしの定員メモ（音声2-3）</h3>
+  <p class="small">はっきりわからなくても大丈夫。今の、なんとなくの数で十分です。何度でも書き直せます。</p>
+  <div class="card"><div class="lab">1日に会える人の数</div><div class="lines"><div></div></div><div class="lab" style="margin-top:3mm">1週間に入れられる予定の数</div><div class="lines"><div></div></div><div class="lab" style="margin-top:3mm">これ以上だと疲れやすい目安</div><div class="lines"><div></div></div></div>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page tight">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">3週目｜気づいても、すぐ動かない</div>
+  <h2>ひと呼吸と、やさしい断り方</h2>
+  <div class="steps"><span>気づく</span><i>→</i><span>ひと呼吸</span><i>→</i><span>選ぶ</span></div>
+  <p>気づいたら、ゆっくり息を吐いて、「今、わたしは本当はどうしたい？」と聞いてみます。どちらを選んでも大丈夫。自分で選んだことが大切です（音声3-1）。</p>
+  <h3>やさしい断り方の4つの順番（音声3-2）</h3>
+  <ol>
+    <li><b>ありがとう</b>　声をかけてくれたことに、お礼を</li>
+    <li><b>今回は</b>　難しいことを、短く。理由は長く言わなくて大丈夫</li>
+    <li><b>代わりに</b>　できることがあれば、ひとつ。なければ、なくて大丈夫</li>
+    <li><b>もう一度、ありがとう</b></li>
+  </ol>
+  <div class="pool sun"><p style="margin:0">誘ってくれて、ありがとう。今回は、ゆっくり休む日にしたくて。また来月、声をかけてもらえたらうれしいな。ありがとうね。</p></div>
+  <p class="quote">少し考えてから、お返事しますね。</p>
+  <div class="card"><div class="lab">ひと呼吸を入れられた場面（思い出せたことも、ちゃんと練習です）</div><div class="lines"><div></div><div></div><div></div><div></div></div></div>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page tight">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">3週目のワーク</div>
+  <h2>断りの言葉カードと、もしもプラン</h2>
+  <div class="card"><div class="lab">断りの言葉カード 1　場面：</div><div class="lines"><div></div><div></div></div></div>
+  <div class="card"><div class="lab">断りの言葉カード 2　場面：</div><div class="lines"><div></div><div></div></div></div>
+  <div class="card"><div class="lab">断りの言葉カード 3　場面：</div><div class="lines"><div></div><div></div></div></div>
+  <h3>もしもプラン（音声3-3）</h3>
+  <table class="log"><tr><th>もしも、こうなったら</th><th>こう言う、こうする</th></tr><tr><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td></tr></table>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page tight">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">4週目｜自分への声かけ</div>
+  <h2>責める声に、名前をつける</h2>
+  <p>その声は、相手を大切にしたい、うまくやりたいという気持ちから生まれていることが多いです。追い出さなくて大丈夫。名前をつけて、少し距離をとってみます（音声4-1）。</p>
+  <table class="log"><tr><th>よく出てくる言葉</th><th>その声の名前</th><th>かけてあげる言葉</th></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr><tr><td class="blank"></td><td class="blank"></td><td class="blank"></td></tr></table>
+  <p class="small">名前の例：反省会の先生、心配性のアラーム、きびしいコーチ</p>
+  <h3>大切な人に言うように（音声4-2）</h3>
+  <p class="small">自分の名前から書き始めてみます。声に出せる時は、小さな声で読んでみてください。</p>
+  <div class="card"><div class="lab">　　　　さんへ</div><div class="lines"><div></div><div></div><div></div></div></div>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page tight">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">4週目のワーク</div>
+  <h2>わたしの境界線の言葉</h2>
+  <p>4週間で出会った言葉の中から、いちばん自分を守ってくれそうな言葉を、ひとつ選びます。自分の言葉に言い換えても大丈夫です。スマホのメモや待ち受けに入れて、しんどい日に目に入るところに（音声4-3）。</p>
+  <p class="small">例：これは、あの人の気持ち／休む予定も、大切な予定／少し考えてから、お返事しますね／〇〇さん、今日もよくやったね</p>
+  <div class="card" style="text-align:center;padding:8mm 7mm"><div class="lab">わたしの境界線の言葉</div><div class="lines"><div></div><div></div></div></div>
+  <h3>4週間のふりかえり</h3>
+  <div class="card"><div class="lab">いちばん使えそうだと思ったこと</div><div class="lines"><div></div></div><div class="lab" style="margin-top:3mm">前より少し、できるようになったこと</div><div class="lines"><div></div></div><div class="lab" style="margin-top:3mm">これからも、続けてみたいこと</div><div class="lines"><div></div></div></div>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+<section class="page ">
+  <svg class="deco staff"><use href="#staff"/></svg>
+  <div class="kicker">おわりに</div>
+  <h2>柵は、何度でも引き直せる</h2>
+  <p>境界線は、一度引いたら終わりではありません。疲れた日は、柵がまた低くなることもあります。その時は、好きな音声やこのワークブックに、何度でも戻ってきてください。</p>
+  <p>人の気持ちに気づける力も、頼まれたら応えたくなる気持ちも、あなたの大切なやさしさです。この4週間は、そのやさしさを、自分にも向けるための時間でした。</p>
+  <div class="pool">
+    <p><strong>LINEでの質問</strong>　各週の終わりに1回、講座の中身について送れます。お返事は3日以内が目安です。</p>
+    <p class="small">つらさが強い時は、ひとりで抱えずに。よりそいホットライン 0120-279-338（24時間）。眠れない、食べられない日が続く時は、病院にも相談してください。頼ることも、自分を守る大切な境界線です。</p>
+  </div>
+  <p class="big">あなたの、ゆるやかな一歩が、<br>誰かの希望になりますように。</p>
+  <p class="small" style="text-align:center">もの ｜ 優しい世界を届ける</p>
+  <svg class="deco waves"><use href="#waves"/></svg>
+</section>
+</body></html>
