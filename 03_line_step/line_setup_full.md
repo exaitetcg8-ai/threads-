@@ -17,7 +17,7 @@
 ・アイコン画像：Xと同じ空の画像（正方形）
 ・背景画像（プロフィールの上の画像）：03_line_step/richmenu/profile_background.png（推奨サイズは管理画面で確認する）
 ・無料PDFのURL：Googleドライブに置き、「リンクを知っている全員が閲覧可」にしてコピー
-・7日間の音声ファイル7本：03_line_step/audio/ に配信用（音量をそろえた版）。1〜5日目は済み、6・7日目は次の休みの日
+・7日間の音声ファイル7本：03_line_step/audio/ に配信用（音量をそろえた版）。1〜7日目すべて済み（10/31）
 ・リッチメニュー画像：03_line_step/richmenu/richmenu_presale.png
 ・文章：day0_greeting.md、richmenu_and_delivery.md
 
