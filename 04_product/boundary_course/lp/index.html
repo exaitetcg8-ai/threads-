@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>境界線講座｜断れないと人の機嫌に疲れるを、やさしくほどく4週間</title>
+<meta name="description" content="人との間に、低くてやさしい柵をつくる練習。音声29本、ワークブック、LINEでの質問つきの4週間の講座。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="「断れない」と「人の機嫌に疲れる」を、やさしくほどく4週間">
+<meta property="og:description" content="人との間に、低くてやさしい柵をつくる練習。">
+<style>
+  :root {
+    --ink:#34404a; --sub:#66737c; --accent:#5b8f7b; --accent-deep:#467563;
+    --water:#edf5f1; --wind:#f3f7ef; --light:#fbf5ea; --line:#d6e3ea; --bg:#fbfcfd; --card:#ffffff;
+    --buy:#e58a5c;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --ink:#e4ecf1; --sub:#a9b8c2; --accent:#8cc0dc; --accent-deep:#a9d2e8; --water:#1c2a33; --wind:#1f2b24; --light:#2c2720; --line:#34454f; --bg:#141c22; --card:#1b252c; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --ink:#e4ecf1; --sub:#a9b8c2; --accent:#8cc0dc; --accent-deep:#a9d2e8; --water:#1c2a33; --wind:#1f2b24; --light:#2c2720; --line:#34454f; --bg:#141c22; --card:#1b252c; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body {
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+    color: var(--ink); background: var(--bg); line-height: 1.95; font-size: 16px; -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 540px; margin: 0 auto; padding: 0 20px; }
+  section { padding: 44px 0; }
+  .hero { background: linear-gradient(180deg, var(--water), var(--light)); padding: 46px 0 42px; text-align: center; }
+  .eyebrow { color: var(--accent); font-size: 13px; letter-spacing: .18em; }
+  h1 { font-size: 26px; line-height: 1.55; font-weight: 700; margin: 14px 0 10px; }
+  .lead { color: var(--sub); font-size: 15px; margin: 0 0 26px; }
+  .cover { width: 60%; max-width: 250px; height: auto; border: 1px solid var(--line); box-shadow: 0 14px 30px rgba(60,90,110,.18); border-radius: 4px; display:block; margin: 0 auto 28px; background:#fff; }
+  .btn { display:block; width:100%; text-align:center; text-decoration:none; background: var(--buy); color:#fff; font-weight:700; font-size:18px; padding:17px 16px; border-radius:999px; box-shadow:0 6px 16px rgba(229,138,92,.3); }
+  .btn small { display:block; font-weight:400; font-size:12.5px; opacity:.95; margin-top:2px; }
+  .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .note { font-size: 12.5px; color: var(--sub); margin-top: 10px; text-align: center; }
+  h2 { font-size: 21px; font-weight: 700; text-align: center; margin: 0 0 22px; line-height: 1.6; }
+  h2 .accent { color: var(--accent); }
+  h3 { font-size: 17px; margin: 0 0 6px; }
+  p { margin: 0 0 16px; }
+  .center { text-align: center; }
+  .strong { color: var(--accent-deep); font-weight: 700; }
+  .soft { text-align: center; font-size: 15px; color: var(--sub); line-height: 2; margin: 0 0 14px; }
+  .card p { font-size: 15px; line-height: 1.9; }
+  .card h3 { line-height: 1.6; margin-bottom: 10px; }
+  .list li { line-height: 1.8; }
+  .list b { display: block; }
+  .mirror { list-style:none; padding:0; margin:0; }
+  .mirror li { background: var(--card); border:1px solid var(--line); border-radius:12px; padding:13px 16px; margin-bottom:10px; font-size:15px; }
+  .mirror li::before { content:"✓"; color: var(--accent); font-weight:700; margin-right:8px; }
+  .message { text-align:center; font-size:19px; color: var(--accent-deep); line-height:2; margin: 28px 0 0; }
+  .water { background: var(--water); } .wind { background: var(--wind); } .light { background: var(--light); }
+  .card { background: var(--card); border:1px solid var(--line); border-radius:14px; padding:18px 18px 8px; margin-bottom:14px; }
+  .card .src { font-size: 12px; color: var(--sub); }
+  .num { display:inline-block; font-size:12px; color:#fff; background: var(--accent); border-radius:999px; padding:1px 10px; margin-bottom:6px; }
+  .week { border-left: 4px solid var(--accent); padding-left: 14px; margin-bottom: 22px; }
+  .week ol { margin: 6px 0 0; padding-left: 1.4em; font-size: 14.5px; color: var(--sub); }
+  .list { list-style:none; padding:0; margin:0; }
+  .list li { padding: 10px 0; border-bottom: 1px dashed var(--line); font-size: 15px; }
+  .list b { color: var(--accent-deep); }
+  .flow { list-style:none; padding:0; margin:0; counter-reset:f; }
+  .flow li { counter-increment:f; display:flex; gap:12px; align-items:flex-start; background: var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:10px; font-size:15px; }
+  .flow li::before { content: counter(f); flex:0 0 28px; height:28px; line-height:28px; text-align:center; border-radius:50%; background: var(--accent); color:#fff; font-size:14px; }
+  .price { text-align:center; font-size: 34px; font-weight:700; color: var(--accent-deep); margin: 6px 0 2px; }
+  .price small { font-size: 14px; font-weight: 400; color: var(--sub); }
+  .faq dt { font-weight:700; margin-top:16px; font-size:15px; }
+  .faq dt::before { content:"Q. "; color: var(--accent); }
+  .faq dd { margin:4px 0 0; font-size:14.5px; color: var(--sub); }
+  .caution { font-size: 14px; color: var(--sub); }
+  footer { font-size: 12px; color: var(--sub); padding: 28px 0 44px; line-height: 1.8; border-top: 1px solid var(--line); }
+  footer a { color: var(--accent-deep); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">境界線講座 ｜ もの</div>
+    <h1>「断れない」と<br>「人の機嫌に疲れる」を、<br>やさしくほどく4週間</h1>
+    <p class="lead">人との間に<br>低くてやさしい柵をつくる練習</p>
+    <img class="cover" src="cover_boundary.jpg" alt="境界線講座ワークブックの表紙" width="663" height="937">
+    <a class="btn js-buy" href="#price">講座に申し込む<small>29,800円（税込）・音声29本、ワークブック、LINE質問、特典9つ</small></a>
+    <p class="note">今回の募集は10名まで。【締め切りの日】まで</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>こんな日は、<br><span class="accent">ありませんか？</span></h2>
+    <ul class="mirror">
+      <li>誰かの不機嫌に気づくと、自分まで落ち着かなくなる</li>
+      <li>頼まれると、考える前に「いいよ」と言っている</li>
+      <li>人と会ったあと、ぐったりして、回復に時間がかかる</li>
+      <li>夜になると「あの時こう言えばよかった」と、反省会が始まる</li>
+    </ul>
+    <p class="message">それは<br>まわりを大切にしてきた人に<br>よくあることです。</p>
+    <p class="soft">人の気持ちに気づける力が<br>ちゃんとはたらいている、しるしでもあります。</p>
+  </div>
+</section>
+
+<section class="water">
+  <div class="wrap">
+    <h2>必要なのは、<br><span class="accent">やさしい柵</span></h2>
+    <p class="center">人の気持ちに気づきやすい人は<br>心の柵が、とても低くなっていることがあります。</p>
+    <p class="center">相手の気持ちが、柵をこえて<br>すっと、自分の庭に入ってくる。</p>
+    <p class="center">気づいた時には<br>自分の庭が、人の気持ちでいっぱいになっている。</p>
+    <p class="center strong">この講座でつくるのは<br>人を遠ざける、高い壁ではありません。</p>
+    <p class="center">自分の場所が、どこまでかを知っていて<br>門をあけるかどうかを、自分で選べる。<br>そんな、低くてやさしい柵です。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>4週間で、練習すること</h2>
+    <div class="week">
+      <h3>1週目　これは、誰の気持ち？</h3>
+      <p class="caution">人の気持ちと、自分の気持ちを分けて見る。<br>3つの問いで、気持ちの持ち主を見つけます。</p>
+    </div>
+    <div class="week">
+      <h3>2週目　回復の時間を、先に</h3>
+      <p class="caution">休むことを、ごほうびではなく予定にする。<br>回復の4つのかたちと、自分の定員を知ります。</p>
+    </div>
+    <div class="week">
+      <h3>3週目　気づいても、すぐ動かない</h3>
+      <p class="caution">気づく、ひと呼吸、選ぶ。<br>やさしい断り方と、断ったあとのつなぎ直し。</p>
+    </div>
+    <div class="week">
+      <h3>4週目　自分への声かけ</h3>
+      <p class="caution">責める声に名前をつけて<br>大切な人に言うように、自分に話しかける。</p>
+    </div>
+    <div class="week">
+      <h3>応用編　場面別の境界線（7本）</h3>
+      <p class="caution">職場／家族／友だちとパートナー／SNSとLINE<br>人の機嫌と声の圧／我慢と努力の見分け方<br>合わせることと、本心のバランス</p>
+    </div>
+    <p class="center" style="margin-top:20px">各週に、目を閉じて一緒にやる<br>誘導ワークの音声がついています。</p>
+    <p class="center strong">読むだけでなく<br>体で練習できる講座です。</p>
+  </div>
+</section>
+
+<section class="wind">
+  <div class="wrap">
+    <h2>この講座で、めざすこと</h2>
+    <ul class="list">
+      <li><b>人の気持ちと、自分の気持ち</b>分けて見られる時間が、増える</li>
+      <li><b>休む予定を、先に置ける</b>疲れ切る前に、休めるようになる</li>
+      <li><b>断る時の、自分の言葉</b>使える言葉が、3つ手元にある</li>
+      <li><b>責める声に気づける</b>やさしい声を、かけ直す練習ができている</li>
+    </ul>
+    <p class="center" style="margin-top:18px">変わり方には、人それぞれのペースがあります。<br>「必ず断れるようになる」とは、お約束できません。</p>
+    <p class="center">そのかわり、何度でも戻ってこられる場所として<br>音声とワークブックを用意しました。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>届くもの</h2>
+    <ul class="list">
+      <li><b>音声29本</b>解説、もう一歩深く、誘導ワーク、場面別の応用編（1本3〜7分）</li>
+      <li><b>ワークブック（PDF、17ページ）</b>印刷しても、スマホで見ながらノートに書いても</li>
+      <li><b>LINEでの質問</b>各週の終わりに1回、4週間で4回</li>
+    </ul>
+    <h3 style="margin-top:24px">特典</h3>
+    <ul class="list">
+      <li>1. やさしく断る言葉 50</li>
+      <li>2. 境界線の言葉 待ち受け12枚</li>
+      <li>3. 人と会う前の3分（音声）</li>
+      <li>4. 夜の反省会を閉じる音声</li>
+      <li>5. 境界線セルフチェック（受講前と4週間後）</li>
+      <li>6. 修了後30日のひとこと（LINEで毎朝）</li>
+      <li>7. 境界線ノート（Notion用）</li>
+      <li>8. きつい言葉が届いた夜の3分（音声）</li>
+      <li>9. 境界線の言い換え辞典 20</li>
+    </ul>
+  </div>
+</section>
+
+<section class="light">
+  <div class="wrap">
+    <h2>「4週間、続けられるかな」と<br><span class="accent">思う方へ</span></h2>
+    <ul class="list">
+      <li><b>自分のペースで大丈夫</b>遅れても、追いつかなくていい作りです</li>
+      <li><b>聞くだけの日も、練習</b>誘導ワークを流すだけの日も、ちゃんと進んでいます</li>
+      <li><b>ひとりで迷わない</b>各週の終わりに、LINEで質問を送れます</li>
+      <li><b>戻る日の地図がある</b>うまくいかない日のあとも、戻ってこられます</li>
+      <li><b>終わったあとも</b>30日間、LINEで毎朝ひとこと届きます</li>
+    </ul>
+  </div>
+</section>
+
+<section class="water">
+  <div class="wrap">
+    <h2>心理学の研究を、<br><span class="accent">やさしい言葉で</span></h2>
+    <p class="center">気持ちがうつるしくみ<br>回復のための時間の使い方<br>断り方の型<br>自分へのやさしさ</p>
+    <p class="center">講座の中身は、心理学の研究をもとにしています。<br>むずかしい言葉は使わず<br>毎日の場面で使える形にしてお届けします。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>つくった人</h2>
+    <p>わたしも、HSP気質の当事者です。</p>
+    <p>耳は、完全には閉じられない。<br>疲れている日ほど、まわりの音や言葉が<br>まっすぐ届いてきます。</p>
+    <p>心も体も動かなくなって、休んだ時期もありました。<br>だから、自分を守る方法を<br>ずっと探してきました。</p>
+    <p>誰かの力になりたい。<br>でも、それ以上に、自分を幸せにしたい。<br>その思いで、この講座をつくりました。</p>
+    <p class="caution">Xでは「もの ｜ 優しい世界を届ける」として、毎日、言葉を届けています。</p>
+  </div>
+</section>
+
+<section class="water">
+  <div class="wrap">
+    <h2>こんな方には、<br>まだおすすめしません</h2>
+    <ul class="list caution">
+      <li>今、強い不調が続いている方：まずは休むこと、医療機関や相談窓口を優先してください</li>
+      <li>通院中の方：主治医に相談してから、お申し込みください</li>
+      <li>相手から暴力や強いおどしを受けている方：この講座ではなく、専門の窓口へ（よりそいホットライン 0120-279-338）</li>
+      <li>昔のつらい出来事を思い出して、強く苦しくなる方：まずは医療機関や専門の人との、安全な場を優先してください</li>
+    </ul>
+    <p class="caution" style="margin-top:14px">この講座は、セルフケアの講座です。<br>カウンセリングや治療の代わりではありません。</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>よくある質問</h2>
+    <dl class="faq">
+      <dt>21日間を受けていなくても、受けられますか？</dt>
+      <dd>受けられます。21日間で、自分の気持ちに少し気づけるようになった方には、より使いやすい内容です。</dd>
+      <dt>忙しくて、毎日は聞けません。</dt>
+      <dd>自分のペースで大丈夫です。遅れても、追いつかなくていい作りにしています。</dd>
+      <dt>LINEの質問は、どんなことを送れますか？</dt>
+      <dd>講座の中身について、わからなかったところや、やってみて気づいたことを送れます。個別の相談や、診断や治療に関わることには、お答えしていません。</dd>
+      <dt>返金はできますか？</dt>
+      <dd>【販売の前に決める。決めたら、特商法の表記とそろえる】</dd>
+    </dl>
+  </div>
+</section>
+
+<section class="light" id="price">
+  <div class="wrap">
+    <h2>お申し込み</h2>
+    <p class="price">29,800円<small>（税込）</small></p>
+    <p class="note" style="margin-bottom:20px">音声29本、ワークブック、LINE質問4回、特典9つ<br>今回の募集は10名まで。【締め切りの日】まで</p>
+    <a class="btn js-buy" href="#">講座に申し込む<small>カードで、すぐにお申し込みできます</small></a>
+    <p class="note">1期の方には、受講のあとに短い感想をお願いしています。<br>（掲載は、許可をいただけた方だけです）</p>
+    <p class="note">カードの分割払いが使えるかは<br>お使いのカード会社にご確認ください。</p>
+    <p class="center" style="margin-top:22px">見送ることも、大切な選択です。<br>今は受けない、と決めた方にも<br>LINEでは、これまでどおり言葉と声を届けます。</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    この講座は、カウンセリングや治療の代わりではありません。眠れない日や、食べられない日、気持ちの落ち込みが2週間ほど続く時は、ひとりで抱えなくて大丈夫です。病院や相談窓口を頼ってください。よりそいホットライン（0120-279-338、24時間）にも話せます。<br><br>
+    <a href="#" class="js-law">特定商取引法に基づく表記</a>
+  </div>
+</footer>
+
+<script>
+  // 公開の前に、ここだけ書き換える
+  var BUY_URL = "#price";            // StripeのPayment LinkのURL
+  var LAW_URL = "#";                 // 特定商取引法に基づく表記のページ
+  document.querySelectorAll(".js-buy").forEach(function (a) { if (BUY_URL !== "#price") a.href = BUY_URL; });
+  document.querySelectorAll(".js-law").forEach(function (a) { a.href = LAW_URL; });
+</script>
+</body>
+</html>
