@@ -35,6 +35,7 @@
 ・03_line_step/richmenu/：リッチメニュー画像（販売前・販売後）、プロフィール背景画像
 ・03_line_step/line_setup_full.md：LINE公式アカウントを作るところから公開まで（全部の流れ）
 ・03_line_step/richmenu_and_delivery.md：リッチメニュー（画像はrichmenu/）、応答メッセージ、ステップ配信、12/16の3通
+・04_product/21days_v2/：21日間v2（音声台本、特典、待ち受け、販売ページ lp/index.html）
 ・04_product/boundary_course/：境界線講座 v1.0（設計、音声台本26本、ワークブック17ページ、特典7つ、値段の考え方、販売ページ、LINEの案内、質問の受け方）
 ・04_product/notion/：Notion版ワークシート（読み込み用ファイル、設定手順、購入者への案内文）
 ・04_product/worksheet/deepening_ideas.md：21日間ワークを深くする案（7案と優先順位）
